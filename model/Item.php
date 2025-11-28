@@ -15,26 +15,40 @@ class Item extends Model{
         public ?float $starting_bid = null
     ) {}
 
+    public function validate(): array {
+        $errors = [];
+
+        $errors = array_merge($errors, $this->validateTitle($this->title));
+        $errors = array_merge($errors, $this->validateDescription($this->description));
+
+        if ($this->buy_now_price !== null) {
+            $errors = array_merge($errors, $this->validatePrice($this->buy_now_price));
+        }
+
+        if ($this->starting_bid !== null) {
+            $errors = array_merge($errors, $this->validatePrice($this->starting_bid));
+        }
+
+        return $errors;
+    }
+
 
     private function validateTitle(String $title) : array{
-        $min = 3;
-        $max = 255;
         $errors = [];
-        if(strlen($title)<$min || strlen($title)>$max){
-            $errors[]="Title length must be between 3 and 255 ";
+         if(empty($title)){
+            $errors[]="Title is requiered";
+        }elseif (strlen($title) < 3 || strlen($title) > 255) {
+            $errors[] = "Title length must be between 3 and 255 characters.";
         }
 
-        if($title==null){
-            $errors[]="Title is requiered";
-        }
+       
         return $errors;
     }
 
     private function validateDescription(String $description) : array{
-        $min = 3;
         $errors = [];
-        if(strlen($description)<$min){
-            $errors[]="Title length must be between 3 and 255 ";
+        if(strlen($description)<3){
+            $errors[]="Description must be greater than 3";
         }
         return $errors;
     }
@@ -59,5 +73,7 @@ class Item extends Model{
         }
         return $items;
     }
+
+    
 
 }
