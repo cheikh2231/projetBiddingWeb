@@ -1,0 +1,27 @@
+body {
+    background-color: #0a1a2a; 
+    color: white;            
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    border: 2px dashed red; /* pour voir le conteneur */
+    padding: 10px;
+}
+
+.card {
+    width: 250px;
+    background: #1e2a3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+    border: 2px solid yellow; /* pour bien visualiser chaque carte */
+}
