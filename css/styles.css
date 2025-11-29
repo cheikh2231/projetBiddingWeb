@@ -5,23 +5,112 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
 }
-
 .cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    border: 2px dashed red; /* pour voir le conteneur */
-    padding: 10px;
+    gap: 20px;
 }
 
 .card {
-    width: 250px;
-    background: #1e2a3a;
+    width: 260px;
+    border: 1px solid #ddd;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 10px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+     background: #32313100; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.image-count {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.title {
+    font-size: 18px;
+    margin: 0 0 6px 0;
+    font-weight: bold;
+}
+
+.seller {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.prices {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.buy-now-price {
+    color: #e74c3c; /* rouge */
+    font-weight: bold;
+}
+
+.current-bid {
+    color: #2ecc71; /* vert */
+}
+
+.duration {
+    font-size: 12px;
+    color: #999;
     margin-bottom: 15px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    color: white;
-    border: 2px solid yellow; /* pour bien visualiser chaque carte */
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    flex: 1;
+    margin: 0 3px;
+    padding: 7px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.btn.bidder {
+    background: #3498db;
+    color: #fff;
+}
+
+.btn.auction {
+    background: #f39c12;
+    color: #fff;
+}
+
+.btn.buy-now {
+    background: #27ae60;
+    color: #fff;
 }

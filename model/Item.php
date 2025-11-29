@@ -6,6 +6,7 @@ require_once "framework/Model.php";
 
 class Item extends Model{
     public function __construct(
+        public int $id,
         public string $title,
         public string $description,
         public int $owner,
@@ -69,11 +70,18 @@ class Item extends Model{
         $res = $query->fetchAll();
         $items = [];
         foreach($res as $i){
-            $items[]=new item($i["title"],$i["description"],$i["owner"],$i["created_at"],$i["buy_now_price"],$i["duration_days"],$i["starting_bid"]);
+            $items[]=new item($i["id"],$i["title"],$i["description"],$i["owner"],$i["created_at"],$i["buy_now_price"],$i["duration_days"],$i["starting_bid"]);
         }
         return $items;
     }
 
-    
+    public  function getPictures() {
+    $query = self::execute(
+        "SELECT picture_path FROM item_pictures WHERE item = :id",
+        ["id" => $this->id]
+    );
+
+    return $query->fetchAll(PDO::FETCH_COLUMN);
+}
 
 }
