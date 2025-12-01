@@ -74,6 +74,15 @@ class Item extends Model{
         }
         return $items;
     }
+    public static function getUserItems() : array{
+        $query = self::execute("SELECT * FROM items WHERE owner = 1", []);
+        $res = $query->fetchAll();
+        $items = [];
+        foreach($res as $i){
+            $items[]=new item($i["id"],$i["title"],$i["description"],$i["owner"],$i["created_at"],$i["buy_now_price"],$i["duration_days"],$i["starting_bid"]);
+        }
+        return $items;
+    }
 
     public  function getPictures() {
     $query = self::execute(
