@@ -21,7 +21,7 @@ class Item extends Model{
         public ?float $starting_bid = null
         
     ) {}
-
+   
     public function validate(): array {
         $errors = [];
 
@@ -86,7 +86,7 @@ class Item extends Model{
               ) and v.id not in (SELECT DISTINCT v.id
                                     FROM v_items_status v
                                     JOIN bids b ON v.id = b.item
-                                    WHERE b.owner = 1
+                                    WHERE b.owner = 3
                                     AND (
                                             v.not_purchased_direct_sale
                                             OR (
@@ -131,7 +131,7 @@ public static function getUserActiveItems() : array {
         SELECT DISTINCT v.*
         FROM v_items_status v
         JOIN bids b ON v.id = b.item
-        WHERE b.owner = 1
+        WHERE b.owner = 3
           AND (
                 v.not_purchased_direct_sale
                 OR (
