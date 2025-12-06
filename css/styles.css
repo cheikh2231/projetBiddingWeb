@@ -1,116 +1,45 @@
-body {
-    background-color: #0a1a2a; 
-    color: white;            
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-.cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.card {
-    width: 260px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-     background: #020d2c00; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.image-count {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.5);
-    color: #fff;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-}
-
-.card-content {
-    padding: 15px;
-}
-
-.title {
-    font-size: 18px;
-    margin: 0 0 6px 0;
-    font-weight: bold;
-}
-
-.seller {
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.prices {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.buy-now-price {
-    color: #e74c3c; /* rouge */
-    font-weight: bold;
-}
-
-.current-bid {
-    color: #2ecc71; /* vert */
-}
-
-.duration {
-    font-size: 12px;
-    color: #999;
-    margin-bottom: 15px;
-}
-
-.buttons {
-    display: flex;
-    justify-content: space-between;
-}
-
-.btn {
-    flex: 1;
-    margin: 0 3px;
-    padding: 7px 0;
+.card-custom {
+    background-color: #f7f8f9; /* Retiré le canal alpha (c3) */
+    color: #171818; /* Texte principal en gris foncé/noir */
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
+    height: 150%; 
 }
 
-.btn.bidder {
-    background: #3498db;
-    color: #fff;
+/* Force une hauteur d'image pour rendre les cartes plus courtes et uniformes */
+.card-img-custom {
+    height: 200px; 
+    object-fit: cover; /* Assure que l'image couvre la zone sans être déformée */
+    width: 100%;
 }
 
-.btn.auction {
-    background: #f39c12;
-    color: #fff;
+/* AJOUT CLÉ : Assure que le titre de la carte est lisible en noir sur fond clair */
+.card-custom .card-title {
+    color: #212529 !important; 
 }
 
-.btn.buy-now {
-    background: #27ae60;
-    color: #fff;
+/* Style des badges (optionnel: vous utilisez des classes Bootstrap dans le HTML) */
+.badge {
+    /* Ces styles sont généralement remplacés par rounded-pill/py-1/px-4 dans le HTML */
+    padding: 0.25rem 1rem; /* Ajusté pour correspondre au style 'large' */
+    border-radius: 50rem; /* Pour ressembler à rounded-pill */
+    font-size: 0.85rem; 
+    font-weight: 600;
+}
+
+/* Couleurs spécifiques pour le texte (comme dans l'exemple du professeur) */
+.text-warning {
+    color: #ffc107 !important; /* Jaune/Orange pour le prix d'achat */
+}
+
+.text-success {
+    color: #28a745 !important; /* Vert pour l'enchère courante */
+}
+
+.text-info {
+    color: #17a2b8 !important; /* Bleu clair pour le temps restant */
+}
+
+/* Pour le titre principal */
+.text-primary {
+    color: #007bff !important; 
 }

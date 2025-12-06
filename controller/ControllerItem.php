@@ -4,8 +4,8 @@ require_once 'model/Item.php';
 
 class ControllerItem extends Controller {
     public function browse(): void {
-        $itemsUser=Item::getUserItems();
-        $items=Item::getUserItems();
+        $itemsUser=Item:: getUserActiveItems();
+        $items=Item::getActiveItems();
         
         (new View("item"))->show(["itemsUser"=>$itemsUser,"items"=>$items]);
     }

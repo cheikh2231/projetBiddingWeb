@@ -1,6 +1,7 @@
 <?php 
 
 require_once "framework/Model.php";
+require_once "utils/AppTime.php";
 
 
 
@@ -11,9 +12,14 @@ class Item extends Model{
         public string $description,
         public int $owner,
         public string $created_at,
+        public bool $is_auction,
+        public bool $has_bids,
+        public bool $has_buy_now,
+        public ?float $max_bid = null,
         public ?float $buy_now_price=null,
         public ?int $duration_days=null,
         public ?float $starting_bid = null
+        
     ) {}
 
     public function validate(): array {
@@ -65,24 +71,92 @@ class Item extends Model{
 
     }
 
-    public static function getItems() : array{
-        $query = self::execute("SELECT * FROM items", []);
-        $res = $query->fetchAll();
-        $items = [];
-        foreach($res as $i){
-            $items[]=new item($i["id"],$i["title"],$i["description"],$i["owner"],$i["created_at"],$i["buy_now_price"],$i["duration_days"],$i["starting_bid"]);
-        }
-        return $items;
+   public static function getActiveItems() : array {
+
+     $now = AppTime::get_current_datetime();
+
+    $sql = "
+        SELECT v.*
+        FROM v_items_status v
+        WHERE v.not_purchased_direct_sale
+           OR (
+                v.is_auction
+                AND v.end_at > :now
+                AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
+              )
+    ";
+
+    $query = self::execute($sql, ['now' => $now]);
+
+    $res = $query->fetchAll();
+    $items = [];
+
+    foreach ($res as $i) {
+        $items[] = new Item(
+            $i["id"],
+            $i["title"],
+            $i["description"],
+            $i["owner"],
+            $i["created_at"],
+            $i["is_auction"],
+            $i["has_bids"],
+            $i["has_buy_now"],
+            $i["max_bid"],
+            $i["buy_now_price"],
+            $i["duration_days"],
+            $i["starting_bid"]
+        );
     }
-    public static function getUserItems() : array{
-        $query = self::execute("SELECT * FROM items WHERE owner = 1", []);
-        $res = $query->fetchAll();
-        $items = [];
-        foreach($res as $i){
-            $items[]=new item($i["id"],$i["title"],$i["description"],$i["owner"],$i["created_at"],$i["buy_now_price"],$i["duration_days"],$i["starting_bid"]);
-        }
-        return $items;
+
+    return $items;
+}
+
+public static function getUserActiveItems() : array {
+
+    $now = AppTime::get_current_datetime();
+
+    $sql = "
+        SELECT DISTINCT v.*
+        FROM v_items_status v
+        JOIN bids b ON v.id = b.item
+        WHERE b.owner = 1
+          AND (
+                v.not_purchased_direct_sale
+                OR (
+                    v.is_auction
+                    AND v.end_at > :now
+                    AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
+                  )
+              )
+        ORDER BY v.end_at DESC
+    ";
+
+    $query = self::execute($sql, ['now' => $now]);
+
+    $res = $query->fetchAll();
+    $items = [];
+
+    foreach ($res as $i) {
+        $items[] = new Item(
+            $i["id"],
+            $i["title"],
+            $i["description"],
+            $i["owner"],
+            $i["created_at"],
+            $i["is_auction"],
+            $i["has_bids"],
+            $i["has_buy_now"],
+            $i["max_bid"],
+            $i["buy_now_price"],
+            $i["duration_days"],
+            $i["starting_bid"]
+        );
     }
+
+    return $items;
+}
+
+
 
     public  function getPictures() {
     $query = self::execute(
@@ -91,6 +165,6 @@ class Item extends Model{
     );
 
     return $query->fetchAll(PDO::FETCH_COLUMN);
-}
+    }
 
 }
