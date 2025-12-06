@@ -83,7 +83,19 @@ class Item extends Model{
                 v.is_auction
                 AND v.end_at > :now
                 AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
-              )
+              ) and v.id not in (SELECT DISTINCT v.id
+                                    FROM v_items_status v
+                                    JOIN bids b ON v.id = b.item
+                                    WHERE b.owner = 1
+                                    AND (
+                                            v.not_purchased_direct_sale
+                                            OR (
+                                                v.is_auction
+                                                AND v.end_at > :now
+                                                AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
+                                            )
+                                        )
+                                )
     ";
 
     $query = self::execute($sql, ['now' => $now]);
@@ -166,5 +178,28 @@ public static function getUserActiveItems() : array {
 
     return $query->fetchAll(PDO::FETCH_COLUMN);
     }
+
+
+    public static function itemUserName(int $id_owner) : String {
+        $sql = ("SELECT pseudo
+                            FROM users
+                            WHERE id = ?"
+                            );
+        $res = self::execute($sql, array($id_owner));
+        $name = $res->fetchColumn(); 
+
+        return $name;
+    }
+
+    public static function end_at(int $id_owner) : DateTime {
+        $sql = ("SELECT v.end_at
+                            FROM v_items_status v
+                            WHERE id = ?"
+                            );
+        $res = self::execute($sql, array($id_owner));
+        $date = $res->fetchColumn(); 
+        
+    return new DateTime($date);
+}
 
 }

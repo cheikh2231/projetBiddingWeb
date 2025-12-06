@@ -15,6 +15,8 @@
 /* AJOUT CLÉ : Assure que le titre de la carte est lisible en noir sur fond clair */
 .card-custom .card-title {
     color: #212529 !important; 
+        text-decoration: none;
+
 }
 
 /* Style des badges (optionnel: vous utilisez des classes Bootstrap dans le HTML) */
@@ -32,14 +34,22 @@
 }
 
 .text-success {
-    color: #28a745 !important; /* Vert pour l'enchère courante */
+    color: #28a745 !important; 
 }
 
 .text-info {
-    color: #17a2b8 !important; /* Bleu clair pour le temps restant */
+    color: #17a2b8 !important; 
 }
-
 /* Pour le titre principal */
 .text-primary {
     color: #007bff !important; 
 }
+
+.bg-primary {
+    color: #2a0f6e;
+}
+
+ a {
+         color: black;       
+        text-decoration: none; 
+ }
