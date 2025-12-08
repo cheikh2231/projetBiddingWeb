@@ -200,6 +200,17 @@ public static function getUserActiveItems() : array {
         $date = $res->fetchColumn(); 
         
     return new DateTime($date);
-}
+    }
+
+
+    // SELECT b.owner,b.amount,b.item FROM `bids` b WHERE b.amount IN (SELECT max(amount) from bids GROUP by item)
+
+    public static function max_bidder(int $item) : int{
+        $sql = ("SELECT b.owner FROM `bids` b WHERE b.item = ? and b.amount IN (SELECT max(amount) from bids GROUP by item)");
+        $res = self::execute($sql, array($item));
+        $bidder = $res->fetchColumn(); 
+        
+      return $bidder;
+    }
 
 }

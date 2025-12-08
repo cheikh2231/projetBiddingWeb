@@ -22,7 +22,7 @@
       class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top"
     >
       <h5 class="m-0 me-2 text-primary">Browse</h5>
-      <i class="bi bi-cart fs-4 text-grey"></i>
+      <i class="bi bi-cart4 fs-4 text-white"></i>
     </header>
 
     <div class="container mb-5">
@@ -50,6 +50,18 @@
               >
                 <i class="bi bi-bag me-2"></i>
                 Buy Now
+              </span>
+              <span
+                class="rounded-pill bg-dark text-white py-0 px-1 d-flex align-items-center me-1 fw-bold"
+                style="font-size: 0.9rem"
+              >
+               <?php if(!empty(Item::max_bidder($item->id))):?>
+                  <?php if(Item::max_bidder($item->id) === 2):?>
+                  Highest Bidder
+                  <?php else :?>
+                  Bidder
+                  <?php endif;?>
+                <?php endif ; ?>
               </span>
               <?php endif; ?>
 
@@ -203,7 +215,6 @@
                 </div>
                 <?php endif; ?>
               </div>
-
               <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter = $current->diff(Item::end_at($item->id)); ?>
               <p class="text-info m-0">
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>

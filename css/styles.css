@@ -5,32 +5,29 @@
     height: 150%; 
 }
 
-/* Force une hauteur d'image pour rendre les cartes plus courtes et uniformes */
 .card-img-custom {
     height: 200px; 
-    object-fit: cover; /* Assure que l'image couvre la zone sans être déformée */
+    object-fit: cover; 
     width: 100%;
 }
 
-/* AJOUT CLÉ : Assure que le titre de la carte est lisible en noir sur fond clair */
 .card-custom .card-title {
-    color: #212529 !important; 
+    color: #e0ebf5; 
         text-decoration: none;
 
 }
 
-/* Style des badges (optionnel: vous utilisez des classes Bootstrap dans le HTML) */
 .badge {
-    /* Ces styles sont généralement remplacés par rounded-pill/py-1/px-4 dans le HTML */
-    padding: 0.25rem 1rem; /* Ajusté pour correspondre au style 'large' */
-    border-radius: 50rem; /* Pour ressembler à rounded-pill */
+   
+    padding: 0.25rem 1rem; 
+    border-radius: 50rem; 
     font-size: 0.85rem; 
     font-weight: 600;
 }
 
-/* Couleurs spécifiques pour le texte (comme dans l'exemple du professeur) */
+
 .text-warning {
-    color: #ffc107 !important; /* Jaune/Orange pour le prix d'achat */
+    color: #ffc107 !important; 
 }
 
 .text-success {
@@ -43,10 +40,6 @@
 /* Pour le titre principal */
 .text-primary {
     color: #007bff !important; 
-}
-
-.bg-primary {
-    color: #2a0f6e;
 }
 
  a {
