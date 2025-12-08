@@ -9,3 +9,15 @@ body {
     width: 500px;
     height: 700px;
 }
+.email{
+    text-decoration: none;
+    color: white;
+}
+.colorYellow{
+    text-decoration: none;
+    color : rgb(196, 138, 53);
+}
+.colorGreen{
+    text-decoration: none;
+    color : rgb(13, 83, 13);
+}

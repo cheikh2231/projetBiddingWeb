@@ -11,36 +11,36 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/LoginStyle.css">
 </head>
-<body class="
--flex justify-content-center align-items-center">
-
+<body class="d-flex justify-content-center align-items-center">
     <h1 class="mb-4"><i class="bi bi-cart4"></i>EPayFC</h1>
-    <div class="logContainer row-cols-1 text-center">
+    <div class="logContainer text-center">
         <h2 class="mb-4">Sign in</h2>
         <hr>
         <form action="dashboard.php" method="post">
-            <table>
+            <table class="d-flex justify-content-center align-items-center">
+                <tr>
                 <td><i class="bi bi-person"></i></td>
-                <td><input id="pseudo" name="pseudo" type="text" value="mail"></td>
+                <td><input id="pseudo" name="pseudo" type="text" placeholder="Mail"></td>
+                </tr>
+                <tr>
                 <td><i class="bi bi-key"></i></td>
-                <td><input id="pseudo" name="pseudo" type="text" value="mail"></td>
-
-
+                <td><input id="pseudo" name="pseudo" type="password"></td>
+                </tr>
             </table>
             
-            <input type="submit" value="Login">
-            <input type="submit" value="Continue as guest">
+            <div class="mb-3"><input type="submit" value="Login"></div>
+            <div class="mb-3"><input type="submit" value="Continue as guest"></div>
         </form>
         <a href ="">New here ? Click here to subscribe !</a>
         <hr>
-        <h3>For Debug Purpose</h3>
-        <h4>Login as </h4><a href="">boverhaegen@epfc.eu</a>
-        <h4>Login as </h4><a href="">mamichel@epfc.eu</a>
-        <h4>Login as </h4><a href="">quhouben@epfc.eu</a>
-        <h4>Login as </h4><a href="">xapigeolet@epfc.eu</a>
-        <a href="">Restore original data</a>
-        <a href="">Backup personal data</a>
-        <a href="">Restore personal data</a>
+        <h3 class="colorYellow">For Debug Purpose</h3>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">boverhaegen@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">mamichel@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">quhouben@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">xapigeolet@epfc.eu</a></b></div>
+        <div class="mb-3"><a href="" class="colorYellow">Restore original data</a></div>
+        <div class="mb-3"><a href="" class="colorYellow">Backup personal data</a></div>
+        <div class="mb-3"><a href="" class="colorGreen">Restore personal data</a></div>
     
 
     </div>
