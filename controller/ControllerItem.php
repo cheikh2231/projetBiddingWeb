@@ -11,4 +11,14 @@ class ControllerItem extends Controller {
     }
     public function index(): void {
     }
+
+
+    public function open(): void {
+        if(isset($_GET['param1'])){
+            $id = $_GET['param1'];
+            $item = Item::getItemWithId($id);
+           (new View("openItems"))->show(["item"=>$item]);
+        }else
+          $this->redirect('Item');
+    }
 }

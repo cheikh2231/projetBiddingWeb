@@ -142,7 +142,7 @@ public static function getUserActiveItems(int $user_id) : array {
 
 
 
-    public  function getPictures() {
+    public function getPictures() {
     $query = self::execute(
         "SELECT picture_path FROM item_pictures WHERE item = :id",
         ["id" => $this->id]
@@ -183,6 +183,29 @@ public static function getUserActiveItems(int $user_id) : array {
         $bidder = $res->fetchColumn(); 
         
       return $bidder;
+    }
+
+    public static function getItemWithId(int $id) : Item {
+        $sql = "Select * FROM v_items_status v where v.id = ? ";
+        $query = self::execute($sql,array($id));
+        $i = $query->fetch(); 
+        if($i===false){
+            die ("L'id passé en param n'existe pas dans la bd");
+        }
+        return new Item(
+            $i["id"],
+            $i["title"],
+            $i["description"],
+            $i["owner"],
+            $i["created_at"],
+            $i["is_auction"],
+            $i["has_bids"],
+            $i["has_buy_now"],
+            $i["max_bid"],
+            $i["buy_now_price"],
+            $i["duration_days"],
+            $i["starting_bid"]
+        );   
     }
 
 }

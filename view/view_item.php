@@ -17,8 +17,8 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
   </head>
 
-  <!-- <body data-bs-theme="dark" class="bg-dark"> -->
-    <body data-bs-theme="dark" class="bg-primary-subtle text-body">
+  
+    <body data-bs-theme="dark" class="bg-primary-subtle ">
     <header
       class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top"
     >
@@ -36,7 +36,7 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
           <?php $username = Item::itemUserName($item->owner) ?>
           <a
-            href="test.php"
+            href="Item/open/"<?=$item->owner?>
             class="card card-custom position-relative w-100 h-100 text-decoration-none data-bs-theme=dark class=bg-dark"
             title="Open <?= $username ?>'s Item"
           >
@@ -129,6 +129,7 @@
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
               </p>
             </div>
+          
           </a>
         </div>
         <?php endforeach; ?>
