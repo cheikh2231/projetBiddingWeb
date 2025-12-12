@@ -1,8 +1,8 @@
 .card-custom {
-    background-color: #f7f8f9; /* Retiré le canal alpha (c3) */
-    color: #171818; /* Texte principal en gris foncé/noir */
     border: none;
-    height: 150%; 
+    height: 10%; 
+        width: 100%;
+
 }
 
 .card-img-custom {
@@ -13,10 +13,13 @@
 
 .card-custom .card-title {
     color: #e0ebf5; 
-        text-decoration: none;
+    text-decoration: none;
 
+    white-space: nowrap; 
+    overflow: hidden;     
+    text-overflow: ellipsis; 
+    margin-bottom: 0.5rem; 
 }
-
 .badge {
    
     padding: 0.25rem 1rem; 
@@ -46,3 +49,9 @@
          color: black;       
         text-decoration: none; 
  }
+
+/* body {
+    background-color: var(--bs-primary-bg-subtle);
+    border: 1px solid var(--bs-primary-border-subtle);
+    color: var(--bs-primary-text-emphasis);
+} */

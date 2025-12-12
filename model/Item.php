@@ -71,67 +71,49 @@ class Item extends Model{
 
     }
 
-   public static function getActiveItems() : array {
 
-     $now = AppTime::get_current_datetime();
+
+public static function getActiveItems(int $user_id) : array {
+    $now = AppTime::get_current_datetime();
 
     $sql = "
         SELECT v.*
         FROM v_items_status v
-        WHERE v.not_purchased_direct_sale
-           OR (
-                v.is_auction
-                AND v.end_at > :now
-                AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
-              ) and v.id not in (SELECT DISTINCT v.id
-                                    FROM v_items_status v
-                                    JOIN bids b ON v.id = b.item
-                                    WHERE b.owner = 3
-                                    AND (
-                                            v.not_purchased_direct_sale
-                                            OR (
-                                                v.is_auction
-                                                AND v.end_at > :now
-                                                AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
-                                            )
-                                        )
-                                )
+        WHERE (v.not_purchased_direct_sale
+             OR (
+                 v.is_auction
+                 AND v.end_at > :now
+                 AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
+               )
+             )
+             AND v.id NOT IN (
+                   SELECT DISTINCT item FROM bids WHERE owner = :user_id
+               )
+             AND v.owner != :user_id 
     ";
 
-    $query = self::execute($sql, ['now' => $now]);
+    $query = self::execute($sql, ['now' => $now, 'user_id' => $user_id]);
 
     $res = $query->fetchAll();
     $items = [];
-
     foreach ($res as $i) {
         $items[] = new Item(
-            $i["id"],
-            $i["title"],
-            $i["description"],
-            $i["owner"],
-            $i["created_at"],
-            $i["is_auction"],
-            $i["has_bids"],
-            $i["has_buy_now"],
-            $i["max_bid"],
-            $i["buy_now_price"],
-            $i["duration_days"],
-            $i["starting_bid"]
+             $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"], 
+             $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
-
     return $items;
 }
 
-public static function getUserActiveItems() : array {
-
+public static function getUserActiveItems(int $user_id) : array {
     $now = AppTime::get_current_datetime();
 
     $sql = "
         SELECT DISTINCT v.*
         FROM v_items_status v
         JOIN bids b ON v.id = b.item
-        WHERE b.owner = 3
+        WHERE b.owner = :user_id 
           AND (
                 v.not_purchased_direct_sale
                 OR (
@@ -143,28 +125,18 @@ public static function getUserActiveItems() : array {
         ORDER BY v.end_at DESC
     ";
 
-    $query = self::execute($sql, ['now' => $now]);
+
+    $query = self::execute($sql, ['now' => $now, 'user_id' => $user_id]);
 
     $res = $query->fetchAll();
     $items = [];
-
     foreach ($res as $i) {
         $items[] = new Item(
-            $i["id"],
-            $i["title"],
-            $i["description"],
-            $i["owner"],
-            $i["created_at"],
-            $i["is_auction"],
-            $i["has_bids"],
-            $i["has_buy_now"],
-            $i["max_bid"],
-            $i["buy_now_price"],
-            $i["duration_days"],
-            $i["starting_bid"]
+             $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"], 
+             $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
-
     return $items;
 }
 

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
@@ -17,7 +17,8 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css" />
   </head>
 
-  <body class="bg-white text-black">
+  <!-- <body data-bs-theme="dark" class="bg-dark"> -->
+    <body data-bs-theme="dark" class="bg-primary-subtle text-body">
     <header
       class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top"
     >
@@ -36,7 +37,7 @@
           <?php $username = Item::itemUserName($item->owner) ?>
           <a
             href="test.php"
-            class="card card-custom position-relative w-100 h-100 text-decoration-none text-dark"
+            class="card card-custom position-relative w-100 h-100 text-decoration-none data-bs-theme=dark class=bg-dark"
             title="Open <?= $username ?>'s Item"
           >
             <div
@@ -56,7 +57,7 @@
                 style="font-size: 0.9rem"
               >
                <?php if(!empty(Item::max_bidder($item->id))):?>
-                  <?php if(Item::max_bidder($item->id) === 2):?>
+                  <?php if(Item::max_bidder($item->id) === 3):?>
                   Highest Bidder
                   <?php else :?>
                   Bidder
@@ -97,17 +98,17 @@
             </div>
 
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title fw-bold fs-6">
+              <h6 class="card-title fw-bold fs-6">
                 <?= htmlspecialchars($item->title) ?>
-              </h5>
+              </h6>
 
-              <p class="text-muted mb-2 mt-auto">
+              <p class="text-muted ">
                 <small>by <?= Item::itemUserName($item->owner) ?></small>
               </p>
 
               <div class="d-flex justify-content-between my-2">
                 <div class="d-flex flex-column">
-                  <span class="text-warning fw-bold">
+                  <span class="text-primary fw-bold">
                     € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?>
                   </span>
                 </div>
@@ -124,6 +125,7 @@
 
               <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter =$current->diff(Item::end_at($item->id)) ?>
               <p class="text-info m-0">
+                <i class="bi bi-clock-history"></i>
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
               </p>
             </div>
@@ -191,17 +193,17 @@
             </div>
 
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title fw-bold fs-6">
+              <h1 class="card-title fw-bold fs-6">
                 <?= htmlspecialchars($item->title) ?>
-              </h5>
+              </h1>
 
-              <p class="text-muted mb-2 mt-auto">
+              <p class="text-muted">
                 <small>by <?= Item::itemUserName($item->owner) ?></small>
               </p>
 
               <div class="d-flex justify-content-between my-2">
                 <div class="d-flex flex-column">
-                  <span class="text-warning fw-bold">
+                  <span class="text-primary fw-bold">
                     € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?>
                   </span>
                 </div>
@@ -217,6 +219,7 @@
               </div>
               <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter = $current->diff(Item::end_at($item->id)); ?>
               <p class="text-info m-0">
+                <i class="bi bi-clock-history"></i>
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
               </p>
             </div>
@@ -227,6 +230,6 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
