@@ -15,6 +15,7 @@ class Item extends Model{
         public bool $is_auction,
         public bool $has_bids,
         public bool $has_buy_now,
+        public string $end_at,
         public ?float $max_bid = null,
         public ?float $buy_now_price=null,
         public ?int $duration_days=null,
@@ -99,7 +100,7 @@ public static function getActiveItems(int $user_id) : array {
     foreach ($res as $i) {
         $items[] = new Item(
              $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-             $i["is_auction"], $i["has_bids"], $i["has_buy_now"], 
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],
              $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
@@ -133,7 +134,7 @@ public static function getUserActiveItems(int $user_id) : array {
     foreach ($res as $i) {
         $items[] = new Item(
              $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-             $i["is_auction"], $i["has_bids"], $i["has_buy_now"], 
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],
              $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
@@ -163,16 +164,6 @@ public static function getUserActiveItems(int $user_id) : array {
         return $name;
     }
 
-    public static function end_at(int $id_owner) : DateTime {
-        $sql = ("SELECT v.end_at
-                            FROM v_items_status v
-                            WHERE id = ?"
-                            );
-        $res = self::execute($sql, array($id_owner));
-        $date = $res->fetchColumn(); 
-        
-    return new DateTime($date);
-    }
 
 
     // SELECT b.owner,b.amount,b.item FROM `bids` b WHERE b.amount IN (SELECT max(amount) from bids GROUP by item)
@@ -201,6 +192,7 @@ public static function getUserActiveItems(int $user_id) : array {
             $i["is_auction"],
             $i["has_bids"],
             $i["has_buy_now"],
+            $i["end_at"],
             $i["max_bid"],
             $i["buy_now_price"],
             $i["duration_days"],

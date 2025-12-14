@@ -14,7 +14,8 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
-    <link href="css/styles.css" rel="stylesheet" type="text/css" />
+    
+    <link href="css/browse.css" rel="stylesheet" type="text/css" />
   </head>
 
   
@@ -22,6 +23,7 @@
     <header
       class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top"
     >
+    <?php $place = "browse"?>
       <h5 class="m-0 me-2 text-primary">Browse</h5>
       <i class="bi bi-cart4 fs-4 text-white"></i>
     </header>
@@ -36,8 +38,8 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
           <?php $username = Item::itemUserName($item->owner) ?>
           <a
-            href="Item/open/"<?=$item->owner?>
-            class="card card-custom position-relative w-100 h-100 text-decoration-none data-bs-theme=dark class=bg-dark"
+            href="Item/open/<?=$item->id?>/from-<?=$place?>"
+             class="card" style="width: 18rem;"
             title="Open <?= $username ?>'s Item"
           >
             <div
@@ -76,12 +78,12 @@
             </div>
 
             <div
-              class="position-relative card-img-top card-img-custom d-flex align-items-center justify-content-center bg-light text-muted"
+              class=" card-img-top"
             >
               <?php if (!empty($pictures)) : ?>
               <div class="position-relative">
                 <img
-                  src="<?= $web_root . $pictures[0] ?>"
+                  src="<?=$pictures[0] ?>"
                   class="card-img-top card-img-custom"
                   alt="<?= htmlspecialchars($item->title) ?>"
                 />
@@ -123,7 +125,7 @@
                 <?php endif;?>
               </div>
 
-              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter =$current->diff(Item::end_at($item->id)) ?>
+              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter =$current->diff(new DateTime($item->end_at)) ?>
               <p class="text-info m-0">
                 <i class="bi bi-clock-history"></i>
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
@@ -147,7 +149,7 @@
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
           <?php $username = Item::itemUserName($item->owner) ?>
           <a
-            href="test.php"
+            href="Item/open/<?=$item->id?>/from-<?=$place?>"
             class="card card-custom position-relative w-100 h-100 text-decoration-none text-dark"
             title="Open <?= $username ?>'s Item"
           >
@@ -177,7 +179,7 @@
               <?php if (!empty($pictures)) : ?>
               <div class="position-relative">
                 <img
-                  src="<?= $web_root . $pictures[0] ?>"
+                  src="<?=  $pictures[0] ?>"
                   class="card-img-top card-img-custom"
                   alt="<?= htmlspecialchars($item->title) ?>"
                 />
@@ -194,7 +196,7 @@
             </div>
 
             <div class="card-body d-flex flex-column">
-              <h1 class="card-title fw-bold fs-6">
+              <h1 class="card-title fw-bold fs-6 mt-1">
                 <?= htmlspecialchars($item->title) ?>
               </h1>
 
@@ -218,7 +220,7 @@
                 </div>
                 <?php endif; ?>
               </div>
-              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter = $current->diff(Item::end_at($item->id)); ?>
+              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter = $current->diff(new DateTime($item->end_at)); ?>
               <p class="text-info m-0">
                 <i class="bi bi-clock-history"></i>
                 <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
