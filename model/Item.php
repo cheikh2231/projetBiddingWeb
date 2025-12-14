@@ -91,6 +91,7 @@ public static function getActiveItems(int $user_id) : array {
                    SELECT DISTINCT item FROM bids WHERE owner = :user_id
                )
              AND v.owner != :user_id 
+             ORDER BY v.end_at ASC
     ";
 
     $query = self::execute($sql, ['now' => $now, 'user_id' => $user_id]);
@@ -123,7 +124,7 @@ public static function getUserActiveItems(int $user_id) : array {
                     AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
                   )
               )
-        ORDER BY v.end_at DESC
+        ORDER BY v.end_at ASC
     ";
 
 

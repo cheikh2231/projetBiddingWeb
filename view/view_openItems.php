@@ -89,7 +89,27 @@
             </div>
                     
             <div class="col-12 col-md-5 col-lg-5">
-            
+                <div class="card" style="width: 20rem;">
+                    <div class="card-body">
+                     
+                        <small  class="text-muted mt-1 ">Pricing</small><br>
+                        <div class="d-flex justify-content-between me">
+                            <span>Current Bid</span>
+                            <span class = "text-success fw-bold">€ <?=number_format($item->has_bids ? $item->max_bid : $item->starting_bid ?? 0, 2)?></span>                        
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Buy Now</span>
+                            <span class = " fw-bold">€ <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?></span>                        
+                        </div><br>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">€</span>
+                            <?php $valdepart = number_format($item->has_bids ? $item->max_bid : $item->starting_bid );?>
+                            <input type="number" id = "price" class="form-control" min = "<?= $valdepart?>" value="<?= $valdepart ?>" aria-describedby="basic-addon1">
+                        
+                        </div>
+                        
+                    </div> 
+                </div>   
             </div>
         </div>
     </div>

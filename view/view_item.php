@@ -54,19 +54,21 @@
                 <i class="bi bi-bag me-2"></i>
                 Buy Now
               </span>
+              <?php endif; ?>
               <span
                 class="rounded-pill bg-dark text-white py-0 px-1 d-flex align-items-center me-1 fw-bold"
                 style="font-size: 0.9rem"
               >
+               
                <?php if(!empty(Item::max_bidder($item->id))):?>
-                  <?php if(Item::max_bidder($item->id) === 3):?>
+                  <?php if((Item::max_bidder($item->id)) === 1):?>
                   Highest Bidder
                   <?php else :?>
                   Bidder
                   <?php endif;?>
                 <?php endif ; ?>
               </span>
-              <?php endif; ?>
+             
 
               <?php if ($item->is_auction) : ?>
               <span
