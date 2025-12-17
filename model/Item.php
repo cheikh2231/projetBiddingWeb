@@ -200,5 +200,25 @@ public static function getUserActiveItems(int $user_id) : array {
             $i["starting_bid"]
         );   
     }
+    public static function getUserPic(int $id) : ?String {
+        $sql = ("SELECT picture_path
+                            FROM users
+                            WHERE id = ?"
+                            );
+        $res = self::execute($sql, array($id));
+        $pic = $res->fetchColumn(); 
 
+        return $pic;
+    }
+
+     public static function getUserRole(int $id) : ?String {
+        $sql = ("SELECT role
+                            FROM users
+                            WHERE id = ?"
+                            );
+        $res = self::execute($sql, array($id));
+        $pic = $res->fetchColumn(); 
+
+        return $pic;
+    }
 }

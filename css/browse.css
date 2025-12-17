@@ -1,56 +1,31 @@
+
+
+ /* Fichier: css/browse.css */
+
+/* S'assurer que les cartes remplissent la hauteur de leur colonne pour l'alignement flex */
 .card-custom {
-    border: none;
-    height: 5%; 
-    width: 100%;
-
+    height: 100%;
 }
 
+/* Conteneur de l'image de la carte. Définit une hauteur fixe pour uniformité. */
 .card-img-custom {
-    height: 200px; 
-    object-fit: cover; 
     width: 100%;
+    height: 200px; /* Ajustez cette valeur pour changer la taille de l'image */
+    object-fit: cover; /* Recadre l'image pour couvrir le conteneur */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.card-custom .card-title {
-    color: #e0ebf5; 
-    text-decoration: none;
-
-    white-space: nowrap; 
-    overflow: hidden;     
-    text-overflow: ellipsis; 
-    margin-bottom: 0.15rem;
-    margin-top: 15px; 
-}
-.badge {
-   
-    padding: 0.25rem 1rem; 
-    border-radius: 50rem; 
-    font-size: 0.85rem; 
-    font-weight: 600;
+/* Assure que l'image elle-même remplit son conteneur et est recadrée */
+.card-img-custom img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-
-.text-warning {
-    color: #ffc107 !important; 
+/* Style spécifique pour la version Dark Mode ou personnalisée */
+/* Pour que le texte noir de "Auction" soit visible sur le fond jaune */
+.bg-warning {
+    color: #000 !important; 
 }
-
-.text-success {
-    color: #28a745 !important; 
-}
-
-.text-info {
-    color: #17a2b8 !important; 
-}
-/* Pour le titre principal */
-.text-primary {
-    color: #007bff !important; 
-}
-
- a {
-        color: black;       
-        text-decoration: none; 
- }
-
- .info-item {
-    margin-bottom: 5px;
- }

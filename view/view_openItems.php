@@ -84,12 +84,11 @@
                             </a>
                         <?php } ?>
                     </div>
-                       
                 <?php endif; ?>    
             </div>
                     
-            <div class="col-12 col-md-5 col-lg-5">
-                <div class="card" style="width: 20rem;">
+            <div class="col-12 col-md-6 col-lg-5 ">
+                <div class="card mb-2" style="width: 20rem; border: 2px;">
                     <div class="card-body">
                      
                         <small  class="text-muted mt-1 ">Pricing</small><br>
@@ -101,15 +100,54 @@
                             <span>Buy Now</span>
                             <span class = " fw-bold">€ <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?></span>                        
                         </div><br>
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-2">
                             <span class="input-group-text" id="basic-addon1">€</span>
                             <?php $valdepart = number_format($item->has_bids ? $item->max_bid : $item->starting_bid );?>
                             <input type="number" id = "price" class="form-control" min = "<?= $valdepart?>" value="<?= $valdepart ?>" aria-describedby="basic-addon1">
                         
                         </div>
-                        
-                    </div> 
-                </div>   
+                        <div class="d-grid gap-2">
+                            <?php if($item->has_buy_now) : ?>
+                                <button class="btn btn-lg btn-success fs-5" type="submit">
+                                    Place Bid
+                                </button>
+
+                                <?php if ($item->has_buy_now) : ?>
+                                <a
+                                    href="item/open/<?=$item->id?>"  class="btn btn-lg btn-outline-primary fs-6"
+                                    role="button"
+                                >
+                                    Buy Now at € <?= number_format($item->buy_now_price, 2) ?>
+                                   
+                                </a>
+                                <?php endif; ?>
+                            <?php else:?>
+                                <small  class="text-muted mt-1">Congratulations you purchased the item for € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?></small><br>
+                            <?php endif; ?>
+                        </div>
+
+                      
+                    </div>
+                   
+                </div>  
+                 <div class="card" style="width: 20rem; border: 25px;">
+                    <div class="card-body">
+                        <small  class="text-muted mt-1">Seller Information</small><br>
+                        <div class="d-flex align-items-center mt-1">
+                            <?php if(Item::getUserPic($item->owner) != null) :?>
+                              <img src="<?= Item::getUserPic($item->owner) ?>" alt="Boris" class="rounded-circle me-3" style="width: 3rem; height: 3rem;">
+                            <?php else:?> 
+                                <i class="bi bi-person-circle fs-2" style="width: 3rem; height: 3rem;"></i>
+                            <?php endif; ?>
+                            
+                            <div>
+                                <div class="fw-bold"><?= htmlspecialchars(Item::itemUserName($item->owner))?></div>
+                                <div class="text-muted" style="font-size: 0.875rem;"><?=Item::getUserRole($item->owner)=="user"?"Member":"Admin"?></div>
+                            </div>
+                        </div>
+                     </div>  
+                </div>       
+                
             </div>
         </div>
     </div>

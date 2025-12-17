@@ -1,6 +1,6 @@
 .card {
    max-width: 200%;
-   border-radius: 12px;
+   
 }
 
 
@@ -17,4 +17,8 @@
 
 .img-thumbnail{
     border: none;
+}
+
+.btn-black:hover{
+  color: antiquewhite;
 }
