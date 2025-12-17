@@ -1,4 +1,4 @@
-body {
+/* body {
     background-color: #0d1530;
     color: white;
 }
@@ -20,4 +20,102 @@ body {
 .colorGreen{
     text-decoration: none;
     color : rgb(13, 83, 13);
-}
+} */
+body {
+            background-color: #0d1117; /* Fond bleu nuit très foncé */
+            color: #c9d1d9;
+            font-family: sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .card {
+            background-color: #161b22; /* Fond de la carte légèrement plus clair */
+            border: 1px solid #30363d;
+            border-radius: 6px;
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #30363d;
+            text-align: center;
+            color: white;
+            font-size: 1.25rem;
+            padding: 15px;
+        }
+
+        /* Personnalisation des champs de formulaire sombres */
+        .form-control, .input-group-text {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+
+        .form-control:focus {
+            background-color: #0d1117;
+            color: #fff;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+        }
+
+        .input-group-text {
+            color: #8b949e;
+        }
+
+        /* Boutons */
+        .btn-primary {
+            background-color: #2f81f7;
+            border-color: #2f81f7;
+            font-weight: 500;
+        }
+        
+        .btn-secondary {
+            background-color: #6e7681;
+            border-color: #6e7681;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Section Debug */
+        .debug-section {
+            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            border-top: 1px solid #30363d;
+            padding-top: 15px;
+        }
+
+        .debug-title {
+            color: #fd7e14; /* Orange Bootstrap */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .debug-links a {
+            text-decoration: none;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .text-green { color: #2ea043; }
+        .text-orange { color: #fd7e14; }
