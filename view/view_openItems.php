@@ -85,70 +85,6 @@
                         <?php } ?>
                     </div>
                 <?php endif; ?>
-                <style type="text/css">
-                .bid-panel-dark {
-                    background-color: #0b111a !important; /* Le noir bleuté profond de l'image */
-                    border-radius: 8px;
-                    padding: 20px;
-                    color: #ffffff !important;
-                    font-family: sans-serif;
-                    margin-top: 20px;
-                    border: 1px solid #1e293b;
-                }
-
-                .bid-header-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 20px;
-                }
-
-                .bid-title-text {
-                    color: #94a3b8 !important; /* Gris bleuté pour le titre */
-                    font-size: 14px;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                }
-
-                .bid-badge {
-                    background-color: #ffffff !important;
-                    color: #000000 !important;
-                    padding: 2px 12px;
-                    border-radius: 15px;
-                    font-size: 12px;
-                    font-weight: bold;
-                }
-
-                .bid-row-item {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 12px 0;
-                    border-bottom: 1px solid #1e293b;
-                }
-
-                .bid-row-item:last-child {
-                    border-bottom: none;
-                }
-
-                .bidder-name-text {
-                    color: #ffffff !important;
-                    font-weight: bold;
-                    font-size: 16px;
-                    margin-bottom: 4px;
-                }
-
-                .bid-date-text {
-                    color: #64748b !important;
-                    font-size: 13px;
-                }
-
-                .bid-price-green {
-                    color: #10b981 !important; /* Le vert émeraude vif de la photo */
-                    font-weight: bold;
-                    font-size: 18px;
-                }
-            </style>
 
             <div class="bid-panel-dark">
                 <div class="bid-header-row">
@@ -201,10 +137,11 @@
                         
                         </div>
                         <div class="d-grid gap-2">
-                            <?php if($item->has_buy_now) : ?>
+                            <?php if($item->is_auction ) : ?>
                                 <button class="btn btn-lg btn-success fs-5" type="submit">
                                     Place Bid
                                 </button>
+                                <?php endif; ?>
 
                                 <?php if ($item->has_buy_now) : ?>
                                 <a
@@ -214,10 +151,9 @@
                                     Buy Now at € <?= number_format($item->buy_now_price, 2) ?>
                                    
                                 </a>
+                           
+                                <!-- <small  class="text-muted mt-1">Congratulations you purchased the item for € </small><br> -->
                                 <?php endif; ?>
-                            <?php else:?>
-                                <small  class="text-muted mt-1">Congratulations you purchased the item for € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?></small><br>
-                            <?php endif; ?>
                         </div>
 
                       

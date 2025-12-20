@@ -24,7 +24,7 @@
 
 <div class="container py-5">
 
-    <!-- ================= PARTICIPATING ITEMS ================= -->
+
     <?php if (!empty($itemsUser)) : ?>
         <h4 class = "text-white">Items I'm Participating In</h4>
 
@@ -39,7 +39,6 @@
                     <a href="Item/open/<?= $item->id ?>/from-<?= $place ?>"
                        class="item-card d-block position-relative h-100">
 
-                        <!-- BADGES -->
                         <div class="badge-container">
                             <div>
                                 <?php if (!empty(Item::max_bidder($item->id))) : ?>
@@ -114,7 +113,7 @@
         </div>
     <?php endif; ?>
 
-    <!-- ================= OTHER ITEMS ================= -->
+    <!-- ==== -->
     <?php if (!empty($items)) : ?>
         <h4 class = "text-white">Other Available Items</h4>
 

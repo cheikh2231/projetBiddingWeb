@@ -22,53 +22,65 @@
 .btn-black:hover{
   color: antiquewhite;
 }
-/* Utilisation d'une classe très spécifique pour forcer le design sombre */
-.custom-bid-panel {
-    background-color: #1a1a1a !important; /* Gris très foncé (presque noir) */
-    border-radius: 12px !important;
-    padding: 20px !important;
-    border: 1px solid #333 !important;
-    color: white !important;
+.bid-panel-dark {
+    background-color: #0b111a !important; /* Le noir bleuté profond de l'image */
+    border-radius: 8px;
+    padding: 20px;
+    color: #ffffff !important;
+    font-family: sans-serif;
+    margin-top: 20px;
+    border: 1px solid #1e293b;
 }
 
-.custom-bid-panel .bid-title {
-    color: #888 !important;
-    font-size: 0.8rem;
+.bid-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bid-title-text {
+    color: #94a3b8 !important; /* Gris bleuté pour le titre */
+    font-size: 14px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
-.custom-bid-panel .entries-badge {
+.bid-badge {
     background-color: #ffffff !important;
     color: #000000 !important;
     padding: 2px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    border-radius: 15px;
+    font-size: 12px;
     font-weight: bold;
 }
 
-.custom-bid-panel .bid-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #2d2d2d !important;
+.bid-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #3b1e1e;
 }
 
-.custom-bid-panel .bid-item:last-child {
-    border-bottom: none !important;
+.bid-row-item:last-child {
+    border-bottom: none;
 }
 
-.custom-bid-panel .bidder-name {
+.bidder-name-text {
     color: #ffffff !important;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 16px;
+    margin-bottom: 4px;
 }
 
-.custom-bid-panel .bid-date {
-    color: #666 !important;
-    font-size: 0.85rem;
+.bid-date-text {
+    color: #64748b !important;
+    font-size: 13px;
 }
 
-/* Le vert émeraude pour le prix */
-.custom-bid-panel .bid-amount {
-    color: #3fb950 !important; 
+.bid-price-green {
+    color: #10b981 !important;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 18px;
 }
