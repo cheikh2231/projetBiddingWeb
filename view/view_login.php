@@ -27,12 +27,12 @@
         <form action="login.php" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
-                <input type="text" name="mail" class="form-control custom-input" placeholder="quhouben@epfc.eu" aria-label="Email">
+                <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
-                <input type="password" name="password" class="form-control custom-input" placeholder="........" aria-label="Password">
+                <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
             </div>
             
             <div class="d-grid gap-2 mb-3">
