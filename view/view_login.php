@@ -24,7 +24,7 @@
         <h2 class="mb-3 fs-3">Sign in</h2>
         <hr class="mb-4" style="border-color: #444; opacity: 1;">
         <!-- Partie formulaire -->
-        <form action="login.php" method="post">
+        <form action="login/login" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
                 <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
