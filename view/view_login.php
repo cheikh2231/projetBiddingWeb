@@ -11,72 +11,39 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/LoginStyle.css">
 </head>
-<body>
-
-    <div class="login-container">
-        
-        <div class="logo-area">
-            <i class="fas fa-shopping-cart"></i> EPayFC
-        </div>
-
-        <div class="card shadow">
-            <div class="card-header">
-                Sign in
-            </div>
-            <div class="card-body">
-                
-                <?php if($message): ?>
-                    <div class="alert alert-info py-1 text-center" style="font-size:0.8rem">
-                        <?= $message ?>
-                    </div>
-                <?php endif; ?>
-
-                <form action="" method="POST">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input type="text" name="email" class="form-control" placeholder="Mail" aria-label="Mail">
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text"><i class="fas fa-key"></i></span>
-                        <input type="password" name="password" class="form-control" placeholder="******" aria-label="Password">
-                    </div>
-
-                    <div class="d-grid gap-2 mb-2">
-                        <button class="btn btn-primary" type="submit">Login</button>
-                    </div>
-
-                    <div class="d-grid gap-2 mb-3">
-                        <button class="btn btn-secondary" type="button">Continue as guest</button>
-                    </div>
-
-                    <div class="text-center mb-2">
-                        <a href="#" style="font-size: 0.9rem; text-decoration: none; color: #58a6ff;">New here ? Click here to subscribe !</a>
-                    </div>
-                </form>
-
-                <div class="debug-section">
-                    <div class="debug-title">For Debug Purpose</div>
-                    
-                    <div class="mb-2 text-white">
-                        <div>Login as <strong>boverhaegen@epfc.eu</strong></div>
-                        <div>Login as <strong>mamichel@epfc.eu</strong></div>
-                        <div>Login as <strong>quhouben@epfc.eu</strong></div>
-                        <div>Login as <strong>xapigeolet@epfc.eu</strong></div>
-                    </div>
-
-                    <div class="debug-links font-weight-bold">
-                        <a href="#" class="text-green fw-bold">Restore original data</a>
-                        <a href="#" class="text-orange fw-bold">Backup personal data</a>
-                        <a href="#" class="text-orange fw-bold">Restore personal data</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+<body class="d-flex justify-content-center align-items-center">
+    <h1 class="mb-4"><i class="bi bi-cart4"></i>EPayFC</h1>
+    <div class="logContainer text-center">
+        <h2 class="mb-4">Sign in</h2>
+        <hr>
+        <form action="dashboard.php" method="post">
+            <table class="d-flex justify-content-center align-items-center">
+                <tr>
+                <td><i class="bi bi-person"></i></td>
+                <td><input id="pseudo" name="pseudo" type="text" placeholder="Mail"></td>
+                </tr>
+                <tr>
+                <td><i class="bi bi-key"></i></td>
+                <td><input id="pseudo" name="pseudo" type="password"></td>
+                </tr>
+            </table>
+            
+            <div class="mb-3"><input type="submit" value="Login"></div>
+            <div class="mb-3"><input type="submit" value="Continue as guest"></div>
+        </form>
+        <a href ="">New here ? Click here to subscribe !</a>
+        <hr>
+        <h3 class="colorYellow">For Debug Purpose</h3>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">boverhaegen@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">mamichel@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">quhouben@epfc.eu</a></b></div>
+        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">xapigeolet@epfc.eu</a></b></div>
+        <div class="mb-3"><a href="" class="colorYellow">Restore original data</a></div>
+        <div class="mb-3"><a href="" class="colorYellow">Backup personal data</a></div>
+        <div class="mb-3"><a href="" class="colorGreen">Restore personal data</a></div>
+    
 
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
