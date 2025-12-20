@@ -22,3 +22,53 @@
 .btn-black:hover{
   color: antiquewhite;
 }
+/* Utilisation d'une classe très spécifique pour forcer le design sombre */
+.custom-bid-panel {
+    background-color: #1a1a1a !important; /* Gris très foncé (presque noir) */
+    border-radius: 12px !important;
+    padding: 20px !important;
+    border: 1px solid #333 !important;
+    color: white !important;
+}
+
+.custom-bid-panel .bid-title {
+    color: #888 !important;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.custom-bid-panel .entries-badge {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.custom-bid-panel .bid-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #2d2d2d !important;
+}
+
+.custom-bid-panel .bid-item:last-child {
+    border-bottom: none !important;
+}
+
+.custom-bid-panel .bidder-name {
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.custom-bid-panel .bid-date {
+    color: #666 !important;
+    font-size: 0.85rem;
+}
+
+/* Le vert émeraude pour le prix */
+.custom-bid-panel .bid-amount {
+    color: #3fb950 !important; 
+    font-weight: bold;
+    font-size: 1.1rem;
+}

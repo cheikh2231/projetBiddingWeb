@@ -1,240 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
     <title>Browse items</title>
     <base href="<?= $web_root ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/browse-item.css" rel="stylesheet">
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    
-    <link href="css/browse.css" rel="stylesheet" type="text/css" />
-  </head>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+   
+</head>
 
-  
-    <body data-bs-theme="dark" class="bg-primary-subtle ">
-    <header
-      class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top"
-    >
-    <?php $place = "browse"?>
-      <h5 class="m-0 me-2 text-primary">Browse</h5>
-      <i class="bi bi-cart4 fs-4 text-white"></i>
-    </header>
+<body>
 
-    <div class="container mb-5">
-      <?php if (!empty($itemsUser)) :?>
-      <h4 class="text-primary mb-4">Items I'm Participating In</h4>
-      <div class="row g-4">
-        <?php foreach ($itemsUser as $item) : ?>
-        <?php $pictures = $item->getPictures(); ?>
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-          <?php $username = Item::itemUserName($item->owner) ?>
-          <a
-            href="Item/open/<?=$item->id?>/from-<?=$place?>"
-             class="card" style="width: 18rem;"
-            title="Open <?= $username ?>'s Item"
-          >
-            <div
-              class="position-absolute top-0 end-0 p-2 d-flex flex-row-reverse"
-              style="z-index: 10"
-            >
-              <?php if ($item->has_buy_now) : ?>
-              <span
-                class="rounded-pill bg-info text-white py-0 px-1 d-flex align-items-center me-1 fw-bold"
-                style="font-size: 0.9rem"
-              >
-                <i class="bi bi-bag me-2"></i>
-                Buy Now
-              </span>
-              <?php endif; ?>
-              <span
-                class="rounded-pill bg-dark text-white py-0 px-1 d-flex align-items-center me-1 fw-bold"
-                style="font-size: 0.9rem"
-              >
-               
-               <?php if(!empty(Item::max_bidder($item->id))):?>
-                  <?php if((Item::max_bidder($item->id)) === 1):?>
-                  Highest Bidder
-                  <?php else :?>
-                  Bidder
-                  <?php endif;?>
-                <?php endif ; ?>
-              </span>
-             
-
-              <?php if ($item->is_auction) : ?>
-              <span
-                class="rounded-pill bg-warning text-dark fs-6 py-1 px-2 d-flex align-items-center"
-              >
-                Auction
-              </span>
-              <?php endif; ?>
-            </div>
-
-            <div
-              class=" card-img-top"
-            >
-              <?php if (!empty($pictures)) : ?>
-              <div class="position-relative">
-                <img
-                  src="<?=$pictures[0] ?>"
-                  class="card-img-top card-img-custom"
-                  alt="<?= htmlspecialchars($item->title) ?>"
-                />
-
-                <?php if (count($pictures) > 1) : ?>
-                <span
-                  class="badge bg-secondary position-absolute bottom-0 end-0 m-2"
-                >
-                  <?= count($pictures) ?> images
-                </span>
-                <?php endif; ?>
-              </div>
-              <?php endif; ?>
-            </div>
-
-            <div class="card-body d-flex flex-column">
-              <h6 class="card-title fw-bold fs-6">
-                <?= htmlspecialchars($item->title) ?>
-              </h6>
-
-              <p class="text-muted ">
-                <small>by <?= Item::itemUserName($item->owner) ?></small>
-              </p>
-
-              <div class="d-flex justify-content-between my-2">
-                <div class="d-flex flex-column">
-                  <span class="text-primary fw-bold">
-                    € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?>
-                  </span>
-                </div>
-
-                <?php if ($item->is_auction):?>
-                <div class="d-flex flex-column align-items-end">
-                  <span class="text-muted fw-normal" style="font-size: 0.85rem">Current Bid</span>
-                  <span class="text-success fw-bold">
-                    € <?= number_format($item->has_bids ? $item->max_bid : $item->starting_bid ?? 0, 2) ?>
-                  </span>
-                </div>
-                <?php endif;?>
-              </div>
-
-              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter =$current->diff(new DateTime($item->end_at)) ?>
-              <p class="text-info m-0">
-                <i class="bi bi-clock-history"></i>
-                <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
-              </p>
-            </div>
-          
-          </a>
-        </div>
-        <?php endforeach; ?>
-      </div>
-
-      <div class="my-5"></div>
-      <?php endif; ?>
-
-      <div class="row g-4">
-        <?php if (!empty($items)) : ?>
-        <h4 class="text-primary mb-1">Other Available Items</h4>
-        <?php foreach ($items as $item) : ?>
-        <?php $pictures = $item->getPictures(); ?>
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
-          <?php $username = Item::itemUserName($item->owner) ?>
-          <a
-            href="Item/open/<?=$item->id?>/from-<?=$place?>"
-            class="card card-custom position-relative w-100 h-100 text-decoration-none text-dark"
-            title="Open <?= $username ?>'s Item"
-          >
-            <div
-              class="position-absolute top-0 end-0 p-2 d-flex flex-row-reverse"
-              style="z-index: 10"
-            >
-              <?php if ($item->has_buy_now) : ?>
-              <span class="rounded-pill bg-primary text-white fs-6 py-1 px-4"
-                >Buy Now</span
-              >
-              <?php endif; ?>
-
-              <?php if ($item->is_auction) : ?>
-              <?php $is_buy_now_active = $item->has_buy_now; $margin_style = $is_buy_now_active ? 'style="margin-left: -15px;"' : ''; ?>
-              <span
-                class="rounded-pill bg-warning text-dark fs-6 py-1 px-4"
-                <?= $margin_style ?>
-                >Auction</span
-              >
-              <?php endif; ?>
-            </div>
-
-            <div
-              class="position-relative card-img-top card-img-custom d-flex align-items-center justify-content-center bg-light text-muted"
-            >
-              <?php if (!empty($pictures)) : ?>
-              <div class="position-relative">
-                <img
-                  src="<?=  $pictures[0] ?>"
-                  class="card-img-top card-img-custom"
-                  alt="<?= htmlspecialchars($item->title) ?>"
-                />
-
-                <?php if (count($pictures) > 1) : ?>
-                <span
-                  class="badge bg-secondary position-absolute bottom-0 end-0 m-2"
-                >
-                  <?= count($pictures) ?> images
-                </span>
-                <?php endif; ?>
-              </div>
-              <?php endif; ?>
-            </div>
-
-            <div class="card-body d-flex flex-column">
-              <h1 class="card-title fw-bold fs-6 mt-1">
-                <?= htmlspecialchars($item->title) ?>
-              </h1>
-
-              <p class="text-muted">
-                <small>by <?= Item::itemUserName($item->owner) ?></small>
-              </p>
-
-              <div class="d-flex justify-content-between my-2">
-                <div class="d-flex flex-column">
-                  <span class="text-primary fw-bold">
-                    € <?= number_format($item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0, 2) ?>
-                  </span>
-                </div>
-
-                <?php if ($item->is_auction): ?>
-                <div class="d-flex flex-column align-items-end">
-                  <span class="text-muted fw-normal" style="font-size: 0.85rem">Current Bid</span>
-                  <span class="text-success fw-bold">
-                    € <?= number_format($item->has_bids ? $item->max_bid : $item->starting_bid ?? 0, 2) ?>
-                  </span>
-                </div>
-                <?php endif; ?>
-              </div>
-              <?php $current = (new DateTime(AppTime::get_current_datetime())); $dateInter = $current->diff(new DateTime($item->end_at)); ?>
-              <p class="text-info m-0">
-                <i class="bi bi-clock-history"></i>
-                <?= $dateInter->days . "d " . $dateInter->h . "h left" ?>
-              </p>
-            </div>
-          </a>
-        </div>
-        <?php endforeach; ?>
-        <?php endif; ?>
-      </div>
+<header class="bg-dark  border-bottom border-secondary sticky-top ">
+    <?php $place = "browse"; ?>
+    <div class="container d-flex justify-content-center align-items-center">
+        <h5 class="m-0 me-1 text-primary">Browse</h5>
+        <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
+</header>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+<div class="container py-5">
+
+    <!-- ================= PARTICIPATING ITEMS ================= -->
+    <?php if (!empty($itemsUser)) : ?>
+        <h4 class = "text-white">Items I'm Participating In</h4>
+
+        <div class="row g-4 mb-5">
+            <?php foreach ($itemsUser as $item) : ?>
+                <?php
+                    $pictures = $item->getPictures();
+                    $username = Item::itemUserName($item->owner);
+                ?>
+
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a href="Item/open/<?= $item->id ?>/from-<?= $place ?>"
+                       class="item-card d-block position-relative h-100">
+
+                        <!-- BADGES -->
+                        <div class="badge-container">
+                            <div>
+                                <?php if (!empty(Item::max_bidder($item->id))) : ?>
+                                    <?php if (Item::max_bidder($item->id) === 1) : ?>
+                                        <span class="badge badge-green">Highest Bidder</span>
+                                    <?php else : ?>
+                                        <span class="badge badge-dark">Bidder</span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <?php if ($item->is_auction) : ?>
+                                    <span class="badge badge-auction">Auction</span>
+                                <?php endif; ?>
+                                <?php if ($item->has_buy_now) : ?>
+                                    <span class="badge badge-buy">Buy Now</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- IMAGE -->
+                        <?php if (!empty($pictures)) : ?>
+                            <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->title) ?>">
+                        <?php endif; ?>
+
+                        <!-- BODY -->
+                        <div class="item-body">
+                            <div class="item-title"><?= htmlspecialchars($item->title) ?></div>
+                            <div class="item-author">by <?= $username ?></div>
+
+                            <div class="d-flex justify-content-between align-items-end mt-2">
+                                <div class="price">
+                                    € <?= number_format(
+                                        $item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0,
+                                        2
+                                    ) ?>
+                                </div>
+
+                                <?php if ($item->is_auction) : ?>
+                                    <div class="text-end">
+                                        <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
+                                        <div class="current-bid">
+                                            € <?= number_format(
+                                                $item->has_bids ? $item->max_bid : $item->starting_bid ?? 0,
+                                                2
+                                            ) ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php
+                                $current = new DateTime(AppTime::get_current_datetime());
+                                $diff = $current->diff(new DateTime($item->end_at));
+                              if ($diff->days > 0) :?> 
+                                <div class="time-left">
+                                  <i class="bi bi-clock-history"></i>
+                                  <?= "{$diff->days}d {$diff->h}h left"; ?>
+                                </div>
+                            <?php else :?>
+                                <div class="time-inf1day">
+                                  <i class="bi bi-clock-history"></i>
+                                  <?= "{$diff->h}h {$diff->i}min left"; ?>
+                                </div>
+                            <?php endif;?> 
+
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- ================= OTHER ITEMS ================= -->
+    <?php if (!empty($items)) : ?>
+        <h4 class = "text-white">Other Available Items</h4>
+
+        <div class="row g-4">
+            <?php foreach ($items as $item) : ?>
+                <?php
+                    $pictures = $item->getPictures();
+                    $username = Item::itemUserName($item->owner);
+                ?>
+
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a href="Item/open/<?= $item->id ?>/from-<?= $place ?>"
+                       class="item-card d-block position-relative h-100">
+
+                        <div class="badge-container justify-content-end">
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <?php if ($item->is_auction) : ?>
+                                    <span class="badge badge-auction">Auction</span>
+                                <?php endif; ?>
+                                <?php if ($item->has_buy_now) : ?>
+                                    <span class="badge badge-buy">Buy Now</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <?php if (!empty($pictures)) : ?>
+                            <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->title) ?>">
+                        <?php endif; ?>
+
+                        <div class="item-body">
+                            <div class="item-title"><?= htmlspecialchars($item->title) ?></div>
+                            <div class="item-author">by <?= $username ?></div>
+
+                            <div class="price mt-2">
+                                € <?= number_format(
+                                    $item->has_buy_now ? $item->buy_now_price : $item->starting_bid ?? 0,
+                                    2
+                                ) ?>
+                            </div>
+
+                            <?php
+                                $current = new DateTime(AppTime::get_current_datetime());
+                                $diff = $current->diff(new DateTime($item->end_at));
+                            if ($diff->days > 0) :?> 
+                                <div class="time-left">
+                                  <i class="bi bi-clock-history"></i>
+                                  <?= "{$diff->days}d {$diff->h}h left"; ?>
+                                </div>
+                            <?php else :?>
+                                <div class="time-inf1day">
+                                  <i class="bi bi-clock-history"></i>
+                                  <?= "{$diff->h}h {$diff->i}min left"; ?>
+                                </div>
+                            <?php endif;?> 
+                          
+                          
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+</body>
 </html>

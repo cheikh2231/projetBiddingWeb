@@ -73,7 +73,7 @@
                             <?php $numberPic = $i+1 ;
                                $isSelected = ($i === ($idImg > 0 ? $idImg - 1 : 0));
                             ?>
-                    
+                   
                             <a href = "item/open/<?=$item->id?>/<?=$source?>/<?=$numberPic ?> " >
                             
                                 <div class = "cas me-2 <?= $isSelected ? 'selected' : '' ?>" style="width: 150px;" >
@@ -84,9 +84,103 @@
                             </a>
                         <?php } ?>
                     </div>
-                <?php endif; ?>    
+                <?php endif; ?>
+                <style type="text/css">
+                .bid-panel-dark {
+                    background-color: #0b111a !important; /* Le noir bleuté profond de l'image */
+                    border-radius: 8px;
+                    padding: 20px;
+                    color: #ffffff !important;
+                    font-family: sans-serif;
+                    margin-top: 20px;
+                    border: 1px solid #1e293b;
+                }
+
+                .bid-header-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+
+                .bid-title-text {
+                    color: #94a3b8 !important; /* Gris bleuté pour le titre */
+                    font-size: 14px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+
+                .bid-badge {
+                    background-color: #ffffff !important;
+                    color: #000000 !important;
+                    padding: 2px 12px;
+                    border-radius: 15px;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+
+                .bid-row-item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 12px 0;
+                    border-bottom: 1px solid #1e293b;
+                }
+
+                .bid-row-item:last-child {
+                    border-bottom: none;
+                }
+
+                .bidder-name-text {
+                    color: #ffffff !important;
+                    font-weight: bold;
+                    font-size: 16px;
+                    margin-bottom: 4px;
+                }
+
+                .bid-date-text {
+                    color: #64748b !important;
+                    font-size: 13px;
+                }
+
+                .bid-price-green {
+                    color: #10b981 !important; /* Le vert émeraude vif de la photo */
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+            </style>
+
+            <div class="bid-panel-dark">
+                <div class="bid-header-row">
+                    <span class="bid-title-text">Bid History</span>
+                    <span class="bid-badge">3 entries</span>
+                </div>
+
+                <div class="bid-row-item">
+                    <div>
+                        <div class="bidder-name-text">Xavier</div>
+                        <div class="bid-date-text">16/11/2025 03:27:14</div>
+                    </div>
+                    <div class="bid-price-green">€ 162,00</div>
+                </div>
+
+                <div class="bid-row-item">
+                    <div>
+                        <div class="bidder-name-text">Quentin</div>
+                        <div class="bid-date-text">15/11/2025 01:30:10</div>
+                    </div>
+                    <div class="bid-price-green">€ 152,00</div>
+                </div>
+
+                <div class="bid-row-item">
+                    <div>
+                        <div class="bidder-name-text">Quentin</div>
+                        <div class="bid-date-text">14/11/2025 05:01:54</div>
+                    </div>
+                    <div class="bid-price-green">€ 140,00</div>
+                </div>
             </div>
-                    
+            </div>
             <div class="col-12 col-md-6 col-lg-5 ">
                 <div class="card mb-2" style="width: 20rem; border: 2px;">
                     <div class="card-body">
