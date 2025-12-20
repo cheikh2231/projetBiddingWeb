@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
+
+    <!-- La partie head -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,39 +13,54 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/LoginStyle.css">
 </head>
-<body class="d-flex justify-content-center align-items-center">
-    <h1 class="mb-4"><i class="bi bi-cart4"></i>EPayFC</h1>
-    <div class="logContainer text-center">
-        <h2 class="mb-4">Sign in</h2>
-        <hr>
-        <form action="dashboard.php" method="post">
-            <table class="d-flex justify-content-center align-items-center">
-                <tr>
-                <td><i class="bi bi-person"></i></td>
-                <td><input id="pseudo" name="pseudo" type="text" placeholder="Mail"></td>
-                </tr>
-                <tr>
-                <td><i class="bi bi-key"></i></td>
-                <td><input id="pseudo" name="pseudo" type="password"></td>
-                </tr>
-            </table>
-            
-            <div class="mb-3"><input type="submit" value="Login"></div>
-            <div class="mb-3"><input type="submit" value="Continue as guest"></div>
-        </form>
-        <a href ="">New here ? Click here to subscribe !</a>
-        <hr>
-        <h3 class="colorYellow">For Debug Purpose</h3>
-        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">boverhaegen@epfc.eu</a></b></div>
-        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">mamichel@epfc.eu</a></b></div>
-        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">quhouben@epfc.eu</a></b></div>
-        <div class="mb-3"><label>Login as&nbsp;</label><b><a href="" class="email">xapigeolet@epfc.eu</a></b></div>
-        <div class="mb-3"><a href="" class="colorYellow">Restore original data</a></div>
-        <div class="mb-3"><a href="" class="colorYellow">Backup personal data</a></div>
-        <div class="mb-3"><a href="" class="colorGreen">Restore personal data</a></div>
-    
 
+
+<!-- la partie body -->
+<body class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <!-- Titre EPayFc -->
+    <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i>EPayFC</h1>
+    <!-- Partie bloc de la page -->
+    <div class="logContainer text-center shadow-lg">
+        <h2 class="mb-3 fs-3">Sign in</h2>
+        <hr class="mb-4" style="border-color: #444; opacity: 1;">
+        <!-- Partie formulaire -->
+        <form action="login.php" method="post">
+            <div class="input-group mb-3">
+                <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
+                <input type="text" name="mail" class="form-control custom-input" placeholder="quhouben@epfc.eu" aria-label="Email">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
+                <input type="password" name="password" class="form-control custom-input" placeholder="........" aria-label="Password">
+            </div>
+            
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
+                <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
+            </div>
+        </form>
+        <div class="mb-3">
+            <a href="#" class="link-primary text-decoration-none small">New here ? Click here to subscribe !</a>
+        </div>
+
+        <div class="mt-4 pt-2 border-top border-secondary">
+            <h3 class="colorYellow fs-5 mb-3">For Debug Purpose</h3>
+            
+            <div class="d-flex flex-column gap-1 mb-3 small-text">
+                <div>Login as <a href="#" class="email fw-bold">boverhaegen@epfc.eu</a></div>
+                <div>Login as <a href="#" class="email fw-bold">mamichel@epfc.eu</a></div>
+                <div>Login as <a href="#" class="email fw-bold">quhouben@epfc.eu</a></div>
+                <div>Login as <a href="#" class="email fw-bold">xapigeolet@epfc.eu</a></div>
+            </div>
+
+            <div class="d-flex flex-column gap-1 small-text">
+                <a href="#" class="colorGreen fw-bold">Restore original data</a>
+                <a href="#" class="colorYellow fw-bold">Backup personal data</a>
+                <a href="#" class="colorYellow fw-bold">Restore personal data</a>
+            </div>
+        </div>
     </div>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
