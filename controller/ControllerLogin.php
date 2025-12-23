@@ -1,5 +1,6 @@
 <?php
 require_once "framework/Controller.php";
+require_once "model/User.php";
 
 class ControllerLogin extends Controller {
     public function index(): void {
@@ -13,7 +14,7 @@ class ControllerLogin extends Controller {
             $email = $_POST['email'];
             $password = $_POST['password'];
 
-            $errors = User::validate_login($email);
+            $errors = User::validate_login($email,$password);
             if(empty($errors)){
                 $this->log_user(User::getUserByEmail($email));
             }

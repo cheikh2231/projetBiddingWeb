@@ -1,4 +1,6 @@
 <?php
+    require_once "framework/Model.php";
+
     class User extends Model{
         //constructeur
         public function __construct(public string $name, public string $email, public string $pseudo, public string $password, public string $role, public ?string $picture_path, public ?string $iban)
@@ -8,7 +10,7 @@
         
         //méthode
         public static function getUserByPseudo(string $pseudo) : User|false{
-            $query = self::execute("SELECT * from user where user.pseudo = :pseudo", ["pseudo"=>$pseudo]);
+            $query = self::execute("SELECT * from users where users.pseudo = :pseudo", ["pseudo"=>$pseudo]);
             $data = $query->fetch();
             if($query->rowCount() ==0)
                 return false;
@@ -17,7 +19,7 @@
 
         }
         public static function getUserByEmail(string $email) : User|false{
-            $query = self::execute("SELECT * from user where user.email = :email", ["email"=>$email]);
+            $query = self::execute("SELECT * from users where users.email = :email", ["email"=>$email]);
             $data = $query->fetch();
             if($query->rowCount() ==0)
                 return false;
@@ -31,7 +33,7 @@
             $data = $query->fetchAll();
             $results = [];
             foreach ($data as $row) {
-                $results[] = new User($row["id"], $row["full_name"], $row["email"], $row["pseudo"],$row["password"],$row["role"],$row["picture_path"],$row["iban"]);
+                $results[] = new User($row["full_name"], $row["email"], $row["pseudo"],$row["password"],$row["role"],$row["picture_path"],$row["iban"]);
             }
             return $results;
         }
@@ -44,7 +46,7 @@
                     $errors[] = "Wrong password. Please try again.";
                 }
             } else {
-                $errors[] = "Can't find a member with the pseudo '$user'. Please sign up.";
+                $errors[] = "Can't find a member with the email '$email'. Please sign up.";
             }
             return $errors;
         }
