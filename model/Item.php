@@ -16,6 +16,7 @@ class Item extends Model{
         public bool $has_bids,
         public bool $has_buy_now,
         public string $end_at,
+        public bool $not_purchased_direct_sale,
         public ?float $max_bid = null,
         public ?float $buy_now_price=null,
         public ?int $duration_days=null,
@@ -101,7 +102,7 @@ public static function getActiveItems(int $user_id) : array {
     foreach ($res as $i) {
         $items[] = new Item(
              $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],$i["not_purchased_direct_sale"],
              $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
@@ -135,7 +136,7 @@ public static function getUserActiveItems(int $user_id) : array {
     foreach ($res as $i) {
         $items[] = new Item(
              $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],
+             $i["is_auction"], $i["has_bids"], $i["has_buy_now"],  $i["end_at"],$i["not_purchased_direct_sale"],
              $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
         );
     }
@@ -194,6 +195,7 @@ public static function getUserActiveItems(int $user_id) : array {
             $i["has_bids"],
             $i["has_buy_now"],
             $i["end_at"],
+            $i["not_purchased_direct_sale"],
             $i["max_bid"],
             $i["buy_now_price"],
             $i["duration_days"],
@@ -221,4 +223,9 @@ public static function getUserActiveItems(int $user_id) : array {
 
         return $pic;
     }
+
+    public function buy(): bool {
+     $sql = "UPDATE v_items_status  SET not_purchased_direct_sale = 1 WHERE id = :id";
+    return self::execute($sql, ['id' => $this->id]) !== false;
+   }
 }

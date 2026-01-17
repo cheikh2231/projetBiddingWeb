@@ -25,7 +25,30 @@
                 return new User($data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
 
         }
-        
+
+        public static function getUserById(int $id): User|false {
+            $query = self::execute(
+                "SELECT * FROM users WHERE users.id = :id",
+                ["id" => $id]
+            );
+
+            if ($query->rowCount() == 0) {
+                return false;
+            }
+
+            $data = $query->fetch(); 
+            return new User(
+                $data["full_name"],
+                $data["email"],
+                $data["pseudo"],
+                $data["password"],
+                $data["role"],
+                $data["picture_path"],
+                $data["iban"]
+            );
+        }
+
+                
         public static function getAllUsers() : array {
             $query = self::execute("SELECT * FROM Users", []);
             $data = $query->fetchAll();
