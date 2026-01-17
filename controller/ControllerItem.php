@@ -2,6 +2,7 @@
 require_once "framework/Controller.php";
 require_once 'model/Item.php';
 require_once 'model/Bids.php';
+require_once 'model/User.php';
 
 class ControllerItem extends Controller {
     public function browse(): void {
@@ -47,5 +48,14 @@ class ControllerItem extends Controller {
                 "success_message" => "" 
             ]);
         }
+    }
+
+    public function list(): void {
+        $user = User::getUserById(1);
+        $itemsUser=$user->myItemsAtives();
+        $UnsoldItemsUser=$user->getUnsoldItems();
+        $SoldItemsUser=$user->getsoldItems();
+        (new View("myItems"))->show(["itemsUser"=>$itemsUser,"unsold"=>$UnsoldItemsUser,"sold"=>$SoldItemsUser]);
+        
     }
 }

@@ -41,8 +41,8 @@
 
                         <div class="badge-container">
                             <div>
-                                <?php if (!empty(Item::max_bidder($item->id))) : ?>
-                                    <?php if (Item::max_bidder($item->id) === 1) : ?>
+                                <?php if ($item->max_bidder() != null) : ?>
+                                    <?php if ($item->max_bidder() === 1) : ?>
                                         <span class="badge badge-green">Highest Bidder</span>
                                     <?php else : ?>
                                         <span class="badge badge-dark">Bidder</span>
@@ -176,7 +176,7 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-
+    
 </div>
 
 </body>

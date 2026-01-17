@@ -2,11 +2,13 @@
 require_once 'model/Bids.php';
 require_once 'model/User.php';
 
-// Note: Assurez-vous que $currentUser est défini (ex: via la session) pour la comparaison
+
 $currentUser = 1; 
 $isOwner = $currentUser === (int)$item->owner;
-?>
+$bids = Bids::getBids($item->id);
 
+$isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === $currentUser;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +24,10 @@ $isOwner = $currentUser === (int)$item->owner;
 <body data-bs-theme="dark" class="bg-primary-subtle">
 
 <header class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top">
-    <a href="Item/browse">
+    <?php 
+        $backRoute = (strpos($source, 'items') !== false) ? "item/list" : "item/browse";
+    ?>
+    <a href="<?= $backRoute ?>">
         <i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i>
     </a>
     <h5 class="m-0 me-2 text-primary">Item open</h5>
@@ -96,7 +101,7 @@ $isOwner = $currentUser === (int)$item->owner;
                         <?php if ($item->is_auction): ?>
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Current Bid</span>
-                                <span class="text-success fw-bold">€ <?= number_format($item->has_bids ? $item->max_bid : $item->starting_bid, 2) ?></span>
+                                <span class="text-success fw-bold">€ <?= number_format($item->max_bid ?? $item->starting_bid, 2) ?></span>
                             </div>
                         <?php endif; ?>
 
@@ -110,15 +115,17 @@ $isOwner = $currentUser === (int)$item->owner;
 
                     <hr class="my-3 border-secondary opacity-50">
 
-                    
-                    <?php if ($isOwner): ?>
+                    <?php if ($isWinner): ?>
+                        <div class="alert alert-success bg-transparent border-0 text-center p-0 mb-0">
+                            <p class="mb-0 fw-bold text-success">Congratulations! You purchased this item for € <?= number_format($item->buy_now_price, 2) ?>.</p>
+                        </div>
+                    <?php elseif ($isOwner): ?>
                         <div class="d-grid gap-2">
                             <button class="btn btn-lg btn-success fs-5 opacity-50 fw-bold" disabled>
                                 <i class="bi bi-cart4 me-2"></i>Buy now
                             </button>
                             <small class="text-center text-muted" style="font-size: 0.75rem;">You cannot bid on your own listing.</small>
                         </div>
-
                     <?php else: ?>
                         <form method="post" action="item/open/<?= $item->id ?>/<?= $source ?>">
                             <?php if ($item->is_auction): ?>
