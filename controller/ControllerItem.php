@@ -58,4 +58,74 @@ class ControllerItem extends Controller {
         (new View("myItems"))->show(["itemsUser"=>$itemsUser,"unsold"=>$UnsoldItemsUser,"sold"=>$SoldItemsUser]);
         
     }
+
+    public function delete(): void {
+    if (isset($_GET["param1"])){
+         $id = $_GET['param1'];
+         $item = Item::getItemWithId($id);
+          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (isset($_POST['delete'])) {
+                    if ($item->delete()) {
+                        $this->redirect("item", "list");
+                        return; 
+                    }             
+               }
+            }
+         (new View("deleteItems"))->show([
+                "item" => $item
+            ]);
+    }
+        
+    }
+    
+public function edit() : void {
+    $errors = [];
+    $source = "items";
+
+    if (!isset($_GET['param1'])) {
+        $this->redirect("item","index");
+        return;
+    }
+
+    $id = $_GET['param1'];
+    $item = Item::getItemWithId($id);
+
+    if (!$item) {
+        $this->redirect("item","index");
+        return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        $item->title = trim($_POST['title'] ?? '');
+        $item->description = trim($_POST['description'] ?? '');
+        $item->duration_days = (int)$_POST['duration'];
+
+
+        $errors['title'] = Item::validateTitle($item->title);
+        $errors['description'] = Item::validateDescription($item->description);
+        $errors['duration']  = Item::validateDuration($item->duration_days);
+
+
+        $errors = array_filter($errors);
+
+        if (empty($errors)) {
+            $item->update();
+            $this->redirect("item", "open", $item->id, "from-$source");
+            return;
+        }
+    }
+
+
+    (new View('add_editItem'))->show([ 
+        "item" => $item, 
+        "errors" => $errors, 
+        "source" => $source 
+    ]);
+}
+    public function add() : void {
+        
+    }
+
+
 }

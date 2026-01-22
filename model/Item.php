@@ -39,17 +39,29 @@ class Item extends Model {
         return $errors;
     }
 
-    private function validateTitle(String $title) : array{
+    public static function validateTitle(String $title) : array{
         $errors = [];
         if(empty($title)){
             $errors[]="Title is requiered";
-        }elseif (strlen($title) < 3 || strlen($title) > 255) {
+        }
+        if (strlen($title) < 3 || strlen($title) > 255) {
             $errors[] = "Title length must be between 3 and 255 characters.";
         }
         return $errors;
     }
 
-    private function validateDescription(String $description) : array{
+    public static function validateDuration($duration) : array {
+    $errors = [];
+
+        $d = (int)$duration;
+        if ($d < 1 || $d > 365) {
+            $errors[] = "Duration must be between 1 and 365 days.";
+        }
+
+    return $errors;
+}
+
+    public static function validateDescription(String $description) : array{
         $errors = [];
         if(strlen($description)<3){
             $errors[]="Description must be greater than 3";
@@ -174,7 +186,7 @@ class Item extends Model {
             $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"],
             $i["is_auction"], $i["has_bids"], $i["has_buy_now"], $i["end_at"],
             $i["not_purchased_direct_sale"], $i["max_bid"], $i["buy_now_price"],
-            $i["duration_days"], $i["starting_bid"], $i["buy_now_reached"] // Ajouté ici
+            $i["duration_days"], $i["starting_bid"], $i["buy_now_reached"] 
         );   
     }
 
@@ -210,4 +222,57 @@ class Item extends Model {
 
         return false;
     }
+
+    public function delete() : bool {
+        try {
+            self::execute("DELETE FROM bids WHERE item = ?", array($this->id));
+            self::execute("DELETE FROM item_pictures WHERE item = ?", array($this->id));
+
+           
+            $res = self::execute("DELETE FROM items WHERE id = ?", array($this->id));
+
+        
+            return $res !== false;
+
+        } catch (Exception $e) {
+            
+            return false;
+        }
+    }
+
+    public function update() : bool {
+       try {
+            $sql = "
+                    UPDATE items
+                    SET title = ?,
+                        description = ?,
+                        duration_days = ?
+                    WHERE id = ?
+                ";
+            $res = self::execute($sql, array($this->title,$this->description,$this->duration_days,$this->id));
+
+        
+            return $res !== false;
+
+        } catch (Exception $e) {
+            
+            return false;
+        }
+
+
+
+}
+
+    public function isClosed() : bool {
+
+        $endDate = ($this->end_at);
+         $now = AppTime::get_current_datetime();
+
+        $timeElapsed = $now > $endDate;
+
+        $isSold = (bool)$this->buy_now_reached;
+
+        return $timeElapsed || $isSold;
+    }
+
 }

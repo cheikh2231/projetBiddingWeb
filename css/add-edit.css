@@ -1,0 +1,77 @@
+body {
+    background: linear-gradient(180deg, #0b1324, #0e1a33);
+    color: #f9f4f4;
+}
+
+.navbar-custom {
+    background-color: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 10px 20px;
+}
+
+.card-custom {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background-color: #21262d;
+    border-bottom: 1px solid #30363d;
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Style des inputs */
+.form-control, .form-select {
+    background-color: #0d1117;
+    border: 1px solid #30363d;
+    color: #ffffff;
+}
+
+.form-control:focus {
+    background-color: #0d1117;
+    border-color: #58a6ff;
+    color: #ffffff;
+    box-shadow: none;
+}
+
+.form-control::placeholder {
+    color: #484f58;
+}
+
+.input-group-text {
+    background-color: #21262d;
+    border: 1px solid #30363d;
+    color: #8b949e;
+}
+
+/* Sections spécifiques (Auction / Direct Sale) */
+.sale-option-auction {
+    border: 1px solid #1f6feb !important; /* Bordure bleue */
+    background-color: #0d1117;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.sale-option-direct {
+    border: 1px solid #238636 !important; /* Bordure verte */
+    background-color: #0d1117;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+label {
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.text-optional {
+    color: #8b949e;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
