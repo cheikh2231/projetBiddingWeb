@@ -97,14 +97,10 @@ class User extends Model {
         return $items;
     }
 
-/**
-     * Récupère les annonces de l'utilisateur qui sont clôturées SANS avoir été vendues.
-     */
+
     public function getUnsoldItems() : array {
         $now = AppTime::get_current_datetime();
-        
-        // On récupère les items de l'utilisateur qui sont terminés (temps écoulé)
-        // et qui n'ont pas été vendus par achat immédiat.
+
         $sql = "SELECT * FROM v_items_status 
                 WHERE owner = :user_id 
                 AND end_at < :now 
@@ -121,7 +117,7 @@ class User extends Model {
                 $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
             );
             
-            // Un item est invendu s'il est terminé ET que isSold() est faux
+            
             if (!$item->isSold()) {
                 $unsold[] = $item;
             }
