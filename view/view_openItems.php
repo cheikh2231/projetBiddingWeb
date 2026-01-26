@@ -2,19 +2,20 @@
 require_once 'model/Bids.php';
 require_once 'model/User.php';
 
-
 $currentUser = 1; 
-$isOwner = $currentUser === (int)$item->owner;
-$bids = Bids::getBids($item->id);
+// Utilisation du getter getOwner()
+$isOwner = $currentUser === (int)$item->getOwner();
+$bids = Bids::getBids($item->getId());
 
-$isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === $currentUser;
+// Utilisation de getBuyNowReached()
+$isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner === $currentUser;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($item->title) ?></title>
+    <title><?= htmlspecialchars($item->getTitle()) ?></title>
     <base href="<?= $web_root ?>"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
@@ -27,7 +28,7 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
     <?php 
         $backRoute = (strpos($source, 'items') !== false) ? "item/list" : "item/browse";
     ?>
-    <a href=<?= $backRoute ?>>
+    <a href="<?= $backRoute ?>">
         <i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i>
     </a>
     <h5 class="m-0 me-2 text-primary">Item open</h5>
@@ -42,15 +43,15 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                 <div class="ratio ratio-16x9">
                     <?php $pic = $item->getPictures(); ?>
                     <?php if (!empty($pic)) : ?>
-                        <img src="<?= $web_root . $pic[$idImg > 0 ? $idImg - 1 : 0] ?>" class="card-img-top" alt="<?= htmlspecialchars($item->title) ?>"/>
+                        <img src="<?= $web_root . $pic[$idImg > 0 ? $idImg - 1 : 0] ?>" class="card-img-top" alt="<?= htmlspecialchars($item->getTitle()) ?>"/>
                     <?php endif; ?>
                 </div>
                 <div class="info-item p-2">
-                    <div class="title mt-1 fw-bold"><?= htmlspecialchars($item->title) ?></div>
-                    <p class="text-muted"><small><?= htmlspecialchars($item->description) ?></small></p>
+                    <div class="title mt-1 fw-bold"><?= htmlspecialchars($item->getTitle()) ?></div>
+                    <p class="text-muted"><small><?= htmlspecialchars($item->getDescription()) ?></small></p>
                     <p class="text-muted">
-                        <small>Start: <?= $item->created_at ?></small><br>
-                        <small>Ends: <?= $item->end_at ?></small>
+                        <small>Start: <?= $item->getCreatedAt() ?></small><br>
+                        <small>Ends: <?= $item->getEndAt() ?></small>
                     </p>
                 </div>
             </div>
@@ -60,7 +61,7 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                     <?php for ($i = 0; $i < count($pic); $i++) : 
                         $isSelected = ($i === ($idImg > 0 ? $idImg - 1 : 0));
                     ?>
-                        <a href="item/open/<?= $item->id ?>/<?= $source ?>/<?= $i + 1 ?>">
+                        <a href="item/open/<?= $item->getId() ?>/<?= $source ?>/<?= $i + 1 ?>">
                             <div class="cas me-2 <?= $isSelected ? 'border border-primary border-2' : '' ?>" style="width:80px;">
                                 <img src="<?= $pic[$i] ?>" class="img-thumbnail">
                             </div>
@@ -69,7 +70,6 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                 </div>
             <?php endif; ?>
 
-            <?php $bids = Bids::getBids($item->id); ?>
             <div class="bid-panel-dark mt-3 p-3 bg-dark rounded border border-secondary">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="fw-bold">Bid History</span>
@@ -98,52 +98,52 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                     <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Pricing</small>
                     
                     <div class="mt-2">
-                        <?php if ($item->is_auction): ?>
+                        <?php if ($item->getIsAuction()): ?>
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Current Bid</span>
-                                <span class="text-success fw-bold">€ <?= number_format($item->max_bid ?? $item->starting_bid, 2) ?></span>
+                                <span class="text-success fw-bold">€ <?= number_format($item->getMaxBid() ?? $item->getStartingBid(), 2) ?></span>
                             </div>
                         <?php endif; ?>
 
-                        <?php if ($item->has_buy_now): ?>
+                        <?php if ($item->getHasBuyNow()): ?>
                             <div class="d-flex justify-content-between">
-                                <span><?= $item->is_auction ? 'Buy Now' : 'Price' ?></span>
-                                <span class="fw-bold text-white">€ <?= number_format($item->buy_now_price, 2) ?></span>
+                                <span><?= $item->getIsAuction() ? 'Buy Now' : 'Price' ?></span>
+                                <span class="fw-bold text-white">€ <?= number_format($item->getBuyNowPrice(), 2) ?></span>
                             </div>
                         <?php endif; ?>
                     </div>
 
                     <hr class="my-3 border-secondary opacity-50">
 
-                        <?php if ($isWinner): ?>
-                            <div class="alert alert-success bg-transparent border-0 text-center p-0 mb-0">
-                                <p class="mb-0 fw-bold text-success">Congratulations! You purchased this item for € <?= number_format($item->buy_now_price, 2) ?>.</p>
-                            </div>
+                    <?php if ($isWinner): ?>
+                        <div class="alert alert-success bg-transparent border-0 text-center p-0 mb-0">
+                            <p class="mb-0 fw-bold text-success">Congratulations! You purchased this item for € <?= number_format($item->getBuyNowPrice(), 2) ?>.</p>
+                        </div>
 
-                        <?php elseif ($isOwner): ?>
-                            <div class="d-grid gap-2">
-                                <?php if ($item->is_auction): 
-                                    $current = $item->has_bids ? $item->max_bid : $item->starting_bid; ?>
-                                    <div class="input-group mb-0">
-                                        <span class="input-group-text bg-secondary border-secondary text-white">€</span>
-                                        <input type="number" class="form-control bg-dark text-white border-secondary" value="<?= $current ?>" readonly>
-                                    </div>
-                                    <button class="btn btn-lg btn-success fs-5 opacity-50 fw-bold" disabled>Place Bid</button>
-                                <?php endif; ?>
+                    <?php elseif ($isOwner): ?>
+                        <div class="d-grid gap-2">
+                            <?php if ($item->getIsAuction()): 
+                                $current = $item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid(); ?>
+                                <div class="input-group mb-0">
+                                    <span class="input-group-text bg-secondary border-secondary text-white">€</span>
+                                    <input type="number" class="form-control bg-dark text-white border-secondary" value="<?= $current ?>" readonly>
+                                </div>
+                                <button class="btn btn-lg btn-success fs-5 opacity-50 fw-bold" disabled>Place Bid</button>
+                            <?php endif; ?>
 
-                                <?php if ($item->has_buy_now): ?>
-                                    <button class="btn btn-lg btn-success fs-5 opacity-50 fw-bold" disabled>
-                                        <?= !$item->is_auction ? '<i class="bi bi-cart4 me-2"></i>' : '' ?>Buy now
-                                    </button>
-                                <?php endif; ?>
+                            <?php if ($item->getHasBuyNow()): ?>
+                                <button class="btn btn-lg btn-success fs-5 opacity-50 fw-bold" disabled>
+                                    <?= !$item->getIsDirectSale() ? '<i class="bi bi-cart4 me-2"></i>' : '' ?>Buy now
+                                </button>
+                            <?php endif; ?>
 
-                                <small class="text-center text-muted" style="font-size: 0.75rem;">You cannot bid on your own listing.</small>
-                            </div>
+                            <small class="text-center text-muted" style="font-size: 0.75rem;">You cannot bid on your own listing.</small>
+                        </div>
                                              
-                        <?php else: ?>
-                        <form method="post" action="item/open/<?= $item->id ?>/<?= $source ?>">
-                            <?php if ($item->is_auction): ?>
-                                <?php $minBid = ($item->has_bids ? $item->max_bid : $item->starting_bid) + 1; ?>
+                    <?php else: ?>
+                        <form method="post" action="item/open/<?= $item->getId() ?>/<?= $source ?>">
+                            <?php if ($item->getIsAuction()): ?>
+                                <?php $minBid = ($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid()) + 1; ?>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-secondary border-secondary text-white">€</span>
                                     <input type="number" name="amount" class="form-control bg-dark text-white border-secondary" min="<?= $minBid ?>" value="<?= $minBid ?>" required>
@@ -153,10 +153,10 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                                 </div>
                             <?php endif; ?>
 
-                            <?php if ($item->has_buy_now): ?>
+                            <?php if ($item->getHasBuyNow()): ?>
                                 <div class="d-grid">
-                                    <button type="submit" name="buy_now" value="1" class="btn <?= $item->is_auction ? 'btn-outline-primary border-2' : 'btn-lg btn-success fw-bold' ?>">
-                                        <i class="bi bi-cart4 me-2"></i>Buy Now <?= $item->is_auction ? "at € " . number_format($item->buy_now_price, 2) : "" ?>
+                                    <button type="submit" name="buy_now" value="1" class="btn <?= $item->getIsAuction() ? 'btn-outline-primary border-2' : 'btn-lg btn-success fw-bold' ?>">
+                                        <i class="bi bi-cart4 me-2"></i>Buy Now <?= $item->getIsAuction() ? "at € " . number_format($item->getBuyNowPrice(), 2) : "" ?>
                                     </button>
                                 </div>
                             <?php endif; ?>
@@ -169,56 +169,52 @@ $isWinner = $item->buy_now_reached && !empty($bids) && (int)$bids[0]->owner === 
                 <div class="card-body">
                     <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Seller Information</small>
                     <div class="d-flex align-items-center mt-2">
-                        <?php $userPic = Item::getUserPic($item->owner); ?>
+                        <?php $userPic = Item::getUserPic($item->getOwner()); ?>
                         <?php if ($userPic) : ?>
                             <img src="<?= $userPic ?>" class="rounded-circle me-3" style="width:3rem;height:3rem; object-fit: cover;">
                         <?php else : ?>
                             <i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>
                         <?php endif; ?>
                         <div>
-                            <div class="fw-bold text-light"><?= htmlspecialchars(Item::itemUserName($item->owner)) ?></div>
+                            <div class="fw-bold text-light"><?= htmlspecialchars(Item::itemUserName($item->getOwner())) ?></div>
                             <div class="text-muted small">
-                                <?= Item::getUserRole($item->owner) === "user" ? "Member" : "Admin" ?>
+                                <?= Item::getUserRole($item->getOwner()) === "user" ? "Member" : "Admin" ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-          <?php if ($isOwner) : ?>
-              <?php if (!$item->isClosed() && !$item->has_bids): ?>
-    <div class="card w-100 bg-dark">
-        
-        <div class="card-body">
-          
-            <small class="text-muted fw-bold" style="font-size: 0.9rem;">Manage Your Item</small>
-
             
-                <div class="d-grid gap-2 mt-3">
-                    <a href="item/edit/<?= $item->id ?>" class="btn btn-outline-light d-flex align-items-center justify-content-center py-2">
-                        <i class="bi bi-pencil me-2"></i> Edit Item Details
-                    </a>
-                    <a href="manage_images.php?id=<?= $item->id ?>" class="btn btn-outline-info d-flex align-items-center justify-content-center py-2">
-                        <i class="bi bi-image me-2"></i> Manage Images
-                    </a>
-                    <a href="item/delete/<?= $item->id ?>" class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2">
-                        <i class="bi bi-trash me-2"></i> Delete Item
-                    </a>
-                </div>
-        </div>
-     </div> 
-        <?php elseif ($item->isClosed()) : ?> 
-            <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                This item cannot be edited or deleted because it is closed.
-            </div>
-
-        <?php else : ?>
-            <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                This item cannot be edited or deleted because it already has active bids.
-            </div>
-        <?php endif; ?>
-     <?php endif; ?>
+            <?php if ($isOwner) : ?>
+                <?php if (!$item->isClosed() && !$item->getHasBids()): ?>
+                    <div class="card w-100 bg-dark">
+                        <div class="card-body">
+                            <small class="text-muted fw-bold" style="font-size: 0.9rem;">Manage Your Item</small>
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="item/edit/<?= $item->getId() ?>" class="btn btn-outline-light d-flex align-items-center justify-content-center py-2">
+                                    <i class="bi bi-pencil me-2"></i> Edit Item Details
+                                </a>
+                                <a href="manage_images.php?id=<?= $item->getId() ?>" class="btn btn-outline-info d-flex align-items-center justify-content-center py-2">
+                                    <i class="bi bi-image me-2"></i> Manage Images
+                                </a>
+                                <a href="item/delete/<?= $item->getId() ?>" class="btn btn-outline-danger d-flex align-items-center justify-content-center py-2">
+                                    <i class="bi bi-trash me-2"></i> Delete Item
+                                </a>
+                            </div>
+                        </div>
+                    </div> 
+                <?php elseif ($item->isClosed()) : ?> 
+                    <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        This item cannot be edited or deleted because it is closed.
+                    </div>
+                <?php else : ?>
+                    <div class="alert alert-warning mt-3 mb-0" style="font-size: 0.85rem;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        This item cannot be edited or deleted because it already has active bids.
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
         </div> 
     </div> 
 </div> 

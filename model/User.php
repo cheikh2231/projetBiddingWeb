@@ -87,11 +87,11 @@ class User extends Model {
 
         $res = $query->fetchAll();
         $items = [];
-        foreach ($res as $i) {
+        foreach ($res as $row) {
             $items[] = new Item(
-                $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-                $i["is_auction"], $i["has_bids"], $i["has_buy_now"], $i["end_at"], $i["not_purchased_direct_sale"],
-                $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
+              $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],$row["is_direct_sale"],
+                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
             );
         }
         return $items;
@@ -114,7 +114,7 @@ class User extends Model {
         foreach ($data as $row) {
             $item = new Item(
                 $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
-                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],$row["is_direct_sale"],
                 $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
             );
 
@@ -138,7 +138,7 @@ class User extends Model {
         foreach ($data as $row) {
             $item = new Item(
                 $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
-                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],$row["is_direct_sale"],
                 $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
             );
             
