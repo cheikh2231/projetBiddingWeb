@@ -3,11 +3,10 @@ require_once 'model/Bids.php';
 require_once 'model/User.php';
 
 $currentUser = 1; 
-// Utilisation du getter getOwner()
+
 $isOwner = $currentUser === (int)$item->getOwner();
 $bids = Bids::getBids($item->getId());
 
-// Utilisation de getBuyNowReached()
 $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner === $currentUser;
 ?>
 <!DOCTYPE html>
@@ -79,7 +78,7 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner =
                     <?php foreach ($bids as $bid) : $u = User::getUserById($bid->owner); ?>
                         <div class="d-flex justify-content-between align-items-center border-bottom border-secondary py-2">
                             <div>
-                                <div class="fw-bold text-light small"><?= $u ? htmlspecialchars($u->pseudo) : "Unknown" ?></div>
+                                <div class="fw-bold text-light small"><?= $u ? htmlspecialchars($u->getPseudo()) : "Unknown" ?></div>
                                 <div class="text-muted" style="font-size: 0.75rem;"><?= htmlspecialchars($bid->created_at) ?></div>
                             </div>
                             <div class="text-success fw-bold">€ <?= number_format($bid->amount, 2) ?></div>

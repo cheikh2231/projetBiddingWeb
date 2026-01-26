@@ -21,19 +21,19 @@ class ControllerItem extends Controller {
             $source = $_GET['param2'] ?? "browse";
             $idImg = $_GET["param3"] ?? 0;
             $item = Item::getItemWithId($id);
-        
+            $user = User::getUserById(1);
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($_POST['buy_now'])) {
                     
-                    if ($item->buy()) {
+                    if ($user->buyItem($item)) {
                         $this->redirect("item", "open", $id, $source, $idImg);
                         return; 
                     }
                 }
-
                 if (isset($_POST['amount'])) {
                     $amount = floatval($_POST['amount']);
-                    $user = 1; 
+                   
                     $newBid = new Bids($user, $id, date('Y-m-d H:i:s'), $amount);
                     $newBid->add();
                 
