@@ -1,5 +1,6 @@
 <?php
-
+require_once "framework/Model.php";
+require_once "utils/AppTime.php";
 class User extends Model {
     
     private int $id;
