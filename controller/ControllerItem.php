@@ -7,7 +7,7 @@ class ControllerItem extends Controller {
     
     public function browse(): void {
        
-        $currentUser = User::getUserById(1);
+        $currentUser = $this->get_user_or_false();
         $itemsUser = [];
         if ($currentUser) {
             $itemsUser = Item::getUserActiveItems($currentUser->getId());
@@ -19,7 +19,9 @@ class ControllerItem extends Controller {
         (new View("item"))->show([
             "itemsUser" => $itemsUser, 
             "items" => $items,
-            "isGuest" => ($currentUser === false)
+            "isGuest" => ($currentUser === false),
+        
+            "currentUser" => $currentUser
         ]);
     }
 
@@ -28,54 +30,57 @@ class ControllerItem extends Controller {
     }
 
     public function open(): void {
-        if (!isset($_GET["param1"]) || $_GET["param1"] === "") {
-            $this->redirect("item", "browse"); 
+        $id = $_GET['param1'] ?? "";
+        if ($id === "") {
+            $this->redirect("item", "browse");
             return;
-        }else {
-            $id = $_GET['param1'];
-            $source = $_GET['param2'] ?? "browse";
-            $idImg = $_GET["param3"] ?? 0;
-            $item = Item::getItemWithId($id);
-            $user = User::getUserById(1);
+        }
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (isset($_POST['buy_now'])) {
-                    
-                    if ($user->buyItem($item)) {
-                        $this->redirect("item", "open", $id, $source, $idImg);
-                        return; 
-                    }
-                }
-                if (isset($_POST['amount'])) {
-                    $amount = floatval($_POST['amount']);
-                   
-                    $newBid = new Bids($user->getId(), $id, date('Y-m-d H:i:s'), $amount);
-                    $newBid->add();
-                
+        $source = $_GET['param2'] ?? "browse";
+        $idImg = $_GET["param3"] ?? 0;
+        $item = Item::getItemWithId($id);
+        $currentUser = $this->get_user_or_false();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+           
+            if (!$currentUser) {
+                $this->redirect("login", "index");
+                return;
+            }
+
+            if (isset($_POST['buy_now'])) {
+                if ($currentUser->buyItem($item)) {
                     $this->redirect("item", "open", $id, $source, $idImg);
-                    return;
+                    return; 
                 }
             }
 
-            $item = Item::getItemWithId($id);
-            (new View("openItems"))->show([
-                "item" => $item, 
-                "source" => $source, 
-                "idImg" => $idImg,
-                "success_message" => "" 
-            ]);
+            if (isset($_POST['amount'])) {
+                $amount = floatval($_POST['amount']);
+                $newBid = new Bids($currentUser->getId(), $id, date('Y-m-d H:i:s'), $amount);
+                $newBid->add();
+                $this->redirect("item", "open", $id, $source, $idImg);
+                return;
+            }
         }
-    }
 
+        (new View("openItems"))->show([
+            "item" => $item, 
+            "source" => $source, 
+            "idImg" => $idImg,
+            "currentUser" => $currentUser,
+            "success_message" => "" 
+        ]);
+    }
     public function list(): void {
-        $user = User::getUserById(1);
+        $user = $this->get_user_or_redirect();
         $itemsUser = $user->myItemsAtives();
-        $UnsoldItemsUser = $user->getUnsoldItems();
-        $SoldItemsUser = $user->getsoldItems();
+        $unsold = $user->getUnsoldItems();
+        $sold = $user->getsoldItems();
         (new View("myItems"))->show([
             "itemsUser" => $itemsUser,
-            "unsold" => $UnsoldItemsUser,
-            "sold" => $SoldItemsUser
+            "unsold" => $unsold,
+            "sold" => $sold
         ]);
     }
 
@@ -111,7 +116,8 @@ class ControllerItem extends Controller {
 
         $item = Item::getItemWithId($_GET['param1']);
 
-   
+ 
+
     if ($item==null) {
         $this->redirect("item", "index"); 
         return;
@@ -177,7 +183,7 @@ class ControllerItem extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $now = AppTime::get_current_datetime();
-            $user = User::getUserById(1);
+            $user = $this->get_user_or_redirect();
             
             $title = trim($_POST['title'] ?? '');
             $description = trim($_POST['description'] ?? '');

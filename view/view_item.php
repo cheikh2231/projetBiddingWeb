@@ -11,13 +11,19 @@
 </head>
 
 <body>
-
+ <a href="login/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+        <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+    </a>
 <header class="bg-dark border-bottom border-secondary sticky-top ">
     <?php $place = "browse"; ?>
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Browse</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
+    <div class="p-3">
+   
+</div>
+
 </header>
 
 <div class="container py-5">
@@ -39,7 +45,7 @@
                         <div class="badge-container">
                             <div>
                                 <?php if ($item->max_bidder() != null) : ?>
-                                    <?php if ($item->max_bidder() === 1) : ?>
+                                    <?php if ($item->max_bidder() === $currentUser->getId()) : ?>
                                         <span class="badge badge-green">Highest Bidder</span>
                                     <?php else : ?>
                                         <span class="badge badge-dark">Bidder</span>

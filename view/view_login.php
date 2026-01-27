@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="<?= $web_root ?>css/LoginStyle.css">
 </head>
+
 <body class="d-flex flex-column justify-content-center align-items-center vh-100">
     <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i> EPayFC</h1>
     
