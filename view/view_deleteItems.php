@@ -21,7 +21,7 @@
             
             <p class="card-text mb-4">
                 Do you really want to delete item <strong>"<?= htmlspecialchars($item->getTitle()) ?>"</strong> 
-                by <?= User::getUserById($item->getOwner())->pseudo ?> and all of its dependencies?
+                by <?= User::getUserById($item->getOwner())->getPseudo() ?> and all of its dependencies?
                 <br><br>
                 <span class="text-secondary">This process cannot be undone.</span>
             </p>

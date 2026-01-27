@@ -43,6 +43,8 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner =
                     <?php $pic = $item->getPictures(); ?>
                     <?php if (!empty($pic)) : ?>
                         <img src="<?= $web_root . $pic[$idImg > 0 ? $idImg - 1 : 0] ?>" class="card-img-top" alt="<?= htmlspecialchars($item->getTitle()) ?>"/>
+                    <?php else:?>
+                         <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg" class="card-img-top" alt=""/>
                     <?php endif; ?>
                 </div>
                 <div class="info-item p-2">
@@ -68,14 +70,15 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner =
                     <?php endfor; ?>
                 </div>
             <?php endif; ?>
+            <?php if(!empty($bids)) : ?>
 
             <div class="bid-panel-dark mt-3 p-3 bg-dark rounded border border-secondary">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="fw-bold">Bid History</span>
-                    <span class="badge bg-secondary"><?= !empty($bids) ? count($bids) : 0 ?> entries</span>
-                </div>
-                <?php if(!empty($bids)) : ?>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold"><?= !$item->getIsDirectSale() ? "Bid":" Purchase"?> History</span>
+                        <span class="badge bg-secondary"><?= !empty($bids) ? count($bids) : 0 ?> entries</span>
+                    </div>
                     <?php foreach ($bids as $bid) : $u = User::getUserById($bid->owner); ?>
+
                         <div class="d-flex justify-content-between align-items-center border-bottom border-secondary py-2">
                             <div>
                                 <div class="fw-bold text-light small"><?= $u ? htmlspecialchars($u->getPseudo()) : "Unknown" ?></div>
@@ -83,11 +86,12 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner =
                             </div>
                             <div class="text-success fw-bold">€ <?= number_format($bid->amount, 2) ?></div>
                         </div>
+
                     <?php endforeach; ?>
-                <?php else : ?>
-                    <div class="text-muted small py-2">No bids yet.</div>
-                <?php endif; ?>
+                
             </div>
+
+            <?php endif; ?>
         </div>
 
         <div class="col-12 col-md-6 col-lg-5">

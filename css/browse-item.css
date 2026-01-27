@@ -113,3 +113,66 @@ body {
     color: #ddd44f;
     margin-top: 10px;
 }
+
+body {
+    
+    padding-bottom: 70px; 
+}
+
+.footer .bi {
+   
+    margin-bottom: -2px;
+}
+
+/* Style de la carte */
+.item-card {
+    background-color: #1a222c; /* Le bleu sombre de ta capture */
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #2d3748;
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+}
+
+.item-card img {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover; 
+    background-color: #2d3748;
+    display: block;
+}
+
+
+.badge-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+
+.item-body {
+    padding: 15px;
+    color: white;
+}
+
+.item-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.item-author {
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.price {
+    color: #4299e1; 
+    font-weight: bold;
+    font-size: 1.2rem;
+}

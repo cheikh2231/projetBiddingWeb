@@ -10,14 +10,18 @@
     <link rel="stylesheet" href="css/add-edit.css">
 </head>
 <body>
-
+    <?php
+        $isEdit = $item && $item->getId();
+        $titlePage = $isEdit ? "Edit Item" : "Add Item";
+        $formAction = $isEdit ? "item/edit/" . $item->getId() . "/$source" : "item/add";
+    ?>
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
-    <a href="item/open/<?= $item->getId() ?>/<?= $source ?>" class="position-absolute start-0 ms-2">
+    <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source : 'item/browse' ?>" class="position-absolute start-0 ms-2">
         <i class="bi bi-arrow-left-short fs-3 text-primary"></i>
     </a>
 
     <div class="d-flex align-items-center">
-        <h5 class="m-0 me-2 text-primary">Edit Item</h5>
+        <h5 class="m-0 me-2 text-primary"><?= $titlePage ?></h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
 
@@ -27,7 +31,7 @@
 </header>
 
 <div class="container mb-5">
-    <form id="editItemForm" action="item/edit/<?= $item->getId() ?>/<?= $source ?>" method="POST">
+    <form id="editItemForm" action="<?= $formAction ?>" method="POST">
 
         <div class="card-custom mb-4">
             <div class="card-header-custom">Basic Information</div>
@@ -36,7 +40,7 @@
                 <div class="mb-3">
                     <label class="form-label">Item Title *</label>
                     <input type="text" name="title" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['title'] ?? $item->getTitle() ?? '') ?>" 
+                           value="<?= htmlspecialchars($_POST['title'] ?? ($item ? $item->getTitle() : '')) ?>" 
                            placeholder="Ex: iPhone 13 Pro Max">
                     <?php if (!empty($errors['title'])): ?>
                         <div class="text-danger small mt-1">
@@ -49,7 +53,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
-                    <textarea class="form-control" name="description" rows="5"><?= htmlspecialchars($_POST['description'] ?? $item->getDescription() ?? '') ?></textarea>
+                    <textarea class="form-control" name="description" rows="5"><?= htmlspecialchars($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
                     <?php if (!empty($errors['description'])): ?>
                         <div class="text-danger small mt-1">
                             <?php foreach ($errors['description'] as $error): ?>
@@ -62,7 +66,7 @@
                 <div class="mb-3">
                     <label class="form-label">Sale Duration (days) *</label>
                     <input type="number" name="duration" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['duration'] ?? $item->getDurationDays() ?? 7) ?>">
+                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : 7)) ?>">
                     <?php if (!empty($errors['duration'])): ?>
                         <div class="text-danger small mt-1">
                             <?php foreach ($errors['duration'] as $error): ?>
@@ -87,8 +91,13 @@
                     <div class="mb-3">
                         <label class="form-label">Starting Bid</label>
                         <div class="input-group">
-                            <input type="text" name="starting" class="form-control" 
-                                value="<?= htmlspecialchars($_POST['starting'] ?? $item->getStartingBid() ?? '') ?>" 
+                            <input type="text" 
+                                name="starting" 
+                                class="form-control" 
+                                inputmode="decimal" 
+                                pattern="[0-9]*[.,]?[0-9]{0,2}" 
+                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                                value="<?= htmlspecialchars($_POST['starting'] ?? ($item? $item->getStartingBid() : '')) ?>" 
                                 placeholder="100">
                             <span class="input-group-text">€</span>
                         </div>
@@ -105,7 +114,7 @@
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
                             <div class="input-group">
                                 <input type="text" name="instant_price" class="form-control" 
-                                    value="<?= htmlspecialchars($_POST['instant_price'] ?? (($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : '')) ?>" 
+                                    value="<?= htmlspecialchars($_POST['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'')) ?>" 
                                     placeholder="10">
                                 <span class="input-group-text">€</span>
                             </div>
@@ -130,7 +139,7 @@
                         <label class="form-label">Sale Price</label>
                         <div class="input-group">
                             <input type="text" name="sale_price" class="form-control" 
-                                value="<?= htmlspecialchars($_POST['sale_price'] ?? ($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')) ?>" 
+                                value="<?= htmlspecialchars($_POST['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'')) ?>" 
                                 placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
                         </div>

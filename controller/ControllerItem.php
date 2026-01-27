@@ -6,9 +6,21 @@ require_once 'model/User.php';
 class ControllerItem extends Controller {
     
     public function browse(): void {
-        $itemsUser = Item::getUserActiveItems(1);
-        $items = Item::getActiveItems(1);
-        (new View("item"))->show(["itemsUser" => $itemsUser, "items" => $items]);
+       
+        $currentUser = User::getUserById(1);
+        $itemsUser = [];
+        if ($currentUser) {
+            $itemsUser = Item::getUserActiveItems($currentUser->getId());
+            $items = Item::getActiveItems($currentUser->getId());
+        } else {
+            $items = Item::getActiveItems(); 
+        }
+
+        (new View("item"))->show([
+            "itemsUser" => $itemsUser, 
+            "items" => $items,
+            "isGuest" => ($currentUser === false)
+        ]);
     }
 
     public function index(): void {
@@ -16,7 +28,10 @@ class ControllerItem extends Controller {
     }
 
     public function open(): void {
-        if (isset($_GET["param1"]) && $_GET["param1"] !== "") {
+        if (!isset($_GET["param1"]) || $_GET["param1"] === "") {
+            $this->redirect("item", "browse"); 
+            return;
+        }else {
             $id = $_GET['param1'];
             $source = $_GET['param2'] ?? "browse";
             $idImg = $_GET["param3"] ?? 0;
@@ -34,7 +49,7 @@ class ControllerItem extends Controller {
                 if (isset($_POST['amount'])) {
                     $amount = floatval($_POST['amount']);
                    
-                    $newBid = new Bids($user, $id, date('Y-m-d H:i:s'), $amount);
+                    $newBid = new Bids($user->getId(), $id, date('Y-m-d H:i:s'), $amount);
                     $newBid->add();
                 
                     $this->redirect("item", "open", $id, $source, $idImg);
@@ -65,7 +80,10 @@ class ControllerItem extends Controller {
     }
 
     public function delete(): void {
-        if (isset($_GET["param1"])) {
+         if (!isset($_GET["param1"]) || $_GET["param1"] === "") {
+            $this->redirect("item", "list"); 
+            return;
+        }else {
             $id = $_GET['param1'];
             $item = Item::getItemWithId($id);
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -93,6 +111,13 @@ class ControllerItem extends Controller {
 
         $item = Item::getItemWithId($_GET['param1']);
 
+   
+    if ($item==null) {
+        $this->redirect("item", "index"); 
+        return;
+    }
+
+        $item = Item::getItemWithId($_GET['param1']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            
             $item->setTitle(trim($_POST['title'] ?? ''));
@@ -131,7 +156,6 @@ class ControllerItem extends Controller {
 
             if (empty($errors)) {
                 if ($item->update()) {
-                
                     $this->redirect("item", "open", $item->getId(), $source);
                     return;
                 }
@@ -145,4 +169,81 @@ class ControllerItem extends Controller {
         ]);
     }
 
+    public function add() : void {
+        $errors = [];
+        $source = "from-items";
+        $newItem = null; 
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            $now = AppTime::get_current_datetime();
+            $user = User::getUserById(1);
+            
+            $title = trim($_POST['title'] ?? '');
+            $description = trim($_POST['description'] ?? '');
+            $duration = (int)($_POST['duration'] ?? 0);
+ 
+            $end_at = (clone(new DateTime($now)))->add(new DateInterval("P{$duration}D"));
+            
+            $start_bid = isset($_POST['starting']) && $_POST['starting'] !== '' ? floatval($_POST['starting']) : null;
+            $sale_price = isset($_POST['sale_price']) && $_POST['sale_price'] !== '' ? floatval($_POST['sale_price']) : null;
+            $instant_price = isset($_POST['instant_price']) && $_POST['instant_price'] !== '' ? floatval($_POST['instant_price']) : null;
+
+            
+            $buy_now_price = null;
+            if ($start_bid !== null && $start_bid > 0) {
+                $buy_now_price = ($instant_price > 0 ? $instant_price : null);
+            } else if ($sale_price !== null && $sale_price > 0) {
+                $buy_now_price = $sale_price;
+            }
+
+          
+            $newItem = new Item(
+                null,
+                $title,
+                $description,
+                $user->getId(), 
+                $now,
+                ($start_bid > 0),           
+                false,                      
+                ($buy_now_price > 0),        
+                $end_at->format('Y-m-d H:i:s'), 
+                false,                       
+                ($sale_price > 0),           
+                ($start_bid > 0 ? $start_bid : null),
+                $buy_now_price,
+                $duration,
+                $start_bid,
+                false                        
+            );
+
+            
+            $errors['title'] = Item::validateTitle($newItem->getTitle());
+            $errors['description'] = Item::validateDescription($newItem->getDescription());
+            $errors['duration'] = Item::validateDuration($newItem->getDurationDays());
+            
+            $typeErrors = $newItem->validateStartingAndSale();
+            if (!empty($typeErrors)) $errors['coupleStartingAndDirect'] = $typeErrors;
+            
+            $typePrice = $newItem->validatePurchasePrice();
+            if (!empty($typePrice)) $errors['instant'] = $typePrice;
+
+            $errors = array_filter($errors);
+
+            
+            if (empty($errors)) {
+                if ($user->add($newItem)) {
+                    $this->redirect("item", "open", $newItem->getId(), $source);
+                    return;
+                }
+            }
+        }
+
+        
+        (new View('add_editItem'))->show([ 
+            "item" => $newItem, 
+            "errors" => $errors, 
+            "source" => $source 
+        ]);
+    }
 }
