@@ -110,78 +110,63 @@ class User extends Model {
         return $errors;
     }
 
-    private static function check_password(string $clear_password, string $hash) : bool {
-        return password_verify($clear_password, $hash);
+
+public function myItemsAtives(): array {
+    $now = AppTime::get_current_datetime();
+    $sql = "SELECT * FROM v_items_status 
+            WHERE owner = :user_id AND end_at > :now AND buy_now_reached = 0 
+            ORDER BY end_at DESC"; 
+    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+}
+
+public function getUnsoldItems(): array {
+    $now = AppTime::get_current_datetime();
+    $sql = "SELECT * FROM v_items_status 
+            WHERE owner = :user_id AND end_at < :now AND buy_now_reached = 0 AND has_bids = 0 
+            ORDER BY end_at DESC";
+    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+}
+
+public function getSoldItems(): array {
+    $now = AppTime::get_current_datetime();
+    $sql = "SELECT * FROM v_items_status 
+            WHERE owner = :user_id AND (buy_now_reached = 1 OR (end_at < :now AND has_bids = 1)) 
+            ORDER BY end_at DESC";
+    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+}
+
+
+private function fetchItems(string $sql, array $params): array {
+    $query = self::execute($sql, $params);
+    $items = [];
+    foreach ($query->fetchAll() as $row) {
+        $items[] = new Item(
+            $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
+            $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], 
+            $row["not_purchased_direct_sale"], $row["is_direct_sale"],
+            $row["max_bid"], $row["buy_now_price"], $row["duration_days"], 
+            $row["starting_bid"], $row["buy_now_reached"] 
+        );
     }
+    return $items;
+}
 
-    public function myItemsAtives() : array {
-        $now = AppTime::get_current_datetime();
-
-        $sql = "
-            SELECT DISTINCT v.*
-            FROM v_items_status v
-            WHERE v.owner = :user_id 
-            AND (
-                v.not_purchased_direct_sale
-                OR (
-                    v.is_auction
-                    AND v.end_at > :now
-                    AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
-                )
-            )
-            ORDER BY v.end_at ASC
-        ";
-
-        $query = self::execute($sql, [
-            'now' => $now, 
-            'user_id' => $this->id
-        ]);
-
-        $res = $query->fetchAll();
-        $items = [];
-        foreach ($res as $i) {
-            $items[] = new Item(
-                $i["id"], $i["title"], $i["description"], $i["owner"], $i["created_at"], 
-                $i["is_auction"], $i["has_bids"], $i["has_buy_now"], $i["end_at"], $i["not_purchased_direct_sale"],
-                $i["max_bid"], $i["buy_now_price"], $i["duration_days"], $i["starting_bid"]
-            );
+    public function buyItem(Item $item): bool {
+      
+        if ($item->getBuyNowPrice() === null || $item->getBuyNowPrice() <= 0) {
+            return false;
         }
-        return $items;
-    }
 
-/**
-     * Récupère les annonces de l'utilisateur qui sont clôturées SANS avoir été vendues.
-     */
-    public function getUnsoldItems() : array {
-        $now = AppTime::get_current_datetime();
         
-        // On récupère les items de l'utilisateur qui sont terminés (temps écoulé)
-        // et qui n'ont pas été vendus par achat immédiat.
-        $sql = "SELECT * FROM v_items_status 
-                WHERE owner = :user_id 
-                AND end_at < :now 
-                AND buy_now_reached = 0";
-        
-        $query = self::execute($sql, ['user_id' => $this->id, 'now' => $now]);
-        $data = $query->fetchAll();
-        
-        $unsold = [];
-        foreach ($data as $row) {
-            $item = new Item(
-                $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
-                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],
-                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
-            );
-            
-            // Un item est invendu s'il est terminé ET que isSold() est faux
-            if (!$item->isSold()) {
-                $unsold[] = $item;
-            }
+        if ($item->getOwner() === $this->id) {
+            return false;
         }
-        return $unsold;
-    }
 
-    public function getSoldItems() : array {
+    
+        if ($item->isClosed()) {
+            return false;
+        }
+        $amount = $item->getBuyNowPrice();
         $now = AppTime::get_current_datetime();
         
         $bid = new Bids($this->id, $item->getId(), $now, $amount);
@@ -194,22 +179,25 @@ class User extends Model {
         $sql = "INSERT INTO items (title, description, owner, created_at, buy_now_price, duration_days, starting_bid) 
                 VALUES (?,?,?,?,?,?,?)";
         
-        $query = self::execute($sql, ['user_id' => $this->id, 'now' => $now]);
-        $data = $query->fetchAll();
-        
-        $sold = [];
-        foreach ($data as $row) {
-            $item = new Item(
-                $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
-                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], $row["not_purchased_direct_sale"],
-                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], $row["starting_bid"], $row["buy_now_reached"] 
-            );
-            
-            if ($item->isSold()) {
-                $sold[] = $item;
-            }
+        $res = self::execute($sql, [
+            $item->getTitle(),
+            $item->getDescription(),
+            $item->getOwner(),
+            $item->getCreatedAt(),
+            $item->getBuyNowPrice(),
+            $item->getDurationDays(),
+            $item->getStartingBid()
+        ]);
+
+        if ($res !== false) {
+           
+            $newId = Item::getLastItemsId(); 
+            $item->setId($newId); 
+            return true;
         }
-        return $sold;
+        return false;
+    } catch (Exception $e) {
+        return false;
     }
 }
-?>
+}
