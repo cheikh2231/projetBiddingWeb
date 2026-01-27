@@ -5,7 +5,7 @@ require_once "utils/AppTime.php";
 
 class Item extends Model {
     public function __construct(
-        private int $id,
+        private ?int $id,
         private string $title,
         private string $description,
         private int $owner,
@@ -24,7 +24,7 @@ class Item extends Model {
     ) {}
 
 
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
     public function getTitle(): string { return $this->title; }
     public function getDescription(): string { return $this->description; }
     public function getOwner(): int { return $this->owner; }
@@ -98,37 +98,32 @@ class Item extends Model {
 
     public function validateStartingAndSale() : array {
         $errors = [];
-        
-        if (!$this->is_direct_sale) {
-          
-            if ($this->buy_now_price > 0 && ($this->starting_bid === null || $this->starting_bid <= 0)) {
-                $errors[] = "An auction with a 'Buy It Now' price must also have a starting bid.";
-            }
-        }
 
-        if (($this->starting_bid === null || $this->starting_bid <= 0) && ($this->buy_now_price === null || $this->buy_now_price <= 0)) {
+        if (($this->starting_bid === null || $this->starting_bid <= 0) && (!$this->is_direct_sale)) {
             $errors[] = "An item must have at least a starting bid or a buy now price.";
+        }else if(($this->starting_bid !== null && $this->starting_bid > 0 && $this->is_direct_sale) ){
+            $errors[] = "cannot create both auction and direct sale";
         }
-
         return $errors;
     }
 
     public function validatePurchasePrice() : array {
         $errors = [];
-
-        if ($this->starting_bid > 0 && $this->buy_now_price > 0) {
-            if ($this->buy_now_price <= $this->starting_bid) {
-                $errors[] = "The buy now price must be greater than the starting bid.";
+        if (!$this->is_direct_sale) {
+            if ($this->starting_bid > 0 && $this->buy_now_price > 0) {
+                if ($this->buy_now_price <= $this->starting_bid) {
+                    $errors[] = "The buy now price must be greater than the starting bid.";
+                }
             }
         }
         return $errors;
     }
-    public static function getItemWithId(int $id) : Item {
+    public static function getItemWithId(int $id) : ?Item {
         $sql = "SELECT * FROM v_items_status WHERE id = ?";
         $query = self::execute($sql, [$id]);
         $i = $query->fetch(); 
         if ($i === false) {
-            die("L'id passé en param n'existe pas dans la bd");
+           return null;
         }
         return self::makeItemFromRow($i);
     }
@@ -198,6 +193,8 @@ class Item extends Model {
         }
     }
 
+   
+
     public function delete() : bool {
         try {
             self::execute("DELETE FROM bids WHERE item = ?", [$this->id]);
@@ -247,5 +244,11 @@ class Item extends Model {
         $res = self::execute("SELECT role FROM users WHERE id = ?", [$id]);
         $role = $res->fetchColumn();
         return $role ?: null;
+    }
+
+    public static function getLastItemsId() : int {
+        $res = self::execute("SELECT id FROM items ORDER BY id DESC LIMIT 1", []);
+        $id = $res->fetchColumn();
+        return $id ? (int)$id : 0;
     }
 }
