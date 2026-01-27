@@ -222,4 +222,32 @@ class User extends Model {
         $bid = new Bids($this->id, $item->getId(), $now, $amount);
         return $bid->add();
     }
+
+
+    public function add(Item $item) : bool {
+    try {
+        $sql = "INSERT INTO items (title, description, owner, created_at, buy_now_price, duration_days, starting_bid) 
+                VALUES (?,?,?,?,?,?,?)";
+        
+        $res = self::execute($sql, [
+            $item->getTitle(),
+            $item->getDescription(),
+            $item->getOwner(),
+            $item->getCreatedAt(),
+            $item->getBuyNowPrice(),
+            $item->getDurationDays(),
+            $item->getStartingBid()
+        ]);
+
+        if ($res !== false) {
+           
+            $newId = Item::getLastItemsId(); 
+            $item->setId($newId); 
+            return true;
+        }
+        return false;
+    } catch (Exception $e) {
+        return false;
+    }
+}
 }
