@@ -1,64 +1,253 @@
 <?php
-    require_once "framework/Model.php";
 
-    class User extends Model{
-        //constructeur
-        public function __construct(
-            public int $id,
-            public string $name, 
-            public string $email, 
-            public string $pseudo, 
-            public string $password, 
-            public string $role, 
-            public ?string $picture_path, 
-            public ?string $iban)
-        {
-        
-        }
-        
-        public static function getUserByPseudo(string $pseudo) : User|false{
-            $query = self::execute("SELECT * from users where users.pseudo = :pseudo", ["pseudo"=>$pseudo]);
-            $data = $query->fetch();
-            if($query->rowCount() ==0)
-                return false;
-            else
-                return new User($data["id"],$data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
+class User extends Model {
+    
+    private int $id;
+    private string $name; 
+    private string $email; 
+    private string $pseudo; 
+    private string $password; 
+    private string $role; 
+    private ?string $picture_path; 
+    private ?string $iban;
 
-        }
-        public static function getUserByEmail(string $email) : User|false{
-            $query = self::execute("SELECT * from users where users.email = :email", ["email"=>$email]);
-            $data = $query->fetch();
-            if($query->rowCount() ==0)
-                return false;
-            else
-                return new User($data["id"],$data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
-
-        }
-        
-        public static function getAllUsers() : array {
-            $query = self::execute("SELECT * FROM Users", []);
-            $data = $query->fetchAll();
-            $results = [];
-            foreach ($data as $row) {
-                $results[] = new User($row["id"],$row["full_name"], $row["email"], $row["pseudo"],$row["password"],$row["role"],$row["picture_path"],$row["iban"]);
-            }
-            return $results;
-        }
-        
-        public static function validate_login(string $email, string $password) : array {
-            $errors = [];
-            $user = User::getUserByEmail($email);
-            if ($user && self::check_password($password, $user->password)) {
-                return $errors;
-            }
-            $errors[] = "Email ou mot de passe non valide. Veuillez Réessayez.";
-            return $errors;
-        }
-
-        private static function check_password(string $clear_password, string $hash) : bool {
-            return password_verify($clear_password, $hash);
-        }
-
-
+    public function __construct(
+        int $id,
+        string $name, 
+        string $email, 
+        string $pseudo, 
+        string $password, 
+        string $role, 
+        ?string $picture_path, 
+        ?string $iban
+    ) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->pseudo = $pseudo;
+        $this->password = $password;
+        $this->role = $role;
+        $this->picture_path = $picture_path;
+        $this->iban = $iban;
     }
-?>
+
+   
+    public function getId(): int { return $this->id; }
+    public function getName(): string { return $this->name; }
+    public function getEmail(): string { return $this->email; }
+    public function getPseudo(): string { return $this->pseudo; }
+    public function getPassword(): string { return $this->password; }
+    public function getRole(): string { return $this->role; }
+    public function getPicturePath(): ?string { return $this->picture_path; }
+    public function getIban(): ?string { return $this->iban; }
+
+
+    public function setName(string $name): void { $this->name = $name; }
+    public function setEmail(string $email): void { $this->email = $email; }
+    public function setPseudo(string $pseudo): void { $this->pseudo = $pseudo; }
+    public function setPassword(string $password): void { $this->password = $password; }
+    public function setRole(string $role): void { $this->role = $role; }
+    public function setPicturePath(?string $path): void { $this->picture_path = $path; }
+    public function setIban(?string $iban): void { $this->iban = $iban; }
+
+
+
+    private static function mapToUser(array $data): User {
+        return new User(
+            $data["id"], 
+            $data["full_name"], 
+            $data["email"], 
+            $data["pseudo"], 
+            $data["password"], 
+            $data["role"], 
+            $data["picture_path"], 
+            $data["iban"]
+        );
+    }
+
+    public static function getUserByPseudo(string $pseudo): User|false {
+        $query = self::execute("SELECT * FROM users WHERE pseudo = :pseudo", ["pseudo" => $pseudo]);
+        $data = $query->fetch();
+        return $data ? self::mapToUser($data) : false;
+    }
+
+    public static function getUserByEmail(string $email): User|false {
+        $query = self::execute("SELECT * FROM users WHERE email = :email", ["email" => $email]);
+        $data = $query->fetch();
+        return $data ? self::mapToUser($data) : false;
+    }
+
+    public static function getUserById(int $id): User|false {
+        $query = self::execute("SELECT * FROM users WHERE id = :id", ["id" => $id]);
+        $data = $query->fetch();
+        return $data ? self::mapToUser($data) : false;
+    }
+                
+    public static function getAllUsers(): array {
+        $query = self::execute("SELECT * FROM users", []);
+        $data = $query->fetchAll();
+        $results = [];
+        foreach ($data as $row) {
+            $results[] = self::mapToUser($row);
+        }
+        return $results;
+    }
+    
+
+
+    public static function validate_login(string $email, string $password): array {
+        $errors = [];
+        $user = self::getUserByEmail($email);
+        if ($user) {
+            if (!password_verify($password, $user->getPassword())) {
+                $errors[] = "Wrong password. Please try again.";
+            }
+        } else {
+            $errors[] = "Can't find a member with the email '$email'. Please sign up.";
+        }
+        return $errors;
+    }
+
+
+
+    public function myItemsAtives(): array {
+        $now = AppTime::get_current_datetime();
+
+        $sql = "
+            SELECT DISTINCT v.*
+            FROM v_items_status v
+            WHERE v.owner = :user_id 
+            AND (
+                v.not_purchased_direct_sale
+                OR (
+                    v.is_auction
+                    AND v.end_at > :now
+                    AND (NOT v.has_buy_now OR NOT v.buy_now_reached)
+                )
+            )
+            ORDER BY v.end_at ASC
+        ";
+
+        $query = self::execute($sql, [
+            'now' => $now, 
+            'user_id' => $this->id
+        ]);
+
+        $res = $query->fetchAll();
+        $items = [];
+        foreach ($res as $row) {
+            $items[] = new Item(
+                $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], 
+                $row["not_purchased_direct_sale"], $row["is_direct_sale"],
+                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], 
+                $row["starting_bid"], $row["buy_now_reached"] 
+            );
+        }
+        return $items;
+    }
+
+    public function getUnsoldItems(): array {
+        $now = AppTime::get_current_datetime();
+
+        $sql = "SELECT * FROM v_items_status 
+                WHERE owner = :user_id 
+                AND end_at < :now 
+                AND buy_now_reached = 0";
+        
+        $query = self::execute($sql, ['user_id' => $this->id, 'now' => $now]);
+        $data = $query->fetchAll();
+        
+        $unsold = [];
+        foreach ($data as $row) {
+            $item = new Item(
+                $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], 
+                $row["not_purchased_direct_sale"], $row["is_direct_sale"],
+                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], 
+                $row["starting_bid"], $row["buy_now_reached"] 
+            );
+
+            if (!$item->isSold()) {
+                $unsold[] = $item;
+            }
+        }
+        return $unsold;
+    }
+
+    public function getSoldItems(): array {
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT * FROM v_items_status 
+                WHERE owner = :user_id 
+                AND (end_at < :now OR buy_now_reached = 1)";
+        
+        $query = self::execute($sql, ['user_id' => $this->id, 'now' => $now]);
+        $data = $query->fetchAll();
+        
+        $sold = [];
+        foreach ($data as $row) {
+            $item = new Item(
+                $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
+                $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], 
+                $row["not_purchased_direct_sale"], $row["is_direct_sale"],
+                $row["max_bid"], $row["buy_now_price"], $row["duration_days"], 
+                $row["starting_bid"], $row["buy_now_reached"] 
+            );
+            
+            if ($item->isSold()) {
+                $sold[] = $item;
+            }
+        }
+        return $sold;
+    }
+
+    public function buyItem(Item $item): bool {
+      
+        if ($item->getBuyNowPrice() === null || $item->getBuyNowPrice() <= 0) {
+            return false;
+        }
+
+        
+        if ($item->getOwner() === $this->id) {
+            return false;
+        }
+
+    
+        if ($item->isClosed()) {
+            return false;
+        }
+        $amount = $item->getBuyNowPrice();
+        $now = AppTime::get_current_datetime();
+        
+        $bid = new Bids($this->id, $item->getId(), $now, $amount);
+        return $bid->add();
+    }
+
+
+    public function add(Item $item) : bool {
+    try {
+        $sql = "INSERT INTO items (title, description, owner, created_at, buy_now_price, duration_days, starting_bid) 
+                VALUES (?,?,?,?,?,?,?)";
+        
+        $res = self::execute($sql, [
+            $item->getTitle(),
+            $item->getDescription(),
+            $item->getOwner(),
+            $item->getCreatedAt(),
+            $item->getBuyNowPrice(),
+            $item->getDurationDays(),
+            $item->getStartingBid()
+        ]);
+
+        if ($res !== false) {
+           
+            $newId = Item::getLastItemsId(); 
+            $item->setId($newId); 
+            return true;
+        }
+        return false;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+}
