@@ -65,6 +65,8 @@
 
                         <?php if (!empty($pictures)) : ?>
                             <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
+                        <?php else: ?>    
+                            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
                         <?php endif; ?>
 
                         <div class="item-body">
@@ -140,6 +142,8 @@
 
                         <?php if (!empty($pictures)) : ?>
                             <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
+                        <?php else: ?>    
+                            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
                         <?php endif; ?>
 
                         <div class="item-body">
