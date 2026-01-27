@@ -16,7 +16,6 @@
         
         }
         
-        //méthode
         public static function getUserByPseudo(string $pseudo) : User|false{
             $query = self::execute("SELECT * from users where users.pseudo = :pseudo", ["pseudo"=>$pseudo]);
             $data = $query->fetch();
