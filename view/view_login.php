@@ -11,7 +11,7 @@
     <!-- Icones Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- CSS -->
-    <link rel="stylesheet" href="css/LoginStyle.css">
+    <link rel="stylesheet" href="<?= $web_root ?>css/LoginStyle.css">
 </head>
 
 
@@ -62,5 +62,14 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <?php if(count($errors) != 0):?>
+        <div class='errors'>
+               <?php foreach ($errors as $error): ?>
+                    <?= $error //qu'une erreur possible pour l'instant. à améliorer si demandé?> 
+                <?php endforeach; ?>  
+            </ul>
+        </div>
+    <?php endif; ?>                        
 </body>
 </html>

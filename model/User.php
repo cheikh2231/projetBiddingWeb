@@ -3,7 +3,15 @@
 
     class User extends Model{
         //constructeur
-        public function __construct(public string $name, public string $email, public string $pseudo, public string $password, public string $role, public ?string $picture_path, public ?string $iban)
+        public function __construct(
+            public int $id,
+            public string $name, 
+            public string $email, 
+            public string $pseudo, 
+            public string $password, 
+            public string $role, 
+            public ?string $picture_path, 
+            public ?string $iban)
         {
         
         }
@@ -15,7 +23,7 @@
             if($query->rowCount() ==0)
                 return false;
             else
-                return new User($data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
+                return new User($data["id"],$data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
 
         }
         public static function getUserByEmail(string $email) : User|false{
@@ -24,7 +32,7 @@
             if($query->rowCount() ==0)
                 return false;
             else
-                return new User($data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
+                return new User($data["id"],$data["full_name"],$data["email"],$data["pseudo"],$data["password"],$data["role"],$data["picture_path"],$data["iban"]);
 
         }
         
@@ -33,7 +41,7 @@
             $data = $query->fetchAll();
             $results = [];
             foreach ($data as $row) {
-                $results[] = new User($row["full_name"], $row["email"], $row["pseudo"],$row["password"],$row["role"],$row["picture_path"],$row["iban"]);
+                $results[] = new User($row["id"],$row["full_name"], $row["email"], $row["pseudo"],$row["password"],$row["role"],$row["picture_path"],$row["iban"]);
             }
             return $results;
         }
@@ -41,13 +49,10 @@
         public static function validate_login(string $email, string $password) : array {
             $errors = [];
             $user = User::getUserByEmail($email);
-            if ($user) {
-                if (!self::check_password($password, $user->password)) {
-                    $errors[] = "Wrong password. Please try again.";
-                }
-            } else {
-                $errors[] = "Can't find a member with the email '$email'. Please sign up.";
+            if ($user && self::check_password($password, $user->password)) {
+                return $errors;
             }
+            $errors[] = "Email ou mot de passe non valide. Veuillez Réessayez.";
             return $errors;
         }
 
