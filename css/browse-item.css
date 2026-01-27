@@ -138,6 +138,7 @@ body {
     transform: translateY(-5px);
 }
 
+/* Style de l'image pour qu'elle soit pro */
 .item-card img {
     width: 100%;
     height: 250px; 

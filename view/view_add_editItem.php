@@ -96,8 +96,7 @@
                                 class="form-control" 
                                 inputmode="decimal" 
                                 pattern="[0-9]*[.,]?[0-9]{0,2}" 
-                                oninput="this.value = this.value.replace(/[^0-9.,]/g, '').replace(/(\..*?)\..*/g, '$1');"
-                                value="<?= htmlspecialchars($_POST['starting'] ?? ($item? $item->getStartingBid() : '')) ?>" 
+                                value="<?= $_POST['starting'] ?? ($item? $item->getStartingBid() : '') ?>" 
                                 placeholder="100">
                             <span class="input-group-text">€</span>
                         </div>

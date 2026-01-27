@@ -2,12 +2,15 @@
 require_once 'model/Bids.php';
 require_once 'model/User.php';
 
-$currentUser = 1; 
 
-$isOwner = $currentUser === (int)$item->getOwner();
+
+
 $bids = Bids::getBids($item->getId());
 
-$isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner === $currentUser;
+
+$isOwner = $currentUser && ($currentUser->getId() === (int)$item->getOwner());
+
+$isWinner = $item->getBuyNowReached() && !empty($bids) && $currentUser && ((int)$bids[0]->owner === $currentUser->getId());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -120,7 +123,7 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && (int)$bids[0]->owner =
 
                     <?php if ($isWinner): ?>
                         <div class="alert alert-success bg-transparent border-0 text-center p-0 mb-0">
-                            <p class="mb-0 fw-bold text-success">Congratulations! You purchased this item for € <?= number_format($item->getBuyNowPrice(), 2) ?>.</p>
+                            <p class="mb-0 fw-bold text-success">Congratulations! You purchased this item for € <?= number_format($item->getMaxBid(), 2) ?>.</p>
                         </div>
 
                     <?php elseif ($isOwner): ?>
