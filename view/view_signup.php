@@ -19,8 +19,9 @@
     <div class="logContainer text-center shadow-lg">
         <h1 class="mb-3 fs-3">Sign in</h1>
         <hr class="mb-4" style="border-color: #444; opacity: 1;">
+
         <!-- début du formulaire -->
-        <form action="login/login" method="post">
+        <form action="<?= $web_root ?>signup/signup" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-envelope"></i></span>
                 <input type="text" name="email" class="form-control custom-input" placeholder="Email" aria-label="Email">
@@ -28,7 +29,7 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
-                <input type="text" name="fullName" class="form-control custom-input" placeholder="Full Name" aria-label="FullName">
+                <input type="text" name="fullname" class="form-control custom-input" placeholder="Full Name" aria-label="FullName">
             </div>
 
             <div class="input-group mb-3">
@@ -52,7 +53,23 @@
             </div>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
-
+    <!-- Partie succès -->
+    <?php if (isset($success)): ?>
+        <div class="alert alert-success" role="alert">
+            <?= $success ?> <a href="<?= $web_root ?>login" class="alert-link">Connectez-vous ici</a>.
+        </div>
+    <?php endif; ?>
+    
+    <!-- Partie erreurs -->
+    <?php if(count($errors) != 0):?>
+        <div class='errors'>
+               <?php foreach ($errors as $error): ?>
+                    <?= $error?><br>
+                <?php endforeach; ?>  
+            </ul>
+        </div>
+    <?php endif; ?>   
 </body>
 </html>

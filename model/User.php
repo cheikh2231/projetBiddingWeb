@@ -109,6 +109,38 @@ class User extends Model {
         }
         return $errors;
     }
+    //methode validation pour creation d'un nouvel user
+    public static function validate_signup(String $email, String $fullname, String $pseudo, String $password, String $confirmPassword) : array{
+        $errors = [];
+        //verification tout les champs remplis
+        if(empty($email)||empty($fullname)||empty($pseudo)||empty($password)||empty($confirmPassword)){
+            $errors[] = "All fields are required.";    
+        }else{
+            //email
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+                $errors[]= "invalid email format.";
+            else if(self::getUserByEmail($email))
+                $errors[] = "Email already taken.";
+            //fullname
+            if(strlen($fullname) <= 3)
+                $errors[] = "Full name must be more than 3 letters.";
+            //pseudo
+            if(self::getUserByPseudo($pseudo))
+                $errors[] = "Pseudo already taken.";
+            else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
+                $errors[] = "Lenght of the pseudo invalid";
+            //mdp
+            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            if(!preg_match($pattern, $password))
+                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            //confirmPassword
+            if($confirmPassword !== $password)
+                $errors[] = "Confirm password doesn't match.";
+        }
+        return $errors;
+    } 
+
+
 
 
 public function myItemsAtives(): array {
@@ -199,5 +231,8 @@ private function fetchItems(string $sql, array $params): array {
     } catch (Exception $e) {
         return false;
     }
-}
+    }
+
+   
+
 }
