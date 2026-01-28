@@ -14,7 +14,7 @@ class ControllerLogin extends Controller {
             (new View("login"))->show(["errors" => []]);
         }
     }
-    
+    // méthode login
     public function login(): void {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
@@ -22,12 +22,7 @@ class ControllerLogin extends Controller {
         $errors = User::validate_login($email, $password);
         
         if (empty($errors)) {
-            
-            $user = User::getUserByEmail($email);
-            $this->log_user($user); 
-
-           
-            $this->redirect("item", "index"); 
+            $this->is_validate_login($email);
         } else {
             
             (new View("login"))->show([
@@ -35,9 +30,19 @@ class ControllerLogin extends Controller {
                 "errors" => $errors
             ]);
         }
+    }  
+    // fonction si login valide (évite la répétition de code)
+    public function is_validate_login(String $emailUser): void{
+        $user = User::getUserByEmail($emailUser);
+        $this->log_user($user);
+        $this->redirect("item", "index"); 
     }
-
+    //fonction pour log en Debug
+    public function logForDebug(string $emailUser):void{
+       $this->is_validate_login($emailUser);
+    }
+    //fonction logout
     public function logout() : void {
       parent::logout();
-    }
+    } 
 }
