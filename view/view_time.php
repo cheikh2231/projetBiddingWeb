@@ -1,43 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>App time management</title>
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>App time management</h2>
-    <p>App time : <?= AppTime::get_current_datetime() ?></p>
-    <ul>
-        <li>
-            <form method="post" action="time/advance" style="display: inline;">
+<body data-bs-theme="dark">
+
+<footer class="fixed-bottom bg-dark border-top border-secondary p-0 shadow-lg">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        
+        <div class="d-flex align-items-center opacity-75">
+            <i class="bi bi-clock-fill me-2 text-warning"></i>
+            <span class="font-monospace small text-white"><?= AppTime::get_current_datetime() ?></span>
+        </div>
+
+        <div class="d-flex gap-2 align-items-center">
+            <form method="post" action="time/advance" class="m-0">
                 <input type="hidden" name="amount" value="1">
                 <input type="hidden" name="unit" value="hour">
-                <button type="submit">Advance by 1 hour</button>
+                <button type="submit" class="btn btn-sm btn-outline-warning border-secondary text-warning">
+                    <i class="bi bi-clock-history"></i> +1h
+                </button>
             </form>
-        </li>
-        <li>
-            <form method="post" action="time/advance" style="display: inline;">
+
+            <form method="post" action="time/advance" class="m-0">
                 <input type="hidden" name="amount" value="1">
                 <input type="hidden" name="unit" value="day">
-                <button type="submit">Advance by 1 day</button>
+                <button type="submit" class="btn btn-sm btn-outline-warning border-secondary text-warning">
+                    <i class="bi bi-calendar-event"></i> +1d
+                </button>
             </form>
-        </li>
-        <li>
-            <form method="post" action="time/advance" style="display: inline;">
+
+            <form method="post" action="time/advance" class="m-0">
                 <input type="hidden" name="amount" value="7">
                 <input type="hidden" name="unit" value="day">
-                <button type="submit">Advance by 1 week</button>
+                <button type="submit" class="btn btn-sm btn-outline-warning border-secondary text-warning">
+                    <i class="bi bi-calendar-range"></i> +1w
+                </button>
             </form>
-        </li>
-        <li>
-            <form method="post" action="time/reset" style="display: inline;">
-                <button type="submit">Reset time offset</button>
+
+            <form method="post" action="time/reset" class="m-0">
+                <button type="submit" class="btn btn-sm btn-outline-danger border-secondary text-danger">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
             </form>
-        </li>
-    </ul>
-    <p><a href="">Back to index</a></p>
+
+            <a href="" class="btn btn-sm btn-secondary ms-2 border-secondary shadow-sm">
+                <i class="bi bi-house-door text-white"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
 </body>
 </html>

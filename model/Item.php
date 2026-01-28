@@ -131,9 +131,12 @@ class Item extends Model {
     public static function getActiveItems(int $user_id) : array {
         $now = AppTime::get_current_datetime();
         $sql = "SELECT v.* FROM v_items_status v 
-                WHERE (v.not_purchased_direct_sale OR (v.is_auction AND v.end_at > :now AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                WHERE v.end_at > :now 
+                AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
                 AND v.id NOT IN (SELECT DISTINCT item FROM bids WHERE owner = :user_id)
-                AND v.owner != :user_id ORDER BY v.end_at ASC";
+                AND v.owner != :user_id 
+                ORDER BY v.end_at ASC";
+                
         $query = self::execute($sql, ['now' => $now, 'user_id' => $user_id]);
         $items = [];
         foreach ($query->fetchAll() as $row) {
@@ -221,7 +224,7 @@ class Item extends Model {
 
     public function isClosed() : bool {
         $now = AppTime::get_current_datetime();
-        return ($now > $this->end_at) || $this->buy_now_reached;
+        return ($now >= $this->end_at) || $this->buy_now_reached;
     }
 
     public function isSold() : bool {
@@ -263,5 +266,30 @@ class Item extends Model {
         $res = self::execute("SELECT id FROM items ORDER BY id DESC LIMIT 1", []);
         $id = $res->fetchColumn();
         return $id ? (int)$id : 0;
+    }
+
+    public function getFinalBuyPrice() : float {
+        $val ;
+        if($this->isClosed()){
+            if($this->getBuyNowReached()){
+                $val = $this->getBuyNowPrice();
+            }elseif($this->getHasBids()){
+                $val = $this->getMaxBid();
+            }
+        }
+        if($val===null)
+            return false;
+        return $val;
+    }
+
+    public function getWinner() : ?User {
+        $bids = Bids::getBids($this->id);
+        $user = null;
+        if($this->isClosed()){
+            if($this->getBuyNowReached() || $this->getHasBids()){
+                $user =  User::getUserById($bids[0]->getOwner());
+            }
+        }
+        return $user;
     }
 }

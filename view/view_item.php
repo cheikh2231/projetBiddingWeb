@@ -12,18 +12,17 @@
 </head>
 
 <body>
- <a href="login/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
-        <i class="bi bi-box-arrow-right me-2"></i> Sign Out
-    </a>
+
 <header class="bg-dark border-bottom border-secondary sticky-top ">
+            <a href="login/logout " >
+        <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+    </a> 
     <?php $place = "browse"; ?>
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Browse</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
+ 
     </div>
-    <div class="p-3">
-   
-</div>
 
 </header>
 
@@ -151,11 +150,25 @@
                             <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
                             <div class="item-author">by <?= $username ?></div>
 
-                            <div class="price mt-2">
-                                € <?= number_format(
-                                    $item->getHasBuyNow() ? $item->getBuyNowPrice() : ($item->getStartingBid() ?? 0),
-                                    2
-                                ) ?>
+                            <div class="d-flex justify-content-between align-items-end mt-2">
+                                <div class="price">
+                                    € <?= number_format(
+                                        $item->getHasBuyNow() ? $item->getBuyNowPrice() : ($item->getStartingBid() ?? 0),
+                                        2
+                                    ) ?>
+                                </div>
+
+                                <?php if ($item->getIsAuction()) : ?>
+                                    <div class="text-end">
+                                        <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
+                                        <div class="current-bid">
+                                            € <?= number_format(
+                                                $item->getHasBids() ? $item->getMaxBid() : ($item->getStartingBid() ?? 0),
+                                                2
+                                            ) ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <?php

@@ -107,7 +107,7 @@ class ControllerItem extends Controller {
     
     public function edit() : void {
         $errors = [];
-        $source = $_GET['param2'] ?? "from-items";
+        $source = $_GET['param2'] ?? "items";
 
         if (!isset($_GET['param1'])) {
             $this->redirect("item", "list");
@@ -177,7 +177,7 @@ class ControllerItem extends Controller {
 
     public function add() : void {
         $errors = [];
-        $source = "from-items";
+        $source = "items";
         $newItem = null; 
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -251,5 +251,13 @@ class ControllerItem extends Controller {
             "errors" => $errors, 
             "source" => $source 
         ]);
+    }
+
+
+    public function sales() : void {
+        $source = "sales";
+         $currentUser = $this->get_user_or_false();
+        $sold = $currentUser->getSoldItems();
+        (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
     }
 }
