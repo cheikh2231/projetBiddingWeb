@@ -4,7 +4,7 @@ require_once "utils/AppTime.php";
 require_once "model/Item.php";
 class User extends Model {
     
-    private int $id;
+    private ?int $id;
     private string $name; 
     private string $email; 
     private string $pseudo; 
@@ -14,7 +14,7 @@ class User extends Model {
     private ?string $iban;
 
     public function __construct(
-        int $id,
+        ?int $id,
         string $name, 
         string $email, 
         string $pseudo, 
@@ -34,7 +34,7 @@ class User extends Model {
     }
 
    
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
     public function getEmail(): string { return $this->email; }
     public function getPseudo(): string { return $this->pseudo; }
@@ -96,7 +96,7 @@ class User extends Model {
     }
     
 
-
+    //methode validation LOGIN
     public static function validate_login(string $email, string $password): array {
         $errors = [];
         $user = self::getUserByEmail($email);
@@ -109,7 +109,7 @@ class User extends Model {
         }
         return $errors;
     }
-    //methode validation pour creation d'un nouvel user
+    //methode validation SIGNUP
     public static function validate_signup(String $email, String $fullname, String $pseudo, String $password, String $confirmPassword) : array{
         $errors = [];
         //verification tout les champs remplis
@@ -139,6 +139,11 @@ class User extends Model {
         }
         return $errors;
     } 
+    //methode ajout User dans la database
+    public function persist(): void{
+        self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
+        ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+    }
 
 
 

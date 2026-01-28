@@ -70,7 +70,7 @@
     <?php if(count($errors) != 0):?>
         <div class='errors'>
                <?php foreach ($errors as $error): ?>
-                    <?= $error //qu'une erreur possible pour l'instant. à améliorer si demandé?> 
+                    <?= $error?> 
                 <?php endforeach; ?>  
             </ul>
         </div>

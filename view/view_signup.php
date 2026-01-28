@@ -55,20 +55,16 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Partie succès -->
-    <?php if (isset($success)): ?>
-        <div class="alert alert-success" role="alert">
-            <?= $success ?> <a href="<?= $web_root ?>login" class="alert-link">Connectez-vous ici</a>.
-        </div>
-    <?php endif; ?>
-    
     <!-- Partie erreurs -->
     <?php if(count($errors) != 0):?>
-        <div class='errors'>
-               <?php foreach ($errors as $error): ?>
-                    <?= $error?><br>
-                <?php endforeach; ?>  
-            </ul>
+        <div class="alert alert-danger mt-3" role="alert">
+            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
+            <hr>
+            <p class="mb-0">
+                <?php foreach ($errors as $error): ?>
+                    <?= $error ?><br>
+                <?php endforeach; ?> 
+            </p>
         </div>
     <?php endif; ?>   
 </body>

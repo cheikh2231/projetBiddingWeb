@@ -2,7 +2,6 @@
 require_once "framework/Controller.php";
 require_once "model/User.php";
 require_once 'framework/View.php';
-require_once "controller/ControllerLogin.php";
 
 class ControllerSignup extends Controller {
 
@@ -24,8 +23,9 @@ class ControllerSignup extends Controller {
         $errors = User::validate_signup($email,$fullname,$pseudo,$password,$confirmPassword);
         if(empty($errors)){
             //creation user
-            (new View("signup"))->show(["success" => "Compte créé avec succès ! Vous allez être redirigé vers la connexion.","errors" => []]);
-
+            $newUser = new User(null,$fullname,$email,$pseudo,password_hash($password, PASSWORD_BCRYPT),"user",null,null);
+            $newUser->persist();
+            $this->log_user($newUser);
         }else{
             (new View("signup"))->show(["errors"=>$errors,"email"=>$email,"fullname"=>$fullname,"pseudo"=>$pseudo]);
         }
