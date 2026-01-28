@@ -37,8 +37,8 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && $currentUser && ((int)
     <i class="bi bi-cart4 fs-4 text-white"></i>
 </header>
 
-<div class="container">
-    <div class="row">
+<div class="container pb-5" style="margin-bottom: 80px;">
+    <div class="row ">
 
         <div class="col-12 col-md-6 col-lg-7">
             <div class="card mb-3">
@@ -225,6 +225,8 @@ $isWinner = $item->getBuyNowReached() && !empty($bids) && $currentUser && ((int)
     </div> 
 </div> 
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php include 'view/utilités/footer.php'; ?>
 </body>
 </html>

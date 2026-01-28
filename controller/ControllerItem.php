@@ -13,7 +13,7 @@ class ControllerItem extends Controller {
             $itemsUser = Item::getUserActiveItems($currentUser->getId());
             $items = Item::getActiveItems($currentUser->getId());
         } else {
-            $items = Item::getActiveItems(); 
+            $items = Item::getAllActivesItems(); 
         }
 
         (new View("item"))->show([

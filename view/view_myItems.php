@@ -185,6 +185,7 @@
         </div>
     <?php endif; ?>
 </div>
+<?php include 'view/utilités/footer.php'; ?>
 
 </body>
 </html>

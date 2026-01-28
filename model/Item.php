@@ -142,6 +142,19 @@ class Item extends Model {
         return $items;
     }
 
+    public static function getAllActivesItems() : array {
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT v.* FROM v_items_status v 
+                WHERE (v.not_purchased_direct_sale OR (v.is_auction AND v.end_at > :now AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                ORDER BY v.end_at ASC";
+        $query = self::execute($sql, ['now' => $now]);
+        $items = [];
+        foreach ($query->fetchAll() as $row) {
+            $items[] = self::makeItemFromRow($row);
+        }
+        return $items;
+    }
+
     public static function getUserActiveItems(int $user_id) : array {
         $now = AppTime::get_current_datetime();
         $sql = "SELECT DISTINCT v.* FROM v_items_status v JOIN bids b ON v.id = b.item
