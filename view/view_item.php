@@ -198,7 +198,7 @@
                 </a>
             </div>
             <div class="col">
-                <a href="user/profile" class="text-decoration-none text-white">
+                <a href="<?= $web_root ?>profile" class="text-decoration-none text-white">
                     <i class="bi bi-gear fs-4 d-block"></i>
                     <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Profile</span>
                 </a>
