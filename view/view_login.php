@@ -48,16 +48,17 @@
             <h3 class="colorYellow fs-5 mb-3">For Debug Purpose</h3>
             
             <div class="d-flex flex-column gap-1 mb-3 small-text">
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/boverhaegen@epfc.eu" class="email fw-bold">boverhaegen@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/mamichel@epfc.eu" class="email fw-bold">mamichel@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/quhouben@epfc.eu" class="email fw-bold">quhouben@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/xapigeolet@epfc.eu" class="email fw-bold">xapigeolet@epfc.eu</a></div>
+                <!-- impossible de mettre tout l'email à cause du htaccess -->
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/boverhaegen" class="email fw-bold">boverhaegen@epfc.eu</a></div>
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/mamichel" class="email fw-bold">mamichel@epfc.eu</a></div>
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/quhouben" class="email fw-bold">quhouben@epfc.eu</a></div>
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/xapigeolet" class="email fw-bold">xapigeolet@epfc.eu</a></div>
             </div>
 
             <div class="d-flex flex-column gap-1 small-text">
-                <a href="" class="colorGreen fw-bold">Restore original data</a>
-                <a href="#" class="colorYellow fw-bold">Backup personal data</a>
-                <a href="#" class="colorYellow fw-bold">Restore personal data</a>
+                <a href="<?= $web_root ?>setup/install" class="colorGreen fw-bold">Restore original data</a>
+                <a href="<?= $web_root ?>setup/export" class="colorYellow fw-bold">Backup personal data</a>
+                <a href="<?= $web_root ?>setup/install/true" class="colorYellow fw-bold">Restore personal data</a>
             </div>
         </div>
     </div>

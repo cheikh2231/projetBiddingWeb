@@ -38,8 +38,9 @@ class ControllerLogin extends Controller {
         $this->redirect("item", "index"); 
     }
     //fonction pour log en Debug
-    public function logForDebug(string $emailUser):void{
-       $this->is_validate_login($emailUser);
+    public function logForDebug():void{
+        $userEmail = $_GET['param1']."@epfc.eu";
+       $this->is_validate_login($userEmail);
     }
     //fonction logout
     public function logout() : void {
