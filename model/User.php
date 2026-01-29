@@ -143,6 +143,8 @@ class User extends Model {
     public function persist(): void{
         self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
         ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+        //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
+        $this->id = self::lastInsertId();
     }
 
 

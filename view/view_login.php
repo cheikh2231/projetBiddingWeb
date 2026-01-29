@@ -48,14 +48,10 @@
             <h3 class="colorYellow fs-5 mb-3">For Debug Purpose</h3>
             
             <div class="d-flex flex-column gap-1 mb-3 small-text">
-                <!-- <div>Login as <a href="<?= $web_root ?>login/logForDebug/boverhaegen@epfc.eu" class="email fw-bold">boverhaegen@epfc.eu</a></div>
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/boverhaegen@epfc.eu" class="email fw-bold">boverhaegen@epfc.eu</a></div>
                 <div>Login as <a href="<?= $web_root ?>login/logForDebug/mamichel@epfc.eu" class="email fw-bold">mamichel@epfc.eu</a></div>
                 <div>Login as <a href="<?= $web_root ?>login/logForDebug/quhouben@epfc.eu" class="email fw-bold">quhouben@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/xapigeolet@epfc.eu" class="email fw-bold">xapigeolet@epfc.eu</a></div> -->
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/<?= str_replace('.', '%2E', urlencode('boverhaegen@epfc.eu')) ?>" class="email fw-bold">boverhaegen@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/<?= str_replace('.', '%2E', urlencode('mamichel@epfc.eu')) ?>" class="email fw-bold">mamichel@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/<?= str_replace('.', '%2E', urlencode('quhouben@epfc.eu')) ?>" class="email fw-bold">quhouben@epfc.eu</a></div>
-                <div>Login as <a href="<?= $web_root ?>login/logForDebug/<?= str_replace('.', '%2E', urlencode('xapigeolet@epfc.eu')) ?>" class="email fw-bold">xapigeolet@epfc.eu</a></div>
+                <div>Login as <a href="<?= $web_root ?>login/logForDebug/xapigeolet@epfc.eu" class="email fw-bold">xapigeolet@epfc.eu</a></div>
             </div>
 
             <div class="d-flex flex-column gap-1 small-text">

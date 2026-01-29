@@ -24,17 +24,17 @@
         <form action="<?= $web_root ?>signup/signup" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-envelope"></i></span>
-                <input type="text" name="email" class="form-control custom-input" placeholder="Email" aria-label="Email">
+                <input type="text" name="email" value="<?= $email??'' ?>" class="form-control custom-input" placeholder="Email" aria-label="Email">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
-                <input type="text" name="fullname" class="form-control custom-input" placeholder="Full Name" aria-label="FullName">
+                <input type="text" name="fullname" value="<?= $fullname??'' ?>" class="form-control custom-input" placeholder="Full Name" aria-label="FullName">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person-circle"></i></span>
-                <input type="text" name="pseudo" class="form-control custom-input" placeholder="Pseudo" aria-label="Pseudo">
+                <input type="text" name="pseudo" value="<?= $pseudo??'' ?>" class="form-control custom-input" placeholder="Pseudo" aria-label="Pseudo">
             </div>
 
             <div class="input-group mb-3">
