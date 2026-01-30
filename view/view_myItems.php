@@ -20,7 +20,7 @@
     </div>
 </header>
 
-<div class="container py-5">
+<div class="container py-5 ">
 
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary">Active Items</h4>
@@ -56,7 +56,6 @@
 </div>
 
 <?php include 'view/utilités/footer.php'; ?>
->>>>>>> master
 
 </body>
 </html>

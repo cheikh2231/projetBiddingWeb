@@ -2,10 +2,9 @@
 body {
     background: linear-gradient(180deg, #0b1324, #0e1a33);
     color: #ffffff;
-<<<<<<< HEAD
-=======
+
     padding-bottom: 150px;
->>>>>>> master
+
 }
 
 
@@ -118,14 +117,6 @@ body {
     margin-top: 10px;
 }
 
-<<<<<<< HEAD
-body {
-    
-    padding-bottom: 70px; 
-}
-=======
->>>>>>> master
-
 .footer .bi {
    
     margin-bottom: -2px;
@@ -183,13 +174,9 @@ body {
     color: #4299e1; 
     font-weight: bold;
     font-size: 1.2rem;
-<<<<<<< HEAD
-}
-=======
-}
 
+}
 .footer{
     background: linear-gradient(180deg, #0b1324, #0e1a33);
      color: #ffffff;
 }
->>>>>>> master
