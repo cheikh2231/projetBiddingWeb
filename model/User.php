@@ -209,4 +209,27 @@ private function fetchItems(string $sql, array $params): array {
     
         return $count > 0;
     }
+
+    public function getMostLoyalBidder() : ?User {
+
+        $buyerStats = [];
+        if(!empty($this->getSoldItems())){
+            foreach ($this->getSoldItems() as $soldItem) {
+                $winner = $soldItem->getWinner();
+            
+                if ($winner != null) {
+                    $winnerId = $winner->getId();
+                    $buyerStats[$winnerId] = ($buyerStats[$winnerId] ?? 0) + 1;
+                }
+            }
+
+            
+            $mostLoyalBuyerId = null;
+                if (!empty($buyerStats)) {
+                    arsort($buyerStats); 
+                    $mostLoyalBuyerId = array_key_first($buyerStats);
+                }
+            }
+        return $this->getUserById($mostLoyalBuyerId);    
+    }
 }

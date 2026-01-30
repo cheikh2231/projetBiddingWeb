@@ -52,13 +52,13 @@
                 </div>
             </div>
 
-            <!-- <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4">
                 <div class="card bg-dark text-white p-2">
-                    <h5 class="text-white-50">AUTRE STAT 2</h5>
-                    <h1 class="mb-2 text-white">Valeur</h1>
-                    <h5 class="text-white-50">Description</h5>
+                    <h5 class="text-white-50">LOYAL BIDDER</h5>
+                    <h1 class="mb-2 text-white"><?= $currentUser->getMostLoyalBidder()->getPseudo() ?></h1>
+                    <h5 class="text-white-50">Most recuring winning bidder</h5>
                 </div>
-            </div> -->
+            </div>
         </div>
         <?php if (!empty($sold)) : ?>
         

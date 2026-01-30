@@ -69,11 +69,6 @@ body {
     padding: 15px;
 }
 
-.item-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
 
 .item-author {
     font-size: 13px;
@@ -141,7 +136,8 @@ body {
 .item-title {
     font-weight: bold;
     font-size: 1.1rem;
-    color: #ffffff;
+    color: #ff0000;
+    overflow: hidden;
 }
 
 .item-author {

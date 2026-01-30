@@ -31,7 +31,7 @@
 <div class="container py-5">
 
     <?php if (!empty($itemsUser)) : ?>
-        <h4 class="text-white">Items I'm Participating In</h4>
+        <h4 class="text-primary">Items I'm Participating In</h4>
 
         <div class="row g-4 mb-5">
             <?php foreach ($itemsUser as $item) : ?>
@@ -41,7 +41,7 @@
         </div>
     <?php endif; ?>
     <?php if (!empty($items)) : ?>
-        <h4 class="text-white">Other Available Items</h4>
+        <h4 class="text-primary">Other Available Items</h4>
         <div class="row g-4">
             <?php foreach ($items as $item) : ?>
 
