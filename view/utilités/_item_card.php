@@ -1,6 +1,6 @@
 <?php
     $pictures = $item->getPictures();
-    $itemOwner = User::getUserById($item->getOwner());
+    $itemOwner = $item->getOwner();
     $username = $itemOwner->getPseudo();
     $isNotOwner = false;
     $isMaxBidder = false;
@@ -89,19 +89,23 @@
         
     </a>
     
-    <?php if($place == "sales"):?>
+    <?php if ($item->getWinner() != null):?>
     
             <div class="item-footer-sold mt-2 pb-0 text-secondary">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-currency-euro"></i>
-                        <span>Final price € <?= number_format($item->getMaxBid(), 2) ?></span>
+                        <?php if($place == "sales"): ?>
+                            <i class="bi bi-currency-euro"></i>
+                        <?php else:?>
+                            <i class="bi bi-tag-fill"></i>
+                        <?php endif;?>
+                        <span><?= ($place == "sales") ? " Final price":" Paid" ?> € <?= number_format($item->getMaxBid(), 2) ?></span>
                     </div>
-                    
+                    <?php if($place == "sales"): ?>
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-trophy"></i>
                             <span><?= htmlspecialchars($item->getWinner()->getPseudo()) ?></span>
                         </div>
-                    
+                    <?php endif;?>
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-clock"></i>
                         <span>Closed on <?= (new DateTime($item->getBids()[0]->getCreatedAt()))->format('d/m/Y H:i:s') ?></span>

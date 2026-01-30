@@ -5,7 +5,7 @@ require_once 'model/User.php';
 
 $bids = $item->getBids();
 $pics = $item->getPictures();
-$ownerId = (int)$item->getOwner();
+$ownerId = $item->getOwner()->getId();
 
 
 $isOwner = $currentUser && ($currentUser->getId() === $ownerId);
@@ -70,7 +70,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                         <span class="fw-bold"><?= $item->getIsDirectSale() ? "Purchase" : "Bid" ?> History</span>
                         <span class="badge bg-secondary"><?= count($bids) ?> entries</span>
                     </div>
-                    <?php foreach ($bids as $bid) : $u = User::getUserById($bid->getOwner()); ?>
+                    <?php foreach ($bids as $bid) : $u = $bid->getOwner(); ?>
                         <div class="d-flex justify-content-between align-items-center border-bottom border-secondary py-2">
                             <div>
                                 <div class="fw-bold text-light small"><?= $u ? htmlspecialchars($u->getPseudo()) : "Unknown" ?></div>

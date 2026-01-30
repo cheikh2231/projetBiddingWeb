@@ -210,7 +210,7 @@ private function fetchItems(string $sql, array $params): array {
         return $count > 0;
     }
 
-    public function getMostLoyalBidder() : ?User {
+    public function getMyMostLoyalBidder() : ?User {
 
         $buyerStats = [];
         if(!empty($this->getSoldItems())){
@@ -231,5 +231,47 @@ private function fetchItems(string $sql, array $params): array {
                 }
             }
         return $this->getUserById($mostLoyalBuyerId);    
+    }
+
+    public function getPurchasesItems(): array {
+         $purchases = [];
+        foreach ($this->getAllOtherItemSold() as $item) {
+           if($item->getWinner()->getId()==$this->id){
+                $purchases[]=$item;
+           }
+        }
+        return $purchases;
+    }
+
+    private function getAllOtherItemSold(): array {
+        $now = AppTime::get_current_datetime();
+                $sql = "SELECT DISTINCT v.*
+                FROM v_items_status v join bids b ON v.id = b.item
+                WHERE  v.owner != :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
+                ORDER BY b.amount DESC";
+        return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
+    }
+
+     public function getMyItemsTopSeller() : ?User {
+
+        $sellerStats = [];
+        if(!empty($this->getPurchasesItems())){
+            foreach ($this->getPurchasesItems() as $purchasesItem) {
+                $seller = $purchasesItem->getOwner();
+            
+                if ($seller != null) {
+                    $sellerId = $seller->getId();
+                    $sellerStats[$sellerId] = ($sellerStats[$sellerId] ?? 0) + 1;
+                }
+            }
+
+            
+            $topSellerId = null;
+                if (!empty($sellerStats)) {
+                    arsort($sellerStats); 
+                    $topSellerId = array_key_first($sellerStats);
+                }
+            }
+        return $this->getUserById($topSellerId);    
     }
 }

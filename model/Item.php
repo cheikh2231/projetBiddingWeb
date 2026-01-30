@@ -27,7 +27,7 @@ class Item extends Model {
     public function getId(): ?int { return $this->id; }
     public function getTitle(): string { return $this->title; }
     public function getDescription(): string { return $this->description; }
-    public function getOwner(): int { return $this->owner; }
+        public function getOwner(): User { return User::getUserById($this->owner); } 
     public function getCreatedAt(): string { return $this->created_at; }
     public function getIsAuction(): ?bool { return $this->is_auction; }
     public function getHasBids(): bool { return $this->has_bids; }
@@ -41,7 +41,7 @@ class Item extends Model {
     public function getStartingBid(): ?float { return $this->starting_bid; }
     public function getBuyNowReached(): bool { return $this->buy_now_reached; }
 
-
+  
 
     public function setId(int $id): void { $this->id = $id; }
     public function setTitle(string $title): void { $this->title = $title; }
@@ -287,7 +287,7 @@ class Item extends Model {
         $user = null;
         if($this->isClosed()){
             if($this->getBuyNowReached() || $this->getHasBids()){
-                $user =  User::getUserById($bids[0]->getOwner());
+                $user = $bids[0]->getOwner();
             }
         }
         return $user;

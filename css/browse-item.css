@@ -58,6 +58,10 @@ body {
     background-color: #2ecc71;
     color: #fff;
 }
+.badge-blue {
+    background-color:#3b82f6;
+    color: #fff;
+}
 
 .badge-dark {
     background-color: #2b2f3a;
@@ -136,7 +140,7 @@ body {
 .item-title {
     font-weight: bold;
     font-size: 1.1rem;
-    color: #ff0000;
+    color: #ffffff;
     overflow: hidden;
 }
 

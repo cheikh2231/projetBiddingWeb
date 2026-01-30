@@ -273,4 +273,11 @@ class ControllerItem extends Controller {
         (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
+    public function purchases() : void {
+        $source = "purchases";
+        $currentUser = $this->get_user_or_false();
+        $purchases = $currentUser->getPurchasesItems();
+        (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source]);
+    }
+
 }

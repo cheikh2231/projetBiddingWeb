@@ -27,7 +27,7 @@
     </header>
 
     <div class="container  pb-5">
-        <h1 class="text-white">Completed Sales<h1>
+        <h1 class="text-white mt-4">Completed Sales<h1>
         <h5 class = "text-info-emphasis ">A snapshot of the deals you've wrapped up.</h5><br> 
         <?php if(count($sold)>0):?>
         <div class="badge-container justify-content-end p-2 mt-5">
@@ -55,8 +55,8 @@
             <div class="col-md-4 mb-4">
                 <div class="card bg-dark text-white p-2">
                     <h5 class="text-white-50">LOYAL BIDDER</h5>
-                    <h1 class="mb-2 text-white"><?= $currentUser->getMostLoyalBidder()->getPseudo() ?></h1>
-                    <h5 class="text-white-50">Most recuring winning bidder</h5>
+                    <h1 class="mb-2 text-white"><?= $currentUser->getMyMostLoyalBidder()->getPseudo() ?></h1>
+                    <h5 class="text-white-50">Who you've bought from the most</h5>
                 </div>
             </div>
         </div>

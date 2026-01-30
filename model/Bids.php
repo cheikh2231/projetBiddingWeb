@@ -16,8 +16,8 @@ class Bids extends Model {
         {}
     
 
-    public function getOwner(): int {
-        return $this->owner;
+    public function getOwner(): User {
+        return User::getUserById($this->owner);
     }
 
     public function getItem(): int {
