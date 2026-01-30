@@ -2,6 +2,7 @@
 require_once 'model/Bids.php';
 require_once 'model/User.php';
 
+
 $bids = Bids::getBids($item->getId());
 $pics = $item->getPictures();
 $ownerId = (int)$item->getOwner();
@@ -13,6 +14,7 @@ $currentPrice = $item->getMaxBid() ?? ($item->getStartingBid() > 0 ? $item->getS
 $nameWithoutFrom = (strpos($source, 'sales') !== false) ? "sales" : "browse";
 $backRoute = (strpos($source, 'items') !== false) ? "item/list" : "item/$nameWithoutFrom";
 $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg";
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,10 +31,12 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 <body data-bs-theme="dark" class="bg-primary-subtle">
 
 <header class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top">
+
     <a href="<?= $backRoute ?>"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>
     <h5 class="m-0 me-2 text-primary">Item open</h5>
     <i class="bi bi-cart4 fs-4 text-white"></i>
 </header>
+
 
 <div class="container pb-5" style="margin-bottom: 80px;">
     <div class="row">
@@ -99,6 +103,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                     </div>
 
                     <hr class="my-3 border-secondary opacity-50">
+
                      <?php if($item->isClosed() && $isOwner) : ?>
                            <?php if($item->getWinner()!== null) :?> 
                                 <strong class="text-center text-muted" ><?=$item->getWinner()->getPseudo() ?> won this item for € <?= number_format($item->getMaxBid(), 2) ?>. </strong>
@@ -117,10 +122,12 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                                     </span>
                                 <?php endif; ?>
                             </p>
+
                         </div>
 
                     <?php elseif ($isOwner): ?>
                         <div class="d-grid gap-2">
+
                             <?php if ($item->getIsAuction()): ?>
                                 <div class="input-group"><span class="input-group-text bg-secondary text-white">€</span>
                                     <input type="text" class="form-control bg-dark text-white border-secondary" value="<?= number_format($currentPrice, 2) ?>" readonly>
@@ -144,11 +151,13 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                                 <div class="d-grid"><button type="submit" name="buy_now" value="1" class="btn <?= $item->getIsAuction() ? 'btn-outline-primary border-2' : 'btn-lg btn-success fw-bold' ?>">
                                     <i class="bi bi-cart4 me-2"></i>Buy Now <?= $item->getIsAuction() ? "at € ".number_format($item->getBuyNowPrice(), 2) : "" ?>
                                 </button></div>
+
                             <?php endif; ?>
                         </form>
                     <?php endif; ?>
                 </div>
             </div>
+
 
             <div class="card mb-3 bg-dark">
                 <div class="card-body d-flex align-items-center">
@@ -162,6 +171,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
             </div>
             
             <?php if ($isOwner) : ?>
+
                 <div class="card bg-dark p-3">
                     <?php if (!$item->isClosed() && !$item->getHasBids()): ?>
                         <div class="d-grid gap-2">
@@ -182,6 +192,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 </div> 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <?php include 'view/utilités/footer.php'; ?>
 </body>
 </html>

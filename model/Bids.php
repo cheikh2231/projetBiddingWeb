@@ -3,20 +3,18 @@
 require_once "framework/Model.php";
 require_once "utils/AppTime.php";
 
+
 class Bids extends Model {
 
-    private int $owner;
-    private int $item;
-    private string $created_at;
-    private float $amount;
 
-    public function __construct(int $owner, int $item, string $created_at, float $amount) {
-        $this->owner = $owner;
-        $this->item = $item;
-        $this->created_at = $created_at;
-        $this->amount = $amount;
-    }
 
+    public function __construct(  
+        private int $owner,
+        private int $item,
+        private string $created_at,
+        private float $amount) 
+        {}
+    
 
     public function getOwner(): int {
         return $this->owner;
@@ -80,8 +78,12 @@ class Bids extends Model {
             'item'       => $this->item,
             'created_at' => $this->created_at,
             'amount'     => $this->amount
+
         ]);
 
         return true; 
-    }
+    
+}  
+
 }
+

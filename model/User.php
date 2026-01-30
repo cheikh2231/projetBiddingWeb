@@ -201,4 +201,12 @@ private function fetchItems(string $sql, array $params): array {
         return false;
     }
 }
+
+    public function hasBidIn(Item $item) : bool {
+        $sql = "SELECT COUNT(*) FROM `v_items_status` v join bids b on b.item = v.id WHERE b.item = ? and b.owner = ?";
+        $res = self::execute($sql, [$item->getId(),$this->id]);
+        $count = $res->fetchColumn(); 
+    
+        return $count > 0;
+    }
 }

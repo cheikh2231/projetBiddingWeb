@@ -2,7 +2,9 @@
 body {
     background: linear-gradient(180deg, #0b1324, #0e1a33);
     color: #ffffff;
+
     padding-bottom: 150px;
+
 }
 
 
@@ -115,7 +117,6 @@ body {
     margin-top: 10px;
 }
 
-
 .footer .bi {
    
     margin-bottom: -2px;
@@ -173,8 +174,8 @@ body {
     color: #4299e1; 
     font-weight: bold;
     font-size: 1.2rem;
-}
 
+}
 .footer{
     background: linear-gradient(180deg, #0b1324, #0e1a33);
      color: #ffffff;
