@@ -129,10 +129,11 @@ public function getUnsoldItems(): array {
 
 public function getSoldItems(): array {
     $now = AppTime::get_current_datetime();
-    $sql = "SELECT * FROM v_items_status 
-            WHERE owner = :user_id AND (buy_now_reached = 1 OR (end_at < :now AND has_bids = 1)) 
-            ORDER BY end_at DESC";
-    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+            $sql = "SELECT DISTINCT v.*
+            FROM v_items_status v join bids b ON v.id = b.item
+            WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
+            ORDER BY b.created_at DESC";
+    return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
 }
 
 
@@ -200,4 +201,12 @@ private function fetchItems(string $sql, array $params): array {
         return false;
     }
 }
+
+    public function hasBidIn(Item $item) : bool {
+        $sql = "SELECT COUNT(*) FROM `v_items_status` v join bids b on b.item = v.id WHERE b.item = ? and b.owner = ?";
+        $res = self::execute($sql, [$item->getId(),$this->id]);
+        $count = $res->fetchColumn(); 
+    
+        return $count > 0;
+    }
 }

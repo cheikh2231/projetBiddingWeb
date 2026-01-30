@@ -13,7 +13,11 @@ class ControllerItem extends Controller {
             $itemsUser = Item::getUserActiveItems($currentUser->getId());
             $items = Item::getActiveItems($currentUser->getId());
         } else {
+<<<<<<< HEAD
             $items = Item::getActiveItems(); 
+=======
+            $items = Item::getAllActivesItems(); 
+>>>>>>> master
         }
 
         (new View("item"))->show([
@@ -74,6 +78,7 @@ class ControllerItem extends Controller {
     }
     public function list(): void {
         $user = $this->get_user_or_redirect();
+<<<<<<< HEAD
         $itemsUser = $user->myItemsAtives();
         $unsold = $user->getUnsoldItems();
         $sold = $user->getsoldItems();
@@ -81,6 +86,18 @@ class ControllerItem extends Controller {
             "itemsUser" => $itemsUser,
             "unsold" => $unsold,
             "sold" => $sold
+=======
+
+        $itemsUser = $user->myItemsAtives();
+        $unsold = $user->getUnsoldItems();
+        $sold = $user->getsoldItems();
+
+        (new View("myItems"))->show([
+            "itemsUser" => $itemsUser,
+            "unsold" => $unsold,
+            "sold" => $sold,
+            "currentUser"=>$user
+>>>>>>> master
         ]);
     }
 
@@ -107,7 +124,11 @@ class ControllerItem extends Controller {
     
     public function edit() : void {
         $errors = [];
+<<<<<<< HEAD
         $source = $_GET['param2'] ?? "from-items";
+=======
+        $source = $_GET['param2'] ?? "items";
+>>>>>>> master
 
         if (!isset($_GET['param1'])) {
             $this->redirect("item", "list");
@@ -177,7 +198,11 @@ class ControllerItem extends Controller {
 
     public function add() : void {
         $errors = [];
+<<<<<<< HEAD
         $source = "from-items";
+=======
+        $source = "items";
+>>>>>>> master
         $newItem = null; 
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -252,4 +277,15 @@ class ControllerItem extends Controller {
             "source" => $source 
         ]);
     }
+<<<<<<< HEAD
+=======
+
+
+    public function sales() : void {
+        $source = "sales";
+         $currentUser = $this->get_user_or_false();
+        $sold = $currentUser->getSoldItems();
+        (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
+    }
+>>>>>>> master
 }

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,11 +10,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/add-edit.css">
 </head>
-<body>
+
+<body data-bs-theme="dark" class="bg-primary-subtle">
     <?php
         $isEdit = $item && $item->getId();
         $titlePage = $isEdit ? "Edit Item" : "Add Item";
-        $formAction = $isEdit ? "item/edit/" . $item->getId() . "/$source" : "item/add";
+        $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+
     ?>
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
     <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source : 'item/browse' ?>" class="position-absolute start-0 ms-2">
@@ -30,7 +33,8 @@
     </button>
 </header>
 
-<div class="container mb-5">
+
+<div class="container mb-5 py-5">
     <form id="editItemForm" action="<?= $formAction ?>" method="POST">
 
         <div class="card-custom mb-4">
@@ -157,6 +161,10 @@
     </form>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php include 'view/utilités/footer.php'; ?>
+>>>>>>> master
 </body>
 </html>
