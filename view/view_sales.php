@@ -65,11 +65,12 @@
             <div class="row g-4">
                 <?php foreach ($sold as $item) : ?>
 
-                    <?php $bids = Bids::getBids($item->getId()); ?>
+                    <?php $bids =$item->getBids(); ?>
 
                    <?php include('view/utilités/_item_card.php')?>
-                  
+                    
                 <?php endforeach; ?>
+
             </div>
 
         <?php endif; ?>

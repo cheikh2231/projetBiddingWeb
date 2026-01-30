@@ -86,5 +86,21 @@
                 <?php endif;?> 
             <?php endif;?> 
         </div>
+        
     </a>
+    <div class="item-footer-sold mt-2 pb-0 text-secondary">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-currency-euro"></i>
+                <span>Final price € <?= number_format($item->getMaxBid(), 2) ?></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-trophy"></i>
+                <span><?= htmlspecialchars($item->getWinner()->getPseudo()) ?></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock"></i>
+                <span>Closed on <?= (new DateTime($item->getBids()[0]->getCreatedAt()))->format('d/m/Y H:i:s') ?></span>
+            </div>
+    </div>
+    
 </div>

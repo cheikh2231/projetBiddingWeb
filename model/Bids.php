@@ -50,24 +50,7 @@ class Bids extends Model {
 
 
 
-    public static function getBids(int $id_item): ?array {
-        $allbid = [];
-       
-        $sql = "SELECT * FROM bids b WHERE item = :id_item ORDER BY b.created_at DESC";
-        $res = self::execute($sql, ['id_item' => $id_item]);
-        $bids = $res->fetchAll(); 
-        
-        foreach ($bids as $i) {
-            $allbid[] = new Bids(
-                $i["owner"], 
-                $i["item"], 
-                $i["created_at"], 
-                $i["amount"]
-            );
-        }
-        
-        return empty($allbid) ? null : $allbid;
-    }
+
 
     public function add(): bool {
         $sql = "INSERT INTO bids (owner, item, created_at, amount) 

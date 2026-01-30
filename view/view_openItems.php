@@ -3,7 +3,7 @@ require_once 'model/Bids.php';
 require_once 'model/User.php';
 
 
-$bids = Bids::getBids($item->getId());
+$bids = $item->getBids();
 $pics = $item->getPictures();
 $ownerId = (int)$item->getOwner();
 

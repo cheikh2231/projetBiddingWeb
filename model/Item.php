@@ -283,7 +283,7 @@ class Item extends Model {
     }
 
     public function getWinner() : ?User {
-        $bids = Bids::getBids($this->id);
+        $bids = $this->getBids();
         $user = null;
         if($this->isClosed()){
             if($this->getBuyNowReached() || $this->getHasBids()){
@@ -299,5 +299,23 @@ class Item extends Model {
         return $ownerId !== false ? User::getUserById($ownerId) : null;
     }
 
+    public function getBids(): ?array {
+        $allbid = [];
+       
+        $sql = "SELECT * FROM bids b WHERE item = :id_item ORDER BY b.created_at DESC";
+        $res = self::execute($sql, ['id_item' =>$this->id]);
+        $bids = $res->fetchAll(); 
+        
+        foreach ($bids as $i) {
+            $allbid[] = new Bids(
+                $i["owner"], 
+                $i["item"], 
+                $i["created_at"], 
+                $i["amount"]
+            );
+        }
+        
+        return empty($allbid) ? null : $allbid;
+    }
 
 }
