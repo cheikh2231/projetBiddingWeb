@@ -1,0 +1,86 @@
+.card {
+   max-width: 100%;
+
+}
+
+
+.card > img.card-img-top {
+  width: 100%;
+  height: 350px;      
+  object-fit: cover;
+  display: block;
+
+}
+.cas.selected {
+    border: 2px solid #106ed9;
+}
+
+.img-thumbnail{
+    border: none;
+}
+
+.btn-black:hover{
+  color: antiquewhite;
+}
+.bid-panel-dark {
+    background-color: #0b111a !important; /* Le noir bleuté profond de l'image */
+    border-radius: 8px;
+    padding: 20px;
+    color: #ffffff !important;
+    font-family: sans-serif;
+    margin-top: 20px;
+    border: 1px solid #1e293b;
+}
+
+.bid-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bid-title-text {
+    color: #94a3b8 !important; /* Gris bleuté pour le titre */
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.bid-badge {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    padding: 2px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.bid-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #3b1e1e;
+}
+
+.bid-row-item:last-child {
+    border-bottom: none;
+}
+
+.bidder-name-text {
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.bid-date-text {
+    color: #64748b !important;
+    font-size: 13px;
+}
+
+.bid-price-green {
+    color: #10b981 !important;
+    font-weight: bold;
+    font-size: 18px;
+}
