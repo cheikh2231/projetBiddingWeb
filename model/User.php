@@ -183,7 +183,7 @@ private function fetchItems(string $sql, array $params): array {
         $res = self::execute($sql, [
             $item->getTitle(),
             $item->getDescription(),
-            $item->getOwner(),
+            $item->getOwner()->getId(),
             $item->getCreatedAt(),
             $item->getBuyNowPrice(),
             $item->getDurationDays(),

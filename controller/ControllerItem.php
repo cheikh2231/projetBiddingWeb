@@ -280,4 +280,16 @@ class ControllerItem extends Controller {
         (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
+    public function manage_images() : void{
+        $user = $this->get_user_or_false();
+        if(!isset($_GET['param1'])){
+           $this->redirect('item','index');
+           return;
+        }
+
+        $item = Item::getItemWithId($_GET['param1']);
+        (new View('manage_images'))->show(["item"=>$item]);
+
+    }
+
 }

@@ -9,6 +9,11 @@
         $isMaxBidder = $item->getMaxBidder()!=null ?  $item->getMaxBidder()==$currentUser:false;
     }
 ?>
+<head>    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
     <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
         class="item-card d-block position-relative flex-grow-1">
@@ -17,19 +22,28 @@
             <div>
                 <?php if($isNotOwner && $currentUser->hasBidIn($item)) :?>
                         <?php if ($isMaxBidder): ?>
-                            <span class="badge badge-green">Highest Bidder</span>
+                            <span class="badge badge-green"> 
+                                <i class="bi bi-trophy"></i> Highest Bidder
+                            </span>
                         <?php else : ?>
-                            <span class="badge badge-dark">Bidder</span>
+                            <span class="badge badge-dark">
+                                 Bidder
+                            </span>
                         <?php endif; ?>
                  <?php endif;?>
             </div>
 
             <div class="d-flex flex-column align-items-end gap-1">
                 <?php if ($item->getIsAuction()) : ?>
-                    <span class="badge badge-auction">Auction</span>
+                    <span class="badge badge-auction">
+                        <i class="fa-solid fa-gavel"></i> Auction
+                    </span>
                 <?php endif; ?>
                 <?php if ($item->getHasBuyNow()) : ?>
-                    <span class="badge badge-buy">Buy Now</span>
+                    
+                    <span class="badge badge-buy"> 
+                        <i class="bi bi-bag"></i> Buy Now
+                    </span>
                 <?php endif; ?>
             </div>
         </div>
@@ -89,7 +103,7 @@
         
     </a>
     
-    <?php if ($item->getWinner() != null):?>
+    <?php if ($item->getWinner() != null && ($place=="sales" || $place == "purchases")):?>
     
             <div class="item-footer-sold mt-2 pb-0 text-secondary">
                     <div class="d-flex align-items-center gap-2">

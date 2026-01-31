@@ -23,8 +23,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($item->getTitle()) ?></title>
     <base href="<?= $web_root ?>"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
     <link href="css/open.css" rel="stylesheet" type="text/css"/>
 </head>
 
@@ -176,7 +175,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                     <?php if (!$item->isClosed() && !$item->getHasBids()): ?>
                         <div class="d-grid gap-2">
                             <a href="item/edit/<?= $item->getId() ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-pencil me-2"></i> Edit Details</a>
-                            <a href="manage_images.php?id=<?= $item->getId() ?>" class="btn btn-outline-info btn-sm"><i class="bi bi-image me-2"></i> Manage Images</a>
+                            <a href="item/manage_images/<?= $item->getId() ?>" class="btn btn-outline-info btn-sm"><i class="bi bi-image me-2"></i> Manage Images</a>
                             <a href="item/delete/<?= $item->getId() ?>" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-2"></i> Delete Item</a>
                         </div>
                     <?php else: ?>
