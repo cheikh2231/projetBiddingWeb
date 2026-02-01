@@ -11,7 +11,11 @@
 <body>
     <div class="title">Error</div>
     <div class="main">
-        <?= $error ?>
+        <div class="container mt-5">
+    <div>
+        <h4 class="alert-heading">Oups ! Quelque chose s'est mal passé.</h4>
+    <a href="item/index" class="btn btn-secondary mt-3">Retour au menu</a>
+</div>
     </div>
 </body>
 
