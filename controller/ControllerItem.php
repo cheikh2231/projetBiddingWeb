@@ -104,9 +104,7 @@ class ControllerItem extends Controller {
     public function edit(): void {
         $user = $this->get_user_or_redirect();
         $id = $_GET['param1'] ?? null;
-        if(isset($_GET["param2"])){
-          $source = $this->getSourceNature($_GET["param2"]);
-        }
+        $source = "from-items";
         $item = Item::getItemById($id);
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
@@ -263,7 +261,7 @@ class ControllerItem extends Controller {
         }
 
 
-        $item = Item::getItemWithId($_GET['param1']);
+        $item = Item::getItemById($_GET['param1']);
         (new View('manage_images'))->show(["item"=>$item]);
 
     }

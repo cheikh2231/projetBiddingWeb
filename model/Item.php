@@ -102,8 +102,8 @@ class Item extends Model {
         $hasStarting = ($this->starting_bid !== null && $this->starting_bid > 0);
         $hasBuyNow = ($this->buy_now_price !== null && $this->buy_now_price > 0);
 
-        if (!$hasStarting && !$hasByNow) {
-            $errors['startingAndOrSuale'][] = "An item must have a starting bid or a buy now price.";
+        if (!$hasStarting && !$hasBuyNow) {
+            $errors['startingAndOrSale'][] = "An item must have a starting bid or a buy now price.";
         }else if($hasStarting && $this->is_direct_sale){
              $errors['startingAndOrSale'][] = "cannot create both auction and direct sale.";
         }else
