@@ -5,14 +5,14 @@ require_once 'model/User.php';
 
 $bids = $item->getBids();
 $pics = $item->getPictures();
-$ownerId = $item->getOwner()->getId();
+$owner = $item->getOwner();
 
 
-$isOwner = $currentUser && ($currentUser->getId() === $ownerId);
+
+$isOwner = $currentUser && ($currentUser->getId() === $owner->getId());
 
 $currentPrice = $item->getMaxBid() ?? ($item->getStartingBid() > 0 ? $item->getStartingBid() : $item->getBuyNowPrice());
-$nameWithoutFrom = (strpos($source, 'sales') !== false) ? "sales" : "browse";
-$backRoute = (strpos($source, 'items') !== false) ? "item/list" : "item/$nameWithoutFrom";
+$backRoute ="item/$source";
 $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg";
 
 ?>
@@ -54,7 +54,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
             <?php if (!empty($pics)) : ?>
                 <div class="d-flex flex-wrap mb-3">
                     <?php foreach ($pics as $index => $p) : ?>
-                        <a href="item/open/<?= $item->getId() ?>/<?= $source ?>/<?= $index + 1 ?>">
+                        <a href="item/open/<?= $item->getId() ?>/from<?= $source ?>/<?= $index + 1 ?>">
                             <div class="cas me-2 <?= ($index === (max(0, $idImg - 1))) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
                                 <img src="<?= $web_root . $p ?>" class="img-thumbnail">
                             </div>
@@ -139,7 +139,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                             <small class="text-center text-muted" style="font-size: 0.75rem;">You cannot bid on your own listing.</small>
                         </div>
                     <?php else: ?>
-                        <form method="post" action="item/open/<?= $item->getId() ?>/<?= $source ?>">
+                        <form method="post" action="item/open/<?= $item->getId() ?>/from-<?= $source ?>">
                             <?php if ($item->getIsAuction()): $minBid = ($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid()) + 1; ?>
                                 <div class="input-group mb-3"><span class="input-group-text bg-secondary text-white">€</span>
                                     <input type="number" name="amount" class="form-control bg-dark text-white border-secondary" min="<?= $minBid ?>" value="<?= $minBid ?>" required>
@@ -160,11 +160,11 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 
             <div class="card mb-3 bg-dark">
                 <div class="card-body d-flex align-items-center">
-                    <?php $uPic = Item::getUserPic($ownerId); ?>
+                    <?php $uPic = $owner->getPicturePath(); ?>
                     <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
                     <div>
-                        <div class="fw-bold text-light"><?= htmlspecialchars(Item::itemUserName($ownerId)) ?></div>
-                        <div class="text-muted small"><?= Item::getUserRole($ownerId) === "user" ? "Member" : "Admin" ?></div>
+                        <div class="fw-bold text-light"><?= htmlspecialchars($owner->getPseudo()) ?></div>
+                        <div class="text-muted small"><?= $owner->getRole() === "user" ? "Member" : "Admin" ?></div>
                     </div>
                 </div>
             </div>

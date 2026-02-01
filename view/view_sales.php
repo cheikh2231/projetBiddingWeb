@@ -69,7 +69,7 @@
                    <?php include('view/utilités/_item_card.php')?>
                     
                 <?php endforeach; ?>
-
+ 
             </div>
 
         <?php endif; ?>

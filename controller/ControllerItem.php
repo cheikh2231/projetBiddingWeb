@@ -6,23 +6,26 @@ require_once 'model/User.php';
 class ControllerItem extends Controller {
     
     public function browse(): void {
-       
         $currentUser = $this->get_user_or_false();
-        $itemsUser = [];
+        $itemsUserBidded = [];
+
         if ($currentUser) {
-            $itemsUser = Item::getUserActiveItems($currentUser->getId());
-            $items = Item::getActiveItems($currentUser->getId());
+           
+            $itemsUserBidded = $currentUser->getBiddedItems();
+            
+
+            $allItems = Item::getAllActivesItems();
+            $items = array_filter($allItems, function($i) use ($currentUser) {
+                return $i->getOwner()->getId() !== $currentUser->getId() && !$currentUser->hasBidIn($i);
+            });
         } else {
-
-            $items = Item::getAllActivesItems(); 
-
+            
+            $items = Item::getAllActivesItems();
         }
 
         (new View("item"))->show([
-            "itemsUser" => $itemsUser, 
+            "itemsUser" => $itemsUserBidded, 
             "items" => $items,
-            "isGuest" => ($currentUser === false),
-        
             "currentUser" => $currentUser
         ]);
     }
@@ -32,15 +35,22 @@ class ControllerItem extends Controller {
     }
 
     public function open(): void {
+
         $id = $_GET['param1'] ?? "";
+        if(isset($_GET["param2"])){
+          $source = $this->getSourceNature($_GET["param2"]);
+        }
         if ($id === "") {
             $this->redirect("item", "browse");
             return;
         }
 
-        $source = $_GET['param2'] ?? "browse";
+      
         $idImg = $_GET["param3"] ?? 0;
-        $item = Item::getItemWithId($id);
+        $item = Item::getItemById($id);
+        if (!$item) {
+            throw new Exception("Item not found"); 
+        }        
         $currentUser = $this->get_user_or_false();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -52,16 +62,16 @@ class ControllerItem extends Controller {
 
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id, $source, $idImg);
+                    $this->redirect("item", "open", $id, "from-".$source, $idImg);
                     return; 
                 }
             }
 
             if (isset($_POST['amount'])) {
                 $amount = floatval($_POST['amount']);
-                $newBid = new Bids($currentUser->getId(), $id, date('Y-m-d H:i:s'), $amount);
+                $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
                 $newBid->add();
-                $this->redirect("item", "open", $id, $source, $idImg);
+                $this->redirect("item", "open", $id, "from-".$source, $idImg);
                 return;
             }
         }
@@ -91,48 +101,19 @@ class ControllerItem extends Controller {
         ]);
     }
 
-    public function delete(): void {
-         if (!isset($_GET["param1"]) || $_GET["param1"] === "") {
-            $this->redirect("item", "list"); 
-            return;
-        }else {
-            $id = $_GET['param1'];
-            $item = Item::getItemWithId($id);
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (isset($_POST['delete'])) {
-                    if ($item->delete()) {
-                        $this->redirect("item", "list");
-                        return; 
-                    }             
-                }
-            }
-            (new View("deleteItems"))->show([
-                "item" => $item
-            ]);
+    public function edit(): void {
+        $user = $this->get_user_or_redirect();
+        $id = $_GET['param1'] ?? null;
+        if(isset($_GET["param2"])){
+          $source = $this->getSourceNature($_GET["param2"]);
         }
-    }
-    
-    public function edit() : void {
-        $errors = [];
-
-        $source = $_GET['param2'] ?? "items";
-
-
-        if (!isset($_GET['param1'])) {
+        $item = Item::getItemById($id);
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
-            return; 
+            return;
         }
 
-        $item = Item::getItemWithId($_GET['param1']);
-
- 
-
-    if ($item==null) {
-        $this->redirect("item", "index"); 
-        return;
-    }
-
-        $item = Item::getItemWithId($_GET['param1']);
+        $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            
             $item->setTitle(trim($_POST['title'] ?? ''));
@@ -140,40 +121,33 @@ class ControllerItem extends Controller {
             $item->setDurationDays((int)$_POST['duration']);
             
             $start_bid = floatval($_POST['starting'] ?? null);
+
             $sale_price = floatval($_POST['sale_price'] ?? null);
+
             $instant_price = floatval($_POST['instant_price'] ?? null);
-            
-            $item->setStartingBid($start_bid);
 
+            $buy_now_price = null;
             if ($start_bid != null && $start_bid > 0) {
-                $item->setBuyNowPrice($instant_price>0 ? $instant_price:null);
+
+                $buy_now_price = $instant_price>0 ? $instant_price:null;
+
             } else if ($sale_price != null && $sale_price > 0) {
-                $item->setBuyNowPrice($sale_price);
-            }
-            $item->setIsDirectSale($sale_price > 0);
+                
+                $buy_now_price = $sale_price;
 
-          
-            $errors['title'] = Item::validateTitle($item->getTitle());
-            $errors['description'] = Item::validateDescription($item->getDescription());
-            $errors['duration'] = Item::validateDuration($item->getDurationDays());
+            } 
 
-            $typeErrors = $item->validateStartingAndSale();
-            $typePrice = $item->validatePurchasePrice();
-            
-            if (!empty($typeErrors)) {
-                $errors['coupleStartingAndDirect'] = $typeErrors;
-            }
-            if (!empty($typePrice)) {
-                $errors['instant'] = $typePrice;
-            }
-
-            $errors = array_filter($errors);
+            $item->setStartingBid($start_bid);
+            $item->setBuyNowPrice($buy_now_price);
+            if($sale_price !== null && $sale_price>0 ){
+                $item->setIsDirectSale(true);
+            }else 
+                $item->setIsDirectSale(false);
+            $errors = $item->persist();
 
             if (empty($errors)) {
-                if ($item->update()) {
-                    $this->redirect("item", "open", $item->getId(), $source);
-                    return;
-                }
+                $this->redirect("item", "open", $item->getId(), "from-items");
+                return;
             }
         }
 
@@ -184,85 +158,83 @@ class ControllerItem extends Controller {
         ]);
     }
 
-    public function add() : void {
+    public function add(): void {
+        $user = $this->get_user_or_redirect();
         $errors = [];
-
-        $source = "items";
-
-        $newItem = null; 
+        $newItem = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
             $now = AppTime::get_current_datetime();
-            $user = $this->get_user_or_redirect();
-            
-            $title = trim($_POST['title'] ?? '');
-            $description = trim($_POST['description'] ?? '');
-            $duration = (int)($_POST['duration'] ?? 0);
- 
-            $end_at = (clone(new DateTime($now)))->add(new DateInterval("P{$duration}D"));
-            
-            $start_bid = isset($_POST['starting']) && $_POST['starting'] !== '' ? floatval($_POST['starting']) : null;
-            $sale_price = isset($_POST['sale_price']) && $_POST['sale_price'] !== '' ? floatval($_POST['sale_price']) : null;
-            $instant_price = isset($_POST['instant_price']) && $_POST['instant_price'] !== '' ? floatval($_POST['instant_price']) : null;
 
-            
+            $start_bid = floatval($_POST['starting'] ?? null);
+
+            $sale_price = floatval($_POST['sale_price'] ?? null);
+
+            $instant_price = floatval($_POST['instant_price'] ?? null);
+
             $buy_now_price = null;
-            if ($start_bid !== null && $start_bid > 0) {
-                $buy_now_price = ($instant_price > 0 ? $instant_price : null);
-            } else if ($sale_price !== null && $sale_price > 0) {
-                $buy_now_price = $sale_price;
-            }
+            if ($start_bid != null && $start_bid > 0) {
 
-          
+                $buy_now_price = $instant_price>0 ? $instant_price:null;
+
+            } else if ($sale_price != null && $sale_price > 0) {
+                
+                $buy_now_price = $sale_price;
+
+            } 
+
             $newItem = new Item(
-                null,
-                $title,
-                $description,
-                $user->getId(), 
+                null, 
+                trim($_POST['title'] ?? ''),
+                trim($_POST['description'] ?? ''),
+                $user->getId(),
                 $now,
-                ($start_bid > 0),           
-                false,                      
-                ($buy_now_price > 0),        
-                $end_at->format('Y-m-d H:i:s'), 
-                false,                       
-                ($sale_price > 0),           
-                ($start_bid > 0 ? $start_bid : null),
-                $buy_now_price,
-                $duration,
+                (int)($_POST['duration'] ?? 0),
                 $start_bid,
-                false                        
+                $buy_now_price
             );
 
-            
-            $errors['title'] = Item::validateTitle($newItem->getTitle());
-            $errors['description'] = Item::validateDescription($newItem->getDescription());
-            $errors['duration'] = Item::validateDuration($newItem->getDurationDays());
-            
-            $typeErrors = $newItem->validateStartingAndSale();
-            if (!empty($typeErrors)) $errors['coupleStartingAndDirect'] = $typeErrors;
-            
-            $typePrice = $newItem->validatePurchasePrice();
-            if (!empty($typePrice)) $errors['instant'] = $typePrice;
+            if($sale_price>0 ){
+                $newItem->setIsDirectSale(true);
+            }
+            $errors = $newItem->persist();
 
-            $errors = array_filter($errors);
-
-            
             if (empty($errors)) {
-                if ($user->add($newItem)) {
-                    $this->redirect("item", "open", $newItem->getId(), $source);
-                    return;
-                }
+                $this->redirect("item", "open", $newItem->getId(), "from-items");
+                return;
             }
         }
 
-        
         (new View('add_editItem'))->show([ 
             "item" => $newItem, 
             "errors" => $errors, 
-            "source" => $source 
+            "source" => "items" 
         ]);
     }
+
+    public function delete(): void {
+        $user = $this->get_user_or_redirect();
+        $id = $_GET['param1'] ?? null;
+        $item = Item::getItemById($id);
+
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) {
+            $this->redirect("item", "list");
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+           
+            if ($item->delete()) {
+                $this->redirect("item", "list");
+                return;
+            } else {
+                $errors = ["This item cannot be deleted (it might have bids)."];
+            }
+        }
+
+        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? []]);
+    }
+
 
 
 
@@ -286,10 +258,24 @@ class ControllerItem extends Controller {
            $this->redirect('item','index');
            return;
         }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+        }
+
 
         $item = Item::getItemWithId($_GET['param1']);
         (new View('manage_images'))->show(["item"=>$item]);
 
+    }
+
+    private function getSourceNature(string $s): string {
+        return match ($s) {
+            'from-browse'    => 'browse',
+            'from-items'      => 'list',
+            'from-sales'     => 'sales',
+            'from-purchases' => 'purchases',
+            default          => 'index'
+        };
     }
 
 }

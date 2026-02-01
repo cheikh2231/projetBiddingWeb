@@ -44,23 +44,29 @@
                     <input type="text" name="title" class="form-control" 
                            value="<?= htmlspecialchars($_POST['title'] ?? ($item ? $item->getTitle() : '')) ?>" 
                            placeholder="Ex: iPhone 13 Pro Max">
-                    <?php if (!empty($errors['title'])): ?>
+                    <?php if (isset($errors['title'])): ?>
                         <div class="text-danger small mt-1">
-                            <?php foreach ($errors['title'] as $error): ?>
-                                <div><i class="bi bi-exclamation-circle"></i> <?= $error ?></div>
-                            <?php endforeach; ?>
+                            <ul>
+                                <?php foreach ($errors['title'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
                         </div>
                     <?php endif; ?>
+                  
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
                     <textarea class="form-control" name="description" rows="5"><?= htmlspecialchars($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
-                    <?php if (!empty($errors['description'])): ?>
+                     
+                    <?php if (isset($errors['descrition'])): ?>
                         <div class="text-danger small mt-1">
-                            <?php foreach ($errors['description'] as $error): ?>
-                                <div><i class="bi bi-exclamation-circle"></i> <?= $error ?></div>
-                            <?php endforeach; ?>
+                            <ul>
+                                <?php foreach ($errors['description'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
                         </div>
                     <?php endif; ?>
                 </div>
@@ -69,11 +75,13 @@
                     <label class="form-label">Sale Duration (days) *</label>
                     <input type="number" name="duration" class="form-control" 
                            value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : 7)) ?>">
-                    <?php if (!empty($errors['duration'])): ?>
+                    <?php if (isset($errors['duration'])): ?>
                         <div class="text-danger small mt-1">
-                            <?php foreach ($errors['duration'] as $error): ?>
-                                <div><i class="bi bi-exclamation-circle"></i> <?= $error ?></div>
-                            <?php endforeach; ?>
+                            <ul>
+                                <?php foreach ($errors['duration'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
                         </div>
                     <?php endif; ?>
                 </div>
@@ -103,13 +111,15 @@
                             <span class="input-group-text">€</span>
                         </div>
                         
-                        <?php if (!empty($errors['coupleStartingAndDirect'])): ?>
-                            <div class="text-danger small mt-1">
-                                <?php foreach ($errors['coupleStartingAndDirect'] as $error): ?>
-                                    <div><i class="bi bi-exclamation-triangle"></i> <?= $error ?></div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+                    <?php if (isset($errors['startingAndOrSale'])): ?>
+                        <div class="text-danger small mt-1">
+                            <ul>
+                                <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
+                        </div>
+                    <?php endif; ?>
 
                         <div class="mt-3 mb-0">
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
@@ -119,13 +129,15 @@
                                     placeholder="10">
                                 <span class="input-group-text">€</span>
                             </div>
-                            <?php if (!empty($errors['instant'])): ?>
-                                <div class="text-danger small mt-1">
-                                    <?php foreach ($errors['instant'] as $error): ?>
-                                        <div><i class="bi bi-exclamation-triangle"></i> <?= $error ?></div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
+                    <?php if (isset($errors['instant_price'])): ?>
+                        <div class="text-danger small mt-1">
+                            <ul>
+                                <?php foreach ($errors['instant_price'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
+                        </div>
+                    <?php endif; ?>
                         </div>                        
                     </div>
                 </div>
@@ -144,13 +156,15 @@
                                 placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
                         </div>
-                        <?php if (!empty($errors['coupleStartingAndDirect'])): ?>
-                            <div class="text-danger small mt-1">
-                                <?php foreach ($errors['coupleStartingAndDirect'] as $error): ?>
-                                    <div><i class="bi bi-exclamation-triangle"></i> <?= $error ?></div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+                    <?php if (isset($errors['startingAndOrSale'])): ?>
+                        <div class="text-danger small mt-1">
+                            <ul>
+                                <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                    <li><span class="text-danger"><?= $i ?></span></li>
+                                <?php endforeach;?>
+                            </ul> 
+                        </div>
+                    <?php endif; ?>
                     </div>
                 </div>
 

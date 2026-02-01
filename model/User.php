@@ -110,47 +110,61 @@ class User extends Model {
         return $errors;
     }
 
-
-public function myItemsAtives(): array {
-    $now = AppTime::get_current_datetime();
-    $sql = "SELECT * FROM v_items_status 
-            WHERE owner = :user_id AND end_at > :now AND buy_now_reached = 0 
-            ORDER BY end_at DESC"; 
-    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
-}
-
-public function getUnsoldItems(): array {
-    $now = AppTime::get_current_datetime();
-    $sql = "SELECT * FROM v_items_status 
-            WHERE owner = :user_id AND end_at < :now AND buy_now_reached = 0 AND has_bids = 0 
-            ORDER BY end_at DESC";
-    return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
-}
-
-public function getSoldItems(): array {
-    $now = AppTime::get_current_datetime();
-            $sql = "SELECT DISTINCT v.*
-            FROM v_items_status v join bids b ON v.id = b.item
-            WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-            ORDER BY b.created_at DESC";
-    return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
-}
-
-
-private function fetchItems(string $sql, array $params): array {
-    $query = self::execute($sql, $params);
-    $items = [];
-    foreach ($query->fetchAll() as $row) {
-        $items[] = new Item(
-            $row["id"], $row["title"], $row["description"], $row["owner"], $row["created_at"], 
-            $row["is_auction"], $row["has_bids"], $row["has_buy_now"], $row["end_at"], 
-            $row["not_purchased_direct_sale"], $row["is_direct_sale"],
-            $row["max_bid"], $row["buy_now_price"], $row["duration_days"], 
-            $row["starting_bid"], $row["buy_now_reached"] 
-        );
+    public function getBiddedItems(): array {
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT DISTINCT v.* FROM v_items_status v 
+                JOIN bids b ON v.id = b.item
+                WHERE b.owner = :user_id 
+                AND v.end_at > :now 
+                AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                ORDER BY v.end_at ASC";
+                
+        $query = self::execute($sql, [
+            'user_id' => $this->id, 
+            'now' => $now
+        ]);
+        
+        $items = [];
+        foreach ($query->fetchAll() as $row) {
+            $items[] = Item::makeItemFromRow($row);
+        }
+        return $items;
     }
-    return $items;
-}
+
+    public function myItemsAtives(): array {
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT * FROM v_items_status 
+                WHERE owner = :user_id AND end_at > :now AND buy_now_reached = 0 
+                ORDER BY end_at DESC"; 
+        return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+    }
+
+    public function getUnsoldItems(): array {
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT * FROM v_items_status 
+                WHERE owner = :user_id AND end_at < :now AND buy_now_reached = 0 AND has_bids = 0 
+                ORDER BY end_at DESC";
+        return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+    }
+
+    public function getSoldItems(): array {
+        $now = AppTime::get_current_datetime();
+                $sql = "SELECT DISTINCT v.*
+                FROM v_items_status v join bids b ON v.id = b.item
+                WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
+                ORDER BY b.created_at DESC";
+        return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
+    }
+
+
+        private function fetchItems(string $sql, array $params): array {
+        $query = self::execute($sql, $params);
+        $items = [];
+        foreach ($query->fetchAll() as $row) {
+            $items[] = Item::makeItemFromRow($row);
+        }
+        return $items;
+        }
 
     public function buyItem(Item $item): bool {
       
