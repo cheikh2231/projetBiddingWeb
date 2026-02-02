@@ -13,9 +13,6 @@
 
 
 <header class="bg-dark border-bottom border-secondary sticky-top ">
-    <a href="login/logout " >
-        <i class="bi bi-box-arrow-right me-2"></i> Sign Out
-    </a> 
     <?php $place = "browse"; ?>
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Browse</h5>

@@ -22,13 +22,8 @@
 
 
 <!-- la partie body -->
-
-<!-- la partie body -->
 <body class="d-flex flex-column justify-content-center align-items-center vh-100">
-    <!-- Titre EPayFc -->
-    <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i>EPayFC</h1>
-    <!-- Partie bloc de la page -->
-    <div class="logContainer text-center shadow-lg">
+
     <!-- Titre EPayFc -->
     <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i>EPayFC</h1>
     <!-- Partie bloc de la page -->
@@ -40,22 +35,19 @@
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
                 <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
-                <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
-                <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
+              
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
                 <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
-                <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
-                <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
+         
             </div>
             
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
                 <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
-                <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
-                <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
+   
             </div>
         </form>
         <div class="mb-3">
