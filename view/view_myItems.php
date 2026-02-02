@@ -6,8 +6,7 @@
     <title>My Items</title>
     <base href="<?= $web_root ?>" />
     <link href="css/browse-item.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -20,73 +19,15 @@
     </div>
 </header>
 
-<div class="container py-5">
+<div class="container py-5 ">
 
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary">Active Items</h4>
         <div class="row g-4 mb-5">
             <?php foreach ($itemsUser as $item) : ?>
-                <?php
-                    $pictures = $item->getPictures();
-                    $username = Item::itemUserName($item->getOwner());
-                ?>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
-                       class="item-card d-block position-relative h-100">
 
-                        <div class="badge-container">
-                            <div class="d-flex flex-column align-items-end gap-1">
-                                <?php if ($item->getIsAuction()) : ?>
-                                    <span class="badge badge-auction">Auction</span>
-                                <?php endif; ?>
-                                <?php if ($item->getHasBuyNow()) : ?>
-                                    <span class="badge badge-buy">Buy Now</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                <?php include('view/utilités/_item_card.php')?>
 
-                        <?php if (!empty($pictures)) : ?>
-                            <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
-                        <?php else: ?>    
-                            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
-                        <?php endif; ?>
-
-                        <div class="item-body">
-                            <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
-                            <div class="item-author">by <?= $username ?></div>
-
-                            <div class="d-flex justify-content-between align-items-end mt-2">
-                                <div class="price">
-                                    € <?= number_format($item->getHasBuyNow() ? $item->getBuyNowPrice() : $item->getStartingBid() ?? 0, 2) ?>
-                                </div>
-
-                                <?php if ($item->getIsAuction()) : ?>
-                                    <div class="text-end">
-                                        <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
-                                        <div class="current-bid">
-                                            € <?= number_format($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid() ?? 0, 2) ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <?php
-                                $current = new DateTime(AppTime::get_current_datetime());
-                                $diff = $current->diff(new DateTime($item->getEndAt()));
-                                if ($diff->days > 0) : ?> 
-                                    <div class="time-left">
-                                        <i class="bi bi-clock-history"></i>
-                                        <?= "{$diff->days}d {$diff->h}h left"; ?>
-                                    </div>
-                                <?php else : ?>
-                                    <div class="time-inf1day">
-                                        <i class="bi bi-clock-history"></i>
-                                        <?= "{$diff->h}h {$diff->i}min left"; ?>
-                                    </div>
-                                <?php endif; ?> 
-                        </div>
-                    </a>
-                </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -95,45 +36,9 @@
         <h4 class="text-primary">Unsold Items</h4>
         <div class="row g-4 mb-5">
             <?php foreach ($unsold as $item) : ?>
-                <?php
-                    $pictures = $item->getPictures();
-                    $username = Item::itemUserName($item->getOwner());
-                ?>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
-                       class="item-card d-block position-relative h-100">
 
-                        <div class="badge-container justify-content-end">
-                            <div class="d-flex flex-column align-items-end gap-1">
-                                <?php if ($item->getIsAuction()) : ?>
-                                    <span class="badge badge-auction">Auction</span>
-                                <?php endif; ?>
-                                <?php if ($item->getHasBuyNow()) : ?>
-                                    <span class="badge badge-buy">Buy Now</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                <?php include('view/utilités/_item_card.php')?>
 
-                        <?php if (!empty($pictures)) : ?>
-                            <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
-                        <?php else: ?>    
-                            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
-                        <?php endif; ?>
-
-                        <div class="item-body">
-                            <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
-                            <div class="item-author">by <?= $username ?></div>
-
-                            <div class="price mt-2">
-                                € <?= number_format($item->getHasBuyNow() ? $item->getBuyNowPrice() : $item->getStartingBid() ?? 0, 2) ?>
-                            </div>
-
-                            <div class="time-expired text-danger">
-                                <i class="bi bi-patch-check"></i> closed
-                            </div>
-                        </div>
-                    </a>
-                </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
@@ -142,49 +47,15 @@
         <h4 class="text-primary">Sold Items</h4>
         <div class="row g-4">
             <?php foreach ($sold as $item) : ?>
-                <?php
-                    $pictures = $item->getPictures();
-                    $username = Item::itemUserName($item->getOwner());
-                ?>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
-                       class="item-card d-block position-relative h-100">
+                <?php include('view/utilités/_item_card.php')?>
 
-                        <div class="badge-container justify-content-end">
-                            <div class="d-flex flex-column align-items-end gap-1">
-                                <?php if ($item->getIsAuction()) : ?>
-                                    <span class="badge badge-auction">Auction</span>
-                                <?php endif; ?>
-                                <?php if ($item->getHasBuyNow()) : ?>
-                                    <span class="badge badge-buy">Buy Now</span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <?php if (!empty($pictures)) : ?>
-                            <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
-                        <?php else: ?>    
-                            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
-                        <?php endif; ?>
-
-                        <div class="item-body">
-                            <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
-                            <div class="item-author">by <?= $username ?></div>
-
-                            <div class="price mt-2">
-                                € <?= number_format($item->getHasBuyNow() ? $item->getBuyNowPrice() : $item->getStartingBid() ?? 0, 2) ?>
-                            </div>
-
-                            <div class="time-expired text-danger">
-                                <i class="bi bi-patch-check"></i> closed
-                            </div>
-                        </div>
-                    </a>
-                </div>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
 </div>
+<?php include 'view/utilités/footer.php'; ?>
+
+<?php include 'view/utilités/footer.php'; ?>
 
 </body>
 </html>

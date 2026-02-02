@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +22,7 @@
             
             <p class="card-text mb-4">
                 Do you really want to delete item <strong>"<?= htmlspecialchars($item->getTitle()) ?>"</strong> 
-                by <?= User::getUserById($item->getOwner())->getPseudo() ?> and all of its dependencies?
+                by <?= User::getUserById($item->getOwner()->getId())->getPseudo() ?> and all of its dependencies?
                 <br><br>
                 <span class="text-secondary">This process cannot be undone.</span>
             </p>
@@ -34,6 +35,9 @@
         </div>
     </div>
 </div>
+<?php include 'view/utilités/footer.php'; ?>
+
+<?php include 'view/utilités/footer.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -2,10 +2,16 @@
 <html lang="fr">
 
     <!-- La partie head -->
+
+    <!-- La partie head -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <!-- Lien bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Icones Bootstrap -->
     <!-- Lien bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Icones Bootstrap -->
@@ -16,7 +22,13 @@
 
 
 <!-- la partie body -->
+
+<!-- la partie body -->
 <body class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <!-- Titre EPayFc -->
+    <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i>EPayFC</h1>
+    <!-- Partie bloc de la page -->
+    <div class="logContainer text-center shadow-lg">
     <!-- Titre EPayFc -->
     <h1 class="mb-4 fw-bold text-white fs-2"><i class="bi bi-cart4"></i>EPayFC</h1>
     <!-- Partie bloc de la page -->
@@ -28,14 +40,20 @@
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
                 <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
+                <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
+                <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
                 <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
+                <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
+                <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
             </div>
             
             <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
+                <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
                 <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
                 <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
             </div>
