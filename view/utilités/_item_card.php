@@ -68,12 +68,12 @@
                     ) ?>
                 </div>
 
-                <?php if ($item->getIsAuction()) : ?>
+                <?php if ($item->getIsAuction() && $item->getHasBids()) : ?>
                     <div class="text-end">
                         <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
                         <div class="current-bid">
                             € <?= number_format(
-                                $item->getHasBids() ? $item->getMaxBid() : ($item->getStartingBid() ?? 0),
+                               $item->getMaxBid() ,
                                 2
                             ) ?>
                         </div>
