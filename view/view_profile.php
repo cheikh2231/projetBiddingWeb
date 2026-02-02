@@ -1,3 +1,7 @@
+<?php
+ $uPic = $user->getPicturePath();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -10,13 +14,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Icones Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <base href="<?= $web_root ?>"/>
     <!-- CSS -->
-    <link rel="stylesheet" href="<?= $web_root ?>css/add-edit.css">
+    <link href="css/add-edit.css" rel="stylesheet" type="text/css"/>
 </head>
+
 <!-- la partie body -->
-<body class="d-flex flex-column justify-content-center align-items-center vh-100">
+<body>
     <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top">
+   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Profile</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
@@ -26,21 +32,27 @@
     <!--centre de la page-->
 <div class="container mb-5">
     <!--1er rectangle-->
-    <div class="card-custom mb-4">
-        <div class="card-body p-4">
-            <img src='upload/<?=  $user->getId() ?>/<?=  $user->getPicturePath() ?>'>
-            <h2><?=  $user->getName() ?></h2>
-            <h3><?=  $user->getPseudo() ?></h3>
-            <h3><?=  $user->getEmail() ?></h3>
+    <div class="card-custom mb-4 ">
+        <div class="card-body p-4 d-flex justify-content-center align-items-center">
+            <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         </div>
-   </div>
+        <div class=" d-flex justify-content-center align-items-center">
+            <h2><?=  $user->getName() ?></h2>
+        </div>
+        <div class=" d-flex justify-content-center align-items-center">
+            <small class = "text-muted">@<?=  $user->getPseudo() ?></small>
+        </div>
+        <div class="mb-5 d-flex justify-content-center align-items-center">
+            <small class = "text-muted"><?=  $user->getEmail() ?></small>
+        </div>    
+    </div> 
     <!--2e rectangle-->
     <div class="card-custom mb-4">
         <div class="card-header-custom">My activities</div>
         <div class="card-body p-4">
-            <div class="card-body p-4 d-grid gap-2"> 
-                <a href="<?= $web_root ?>item/sales" class="btn btn-outline-dark">Sales</a>
-                <a href="#" class="btn btn-outline-dark">Purchases</a>
+            <div class="card-body p-4 d-grid gap-2  "> 
+                <a href="item/sales" class="btn btn-outline-dark text-primary">Sales</a>
+                <a href="item/purchases" class="btn btn-outline-dark text-primary">Purchases</a>
             </div>
         </div> 
     </div>
@@ -49,16 +61,15 @@
         <div class="card-header-custom">Account settings</div>
         <div class="card-body p-4">
             <div class="card-body p-4 d-grid gap-2"> 
-            <a href="#" class="btn btn-outline-dark">Edit profile</a>
-            <a href="#" class="btn btn-outline-dark">Change Password</a>
-            <a href="#" class="btn btn-outline-dark">Profile Picture</a>  
-            <a href="<?= $web_root ?>profile/logout" class="btn btn-danger mt-2">Logout</a>
+            <a href="user/edit_profile" class="btn btn-outline-dark text-primary">Edit profile</a>
+            <a href="#" class="btn btn-outline-dark text-primary">Change Password</a>
+            <a href="#" class="btn btn-outline-dark text-primary">Profile Picture</a>  
+            <a href="user/logout" class="btn btn-danger mt-2">Logout</a>
             </div>
         </div>
     </div>
-
-
 </div>
+
 <!--Footer -->
 <?php include('view/utilités/footer.php')?>
 

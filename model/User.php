@@ -282,8 +282,12 @@ class User extends Model {
                     arsort($buyerStats); 
                     $mostLoyalBuyerId = array_key_first($buyerStats);
                 }
-            }
-        return $this->getUserById($mostLoyalBuyerId);    
+                if($mostLoyalBuyerId == null)
+                    return null;
+                 return  $this->getUserById($mostLoyalBuyerId);  
+            }else
+            return null;
+        
     }
 
     public function getPurchasesItems(): array {
@@ -306,7 +310,7 @@ class User extends Model {
     }
 
      public function getMyItemsTopSeller() : ?User {
-
+    
         $sellerStats = [];
         if(!empty($this->getPurchasesItems())){
             foreach ($this->getPurchasesItems() as $purchasesItem) {
@@ -323,9 +327,15 @@ class User extends Model {
                 if (!empty($sellerStats)) {
                     arsort($sellerStats); 
                     $topSellerId = array_key_first($sellerStats);
+                    
                 }
-            }
-        return $this->getUserById($topSellerId);    
+                if($topSellerId == null)
+                    return null;
+                 return  $this->getUserById($topSellerId);  
+        }else
+            return null;
+           
+                
     }
 
 

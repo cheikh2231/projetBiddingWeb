@@ -46,17 +46,19 @@
             <div class="col-md-4 mb-4">
                 <div class="card bg-dark text-white p-2">
                     <h5 class="text-white-50">AVERAGE TICKET</h5>
-                    <h1 class="mb-2 text-white"> <?= number_format($somme/ count($purchases),2) ?></h1>
+                    <h1 class="mb-2 text-white"> <?= count($purchases)>0 ? number_format($somme/ count($purchases),2):0 ?></h1>
                     <h6 class="text-white-50">helps you plan future bids</h6>
                 </div>
             </div>
 
             <div class="col-md-4 mb-4">
+                <?php if($currentUser->getMyItemsTopSeller()!==null):?>
                 <div class="card bg-dark text-white p-2">
                     <h5 class="text-white-50">TOP SELLER</h5>
                     <h1 class="mb-2 text-white"><?= $currentUser->getMyItemsTopSeller()->getPseudo() ?></h1>
                     <h5 class="text-white-50">Most recuring winning bidder</h5>
                 </div>
+                <?php endif;?>
             </div>
         </div>
         <?php if (!empty($purchases)) : ?>

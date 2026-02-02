@@ -37,7 +37,7 @@ class ControllerUser extends Controller {
         $this->redirect("item", "index"); 
     }
     //fonction pour log en Debug
-    public function logForDebug():void{
+    public function log_for_debug():void{
         $userEmail = $_GET['param1']."@epfc.eu";
        $this->is_validate_login($userEmail);
     }
@@ -73,6 +73,15 @@ class ControllerUser extends Controller {
     public function profile() : void {
         $userConnected = $this->get_user_or_redirect();
         (new View("profile"))->show(["user"=>$userConnected]);
+
+
     }
+    //fonction editProfile
+    public function edit_profile():void{
+        $userConnected = $this->get_user_or_redirect();
+        (new View("editProfile"))->show(["user"=>$userConnected]);
+
+    }
+
 
 }
