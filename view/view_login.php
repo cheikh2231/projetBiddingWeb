@@ -58,7 +58,7 @@
             <div class="d-flex flex-column gap-1 small-text">
                 <a href="<?= $web_root ?>setup/install" class="colorGreen fw-bold">Restore original data</a>
                 <a href="<?= $web_root ?>setup/export" class="colorYellow fw-bold">Backup personal data</a>
-                <a href="<?= $web_root ?>setup/install/true" class="colorYellow fw-bold">Restore personal data</a>
+                <a href="<?= $web_root ?>setup/restore" class="colorYellow fw-bold">Restore personal data</a>
             </div>
         </div>
     </div>
