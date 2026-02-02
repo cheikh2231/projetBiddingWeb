@@ -21,19 +21,19 @@
             <div class="container">
                 <div class="row text-center ">
                     <div class="col">
-                        <a href="item/browse" class="text-decoration-none <?= ($source === 'browse') ? 'text-primary' : 'text-white' ?>">
+                        <a href="item/browse" class="text-decoration-none <?= ($place === 'browse') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-search fs-4 d-block"></i>
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Browse</span>
                         </a>
                     </div>
                     <div class="col">
-                        <a href="item/list" class="text-decoration-none <?= ($source === 'items') ? 'text-primary' : 'text-white' ?>">
+                        <a href="item/list" class="text-decoration-none <?= ($place === 'items') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-house-door fs-4 d-block"></i>
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">My Items</span>
                         </a>
                     </div>
                     <div class="col">
-                        <a href="item/add" class="text-decoration-none text-white">
+                        <a href="item/add" class="text-decoration-none <?= ($place === 'add') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-plus-lg fs-4 d-block"></i>
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Add Offer</span>
                         </a>
