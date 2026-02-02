@@ -16,12 +16,10 @@
 <!-- la partie body -->
 <body class="d-flex flex-column justify-content-center align-items-center vh-100">
     <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top ">
+   <header class="bg-dark border-bottom border-secondary sticky-top">
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Profile</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
-    </div>
-    <div class="p-3">
     </div>
 </header>
 
@@ -41,7 +39,7 @@
         <div class="card-header-custom">My activities</div>
         <div class="card-body p-4">
             <div class="card-body p-4 d-grid gap-2"> 
-                <a href="#" class="btn btn-outline-dark">Sales</a>
+                <a href="<?= $web_root ?>item/sales" class="btn btn-outline-dark">Sales</a>
                 <a href="#" class="btn btn-outline-dark">Purchases</a>
             </div>
         </div> 
@@ -62,36 +60,7 @@
 
 </div>
 <!--Footer -->
-<footer class="footer fixed-bottom bg-dark border-top border-secondary p-0">
-    <div class="container">
-        <div class="row text-center ">
-            <div class="col">
-                <a href="item/browse" class="text-decoration-none <?= ($source === 'browse') ? 'text-primary' : 'text-white' ?>">
-                    <i class="bi bi-search fs-4 d-block"></i>
-                    <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Browse</span>
-                </a>
-            </div>
-            <div class="col">
-                <a href="item/list" class="text-decoration-none <?= ($source === 'items') ? 'text-primary' : 'text-white' ?>">
-                    <i class="bi bi-house-door fs-4 d-block"></i>
-                    <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">My Items</span>
-                </a>
-            </div>
-            <div class="col">
-                <a href="item/add" class="text-decoration-none text-white">
-                    <i class="bi bi-plus-lg fs-4 d-block"></i>
-                    <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Add Offer</span>
-                </a>
-            </div>
-            <div class="col">
-                <a href="<?= $web_root ?>profile" class="text-decoration-none text-white">
-                    <i class="bi bi-gear fs-4 d-block"></i>
-                    <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Profile</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</footer>
+<?php include('view/utilités/footer.php')?>
 
 </body>
 </html>

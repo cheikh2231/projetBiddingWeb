@@ -21,7 +21,7 @@
         <hr class="mb-4" style="border-color: #444; opacity: 1;">
 
         <!-- début du formulaire -->
-        <form action="<?= $web_root ?>signup/signup" method="post">
+        <form action="<?= $web_root ?>user/signup" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-envelope"></i></span>
                 <input type="text" name="email" value="<?= $email??'' ?>" class="form-control custom-input" placeholder="Email" aria-label="Email">

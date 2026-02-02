@@ -3,14 +3,13 @@ require_once 'framework/View.php';
 require_once "framework/Controller.php";
 require_once "model/User.php";
 
-class ControllerLogin extends Controller {
+class ControllerUser extends Controller {
 
     public function index() : void {
         
         if ($this->user_logged()) {
             $this->redirect("item", "index");
         } else {
-            
             (new View("login"))->show(["errors" => []]);
         }
     }
@@ -46,4 +45,34 @@ class ControllerLogin extends Controller {
     public function logout() : void {
       parent::logout();
     } 
+
+    //fonction signup
+    public function signup():void{
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $email = trim($_POST['email'] ?? '');
+            $fullname = trim($_POST['fullname'] ?? '');
+            $pseudo = trim($_POST['pseudo'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirmPassword'] ?? '';
+
+            $errors = User::validate_signup($email,$fullname,$pseudo,$password,$confirmPassword);
+            if(empty($errors)){
+                //creation user
+                $newUser = new User(null,$fullname,$email,$pseudo,password_hash($password, PASSWORD_BCRYPT),"user",null,null);
+                $newUser->persist();
+                $this->log_user($newUser);
+            }else{
+                (new View("signup"))->show(["errors"=>$errors,"email"=>$email,"fullname"=>$fullname,"pseudo"=>$pseudo]);
+            }
+        }else{
+               (new View("signup"))->show(["errors"=>[]]);
+        }  
+        
+    }  
+    //fonction profile
+    public function profile() : void {
+        $userConnected = $this->get_user_or_redirect();
+        (new View("profile"))->show(["user"=>$userConnected]);
+    }
+
 }
