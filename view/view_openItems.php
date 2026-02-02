@@ -121,7 +121,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                                     </span>
                                 <?php endif; ?>
                             </p>
-
+                            
                         </div>
 
                     <?php elseif ($isOwner): ?>

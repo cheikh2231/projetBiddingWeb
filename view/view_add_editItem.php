@@ -14,6 +14,7 @@
         $isEdit = $item && $item->getId();
         $titlePage = $isEdit ? "Edit Item" : "Add Item";
         $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+        $place = "add";
 
     ?>
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
