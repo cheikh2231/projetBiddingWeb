@@ -122,7 +122,7 @@ class User extends Model {
             else if(self::getUserByEmail($email))
                 $errors[] = "Email already taken.";
             //fullname
-            if(strlen($fullname) <= 3)
+            if(strlen($fullname) < 3)
                 $errors[] = "Full name must be more than 3 letters.";
             //pseudo
             if(self::getUserByPseudo($pseudo))
@@ -139,12 +139,51 @@ class User extends Model {
         }
         return $errors;
     } 
-    //methode ajout User dans la database
+    public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
+        $errors = [];
+        if(empty($email)||empty($fullname)||empty($pseudo)){
+            $errors[] = "Email, Name and Pseudo need to be filled in.";
+        }else{
+            //email
+            if($email != $this->email){
+                if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+                    $errors[]= "invalid email format.";
+                if(self::getUserByEmail($email))
+                    $errors[] = "Email already taken.";
+            }
+            //fullname
+            if(strlen($fullname) < 3)
+                $errors[] = "Full name must be more than 3 letters.";
+            //pseudo
+            if($pseudo != $this->pseudo){
+                if(self::getUserByPseudo($pseudo))
+                    $errors[] = "Pseudo already taken.";
+                else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
+                $errors[] = "Lenght of the pseudo invalid";
+            }
+            //iban
+            if(!empty($iban)){
+                $ibanPattern = "/^BE\d{2}(\s?\d{4}){3}$/";
+                if (!preg_match($ibanPattern, str_replace(' ', '', $iban))) {
+                    $errors[] = "Invalid iban format";
+                }
+            }
+        }
+        return $errors;
+    }
+    //methode ajout/mise à jour User dans la database
     public function persist(): void{
-        self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
-        ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
-        //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
-        $this->id = self::lastInsertId();
+        //mise à jour
+        if($this->id !== null){
+            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id]);
+        }        
+        else{
+        //ajout
+            self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
+            ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+            //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
+            $this->id = self::lastInsertId();
+        }
     }
 
 

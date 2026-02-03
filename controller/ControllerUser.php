@@ -34,12 +34,15 @@ class ControllerUser extends Controller {
     public function is_validate_login(String $emailUser): void{
         $user = User::getUserByEmail($emailUser);
         $this->log_user($user);
-        $this->redirect("item", "index"); 
+        $this->redirect("item", "index");
     }
     //fonction pour log en Debug
     public function log_for_debug():void{
         $userEmail = $_GET['param1']."@epfc.eu";
-       $this->is_validate_login($userEmail);
+        if(User::getUserByEmail($userEmail))
+            $this->is_validate_login($userEmail);
+         $errors[] = "Email has been changed";
+         (new View("login"))->show([ "errors" => $errors]);
     }
     //fonction logout
     public function logout() : void {
@@ -79,7 +82,28 @@ class ControllerUser extends Controller {
     //fonction editProfile
     public function edit_profile():void{
         $userConnected = $this->get_user_or_redirect();
-        (new View("editProfile"))->show(["user"=>$userConnected]);
+         if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $email = trim($_POST['email'] ?? '');
+            $fullname = trim($_POST['fullname'] ?? '');
+            $pseudo = trim($_POST['pseudo'] ?? '');
+            $iban = trim($_POST['iban'] ?? '');
+
+            $errors = $userConnected->validate_edit($email,$fullname,$pseudo,$iban);
+            if(empty($errors)){
+                $userConnected->setEmail($email);
+                $userConnected->setName($fullname);
+                $userConnected->setPseudo($pseudo);
+                if ($iban) $userConnected->setIban($iban);
+                $userConnected->persist();
+                self::profile();
+            }else{
+                (new View("editProfile"))->show(["user"=>$userConnected,"errors"=>$errors]);
+            }
+
+         }else{
+            (new View("editProfile"))->show(["user"=>$userConnected,"errors"=>[]]);
+         }
+
 
     }
 

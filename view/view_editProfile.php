@@ -38,12 +38,12 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Full Name *</label><br>
-                    <input type="text" value="<?=  $user->getName() ?>"><br>
+                    <input name="fullname" type="text" value="<?=  $user->getName() ?>" placeholder="Your name"><br>
                     <small class = "text-muted">Your complete name as it should appear on your profile.</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Username *</label><br>
-                    <input type="text" value="<?=  $user->getPseudo() ?>"><br>
+                    <input name="pseudo" type="text" value="<?=  $user->getPseudo() ?>" placeholder="Pseudo"><br>
                     <small class = "text-muted">This will be your public display on the platform.</small>
                 </div>
             </div>
@@ -54,19 +54,30 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Email Address *</label><br>
-                    <input type="text" value="<?=  $user->getEmail() ?>"><br>
+                    <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email"><br>
                     <small class = "text-muted">We will use this email to send you notifications about your sales and purchases.</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">IBAN&nbsp;</label><label class="form-label text-secondary">(Optional)</label><br>
-                    <input type="text" value="<?=  $user->getIban() ?>"><br>
+                    <input name="iban" type="text" value="<?=  $user->getIban() ?>" placeholder="BE99 9999 9999 9999"><br>
                     <small class = "text-muted">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
                 </div>
             </div>
         </div>
     </form>
 </div>                
-
+<!-- Partie erreurs -->
+    <?php if(count($errors) != 0):?>
+        <div class="alert alert-danger mt-3" role="alert">
+            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
+            <hr>
+            <p class="mb-0">
+                <?php foreach ($errors as $error): ?>
+                    <?= $error ?><br>
+                <?php endforeach; ?> 
+            </p>
+        </div>
+    <?php endif; ?>   
 
 
 
