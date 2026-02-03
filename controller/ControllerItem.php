@@ -37,9 +37,9 @@ class ControllerItem extends Controller {
     public function open(): void {
 
         $id = $_GET['param1'] ?? "";
-        if(isset($_GET["param2"])){
-          $source = $this->getSourceNature($_GET["param2"]);
-        }
+
+        $source = $this->getSourceNature($_GET["param2"]??'');
+
         if ($id === "") {
             $this->redirect("item", "browse");
             return;
@@ -272,7 +272,7 @@ class ControllerItem extends Controller {
             'from-items'      => 'list',
             'from-sales'     => 'sales',
             'from-purchases' => 'purchases',
-            default          => 'index'
+            default          => 'browse'
         };
     }
 
