@@ -51,15 +51,10 @@ class ControllerItem extends Controller {
         if (!$item) {
             throw new Exception("Item not found"); 
         }        
-        $currentUser = $this->get_user_or_false();
+        $currentUser = $this->get_user_or_redirect();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            
-            if (!$currentUser) {
-                $this->redirect("login", "index");
-                return;
-            }
-
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
                     $this->redirect("item", "open", $id, "from-".$source, $idImg);
@@ -85,13 +80,15 @@ class ControllerItem extends Controller {
         ]);
     }
     public function list(): void {
-        $user = $this->get_user_or_redirect();
-
-
-        $itemsUser = $user->myItemsAtives();
-        $unsold = $user->getUnsoldItems();
-        $sold = $user->getsoldItems();
-
+        $user = $this->get_user_or_false();
+        $itemsUser = [];
+        $unsold = [];
+        $sold = [];
+        if($user){
+            $itemsUser = $user->myItemsAtives();
+            $unsold = $user->getUnsoldItems();
+            $sold = $user->getsoldItems();
+        }
         (new View("myItems"))->show([
             "itemsUser" => $itemsUser,
             "unsold" => $unsold,
@@ -103,6 +100,7 @@ class ControllerItem extends Controller {
 
     public function edit(): void {
         $user = $this->get_user_or_redirect();
+
         $id = $_GET['param1'] ?? null;
         $source = "from-items";
         $item = Item::getItemById($id);
@@ -152,12 +150,14 @@ class ControllerItem extends Controller {
         (new View('add_editItem'))->show([ 
             "item" => $item, 
             "errors" => $errors, 
-            "source" => $source 
+            "source" => $source ,
+             "currentUser"=>$user
         ]);
     }
 
     public function add(): void {
         $user = $this->get_user_or_redirect();
+
         $errors = [];
         $newItem = null;
 
@@ -206,12 +206,14 @@ class ControllerItem extends Controller {
         (new View('add_editItem'))->show([ 
             "item" => $newItem, 
             "errors" => $errors, 
-            "source" => "items" 
+            "source" => "items" ,
+            "currentUser"=>$user
         ]);
     }
 
     public function delete(): void {
         $user = $this->get_user_or_redirect();
+
         $id = $_GET['param1'] ?? null;
         $item = Item::getItemById($id);
 
@@ -230,7 +232,7 @@ class ControllerItem extends Controller {
             }
         }
 
-        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? []]);
+        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user]);
     }
 
 
@@ -238,20 +240,26 @@ class ControllerItem extends Controller {
 
     public function sales() : void {
         $source = "sales";
-         $currentUser = $this->get_user_or_false();
+         $currentUser = $this->get_user_or_redirect();
+  
         $sold = $currentUser->getSoldItems();
         (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
     public function purchases() : void {
         $source = "purchases";
-        $currentUser = $this->get_user_or_false();
+        $currentUser = $this->get_user_or_redirect();
+        if (!$currentUser) {
+            $this->redirect("user", "index");
+            return;
+        }       
         $purchases = $currentUser->getPurchasesItems();
         (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
     public function manage_images() : void{
-        $user = $this->get_user_or_false();
+        $user = $this->get_user_or_redirect();
+
         if(!isset($_GET['param1'])){
            $this->redirect('item','index');
            return;
@@ -262,7 +270,7 @@ class ControllerItem extends Controller {
 
 
         $item = Item::getItemById($_GET['param1']);
-        (new View('manage_images'))->show(["item"=>$item]);
+        (new View('manage_images'))->show(["item"=>$item,"currentUser"=>$user]);
 
     }
 

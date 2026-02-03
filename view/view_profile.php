@@ -1,5 +1,6 @@
 <?php
- $uPic = $user->getPicturePath();
+ $uPic = $currentUser->getPicturePath();
+ $place = "profile";
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +24,7 @@
 <body>
     <!-- Header -->
    <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
+
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Profile</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
@@ -37,13 +39,13 @@
             <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
-            <h2><?=  $user->getName() ?></h2>
+            <h2><?=  $currentUser->getName() ?></h2>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
-            <small class = "text-muted">@<?=  $user->getPseudo() ?></small>
+            <small class = "text-muted">@<?=  $currentUser->getPseudo() ?></small>
         </div>
         <div class="mb-5 d-flex justify-content-center align-items-center">
-            <small class = "text-muted"><?=  $user->getEmail() ?></small>
+            <small class = "text-muted"><?=  $currentUser->getEmail() ?></small>
         </div>    
     </div> 
     <!--2e rectangle-->

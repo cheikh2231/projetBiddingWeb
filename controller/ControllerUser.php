@@ -72,14 +72,14 @@ class ControllerUser extends Controller {
     //fonction profile
     public function profile() : void {
         $userConnected = $this->get_user_or_redirect();
-        (new View("profile"))->show(["user"=>$userConnected]);
+        (new View("profile"))->show(["currentUser"=>$userConnected]);
 
 
     }
     //fonction editProfile
     public function edit_profile():void{
         $userConnected = $this->get_user_or_redirect();
-        (new View("editProfile"))->show(["user"=>$userConnected]);
+        (new View("editProfile"))->show(["currentUser"=>$userConnected]);
 
     }
 

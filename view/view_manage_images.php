@@ -55,7 +55,7 @@
         </div>
     </div>
 </div>
-
+<?php include 'view/utilités/footer.php'; ?>
 
 </body>
 </html>

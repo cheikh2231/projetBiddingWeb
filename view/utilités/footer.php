@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,7 @@
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Browse</span>
                         </a>
                     </div>
+                    <?php if($currentUser!=null):?>
                     <div class="col">
                         <a href="item/list" class="text-decoration-none <?= ($place === 'items') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-house-door fs-4 d-block"></i>
@@ -39,12 +41,22 @@
                         </a>
                     </div>
                     <div class="col">
-                        <a href="user/profile" class="text-decoration-none text-white">
+                        <a href="user/profile" class="text-decoration-none  <?= ($place === 'profile') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-gear fs-4 d-block"></i>
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Profile</span>
                         </a>
                     </div>
+
+                    <?php else:?>
+                        <div class="col">
+                            <a href="user/index" class="text-decoration-none text-white">
+                                <i class="bi bi-balloon-fill fs-4 d-block"></i>
+                                <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Join us</span>
+                            </a>
+                        </div>
+                     <?php endif;?>
                     <?php include("view/view_time.php") ?>
+                   
                 </div>
             
             </div>
