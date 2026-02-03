@@ -18,7 +18,7 @@
 <!-- la partie body -->
 <body>
 <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top ">
+   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Edit Profile</h5>
         <a href="user/profile"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>

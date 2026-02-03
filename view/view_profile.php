@@ -63,7 +63,7 @@
             <div class="card-body p-4 d-grid gap-2"> 
             <a href="user/edit_profile" class="btn btn-outline-dark text-primary"><i class="bi bi-person-gear"></i>Edit profile</a>
             <a href="user/edit_password" class="btn btn-outline-dark text-primary"><i class="bi bi-three-dots"></i>Change Password</a>
-            <a href="#" class="btn btn-outline-dark text-primary"><i class="bi bi-person-circle"></i>Profile Picture</a>  
+            <a href="user/edit_profile_picture" class="btn btn-outline-dark text-primary"><i class="bi bi-person-circle"></i>Profile Picture</a>  
             <a href="user/logout" class="btn btn-danger mt-2"><i class="bi bi-box-arrow-right"></i>Logout</a>
             </div>
         </div>

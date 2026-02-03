@@ -125,5 +125,11 @@ class ControllerUser extends Controller {
             (new View("editPassword"))->show(["user"=>$userConnected,"errors"=>[]]);
          }
     }
+    //fonction edit profile picture
+    public function edit_profile_picture() : void {
+        $userConnected = $this->get_user_or_redirect();
+        (new View("editProfilePicture"))->show(["user"=>$userConnected]);
 
+
+    }
 }

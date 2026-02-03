@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Edit Password</title>
     <!-- Lien bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Icones Bootstrap -->
@@ -18,9 +18,9 @@
 <!-- la partie body -->
 <body>
 <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top ">
+   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
     <div class="container d-flex justify-content-center align-items-center">
-        <h5 class="m-0 me-1 text-primary">Edit Profile</h5>
+        <h5 class="m-0 me-1 text-primary">Edit Password</h5>
         <a href="user/profile"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>
         <i class="bi bi-cart4 fs-4 text-white"></i>
         <button type="submit" form="formulaire" class="position-absolute end-0 me-3 btn btn-link p-0">
