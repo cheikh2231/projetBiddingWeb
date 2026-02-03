@@ -31,7 +31,7 @@
 
 <!--centre de la page-->
 <div class="container mb-5">
-    <form id="formulaire" action="" method="POST">
+    <form id="formulaire" action="user/edit_profile" method="POST">
         <!-- bloc 1 -->
         <div class="card-custom mb-4">
             <div class="card-header-custom">Personal Information</div>

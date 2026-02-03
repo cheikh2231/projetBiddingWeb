@@ -106,6 +106,23 @@ class ControllerUser extends Controller {
 
 
     }
+    //fonction edit password
+    public function edit_password():void{
+        $userConnected = $this->get_user_or_redirect();
+         if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $currentPassword = $_POST['currentPassword'] ?? '';
+            $newPassword = $_POST['currentPassword'] ?? '';
+            $confirmNewPassword = $_POST['confirmNewPassword'] ?? '';
 
+            $errors = $userConnected->validate_password($currentPassword, $newPassword, $confirmNewPassword);
+            if(empty($errors)){
+                self::profile();
+            }else{
+                (new View("editPassword"))->show(["user"=>$userConnected,"errors"=>$errors]);
+            }
+         }else{
+            (new View("editPassword"))->show(["user"=>$userConnected,"errors"=>[]]);
+         }
+    }
 
 }
