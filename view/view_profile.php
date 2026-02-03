@@ -51,8 +51,8 @@
         <div class="card-header-custom">My activities</div>
         <div class="card-body p-4">
             <div class="card-body p-4 d-grid gap-2  "> 
-                <a href="item/sales" class="btn btn-outline-dark text-primary">Sales</a>
-                <a href="item/purchases" class="btn btn-outline-dark text-primary">Purchases</a>
+                <a href="item/sales" class="btn btn-outline-dark text-primary"><i class="bi bi-card-list"></i>Sales</a>
+                <a href="item/purchases" class="btn btn-outline-dark text-primary"><i class="bi bi-cart3"></i>Purchases</a>
             </div>
         </div> 
     </div>
@@ -61,10 +61,10 @@
         <div class="card-header-custom">Account settings</div>
         <div class="card-body p-4">
             <div class="card-body p-4 d-grid gap-2"> 
-            <a href="user/edit_profile" class="btn btn-outline-dark text-primary">Edit profile</a>
-            <a href="user/edit_password" class="btn btn-outline-dark text-primary">Change Password</a>
-            <a href="#" class="btn btn-outline-dark text-primary">Profile Picture</a>  
-            <a href="user/logout" class="btn btn-danger mt-2">Logout</a>
+            <a href="user/edit_profile" class="btn btn-outline-dark text-primary"><i class="bi bi-person-gear"></i>Edit profile</a>
+            <a href="user/edit_password" class="btn btn-outline-dark text-primary"><i class="bi bi-three-dots"></i>Change Password</a>
+            <a href="#" class="btn btn-outline-dark text-primary"><i class="bi bi-person-circle"></i>Profile Picture</a>  
+            <a href="user/logout" class="btn btn-danger mt-2"><i class="bi bi-box-arrow-right"></i>Logout</a>
             </div>
         </div>
     </div>
