@@ -61,7 +61,7 @@
                     <label class="form-label">Description *</label>
                     <textarea class="form-control" name="description" rows="5"><?= htmlspecialchars($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
                      
-                    <?php if (isset($errors['descrition'])): ?>
+                    <?php if (isset($errors['description'])): ?>
                         <div class="text-danger small mt-1">
                             <ul>
                                 <?php foreach ($errors['description'] as $i): ?> 

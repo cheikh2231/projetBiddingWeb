@@ -260,18 +260,74 @@ class ControllerItem extends Controller {
     public function manage_images() : void{
         $user = $this->get_user_or_redirect();
 
-        if(!isset($_GET['param1'])){
+        if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','index');
            return;
+        }else{
+          $item_id = $_GET['param1'];
+          $item = Item::getItemById($item_id);
         }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $errors = [];
+      
+       
+        
+        $config = parse_ini_file('config/dev.ini'); 
+        $max_size_mb = (int)$config['upload_max_size'];
+        $max_res_main = (int)$config['image_max_res_main']; 
+        $max_res_thumb = (int)$config['image_max_res_thumb'];
 
+        
+        if (isset($_FILES['image'])) {
+            $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
+            
+            if (empty($errors)) {
+                
+                $folder = "uploads/items/$item_id";
+                $original_name = $_FILES['image']['name'];
+
+    
+                $path_main = $item->process_image(
+                    $_FILES['image']['tmp_name'], 
+                        $folder, 
+                        $original_name, 
+                        $max_res_main, 
+                        $max_res_main
+                    );
+
+                    
+                    $path_thumb = $item->process_image(
+                        $_FILES['image']['tmp_name'], 
+                        $folder, 
+                        $original_name, 
+                        $max_res_thumb, 
+                        $max_res_thumb, 
+                        "_thumbnail"
+                    );
+
+                    if ($path_main && $path_thumb) {
+                        
+                        $item->addPicture( $path_main);
+                        
+                        
+                        $this->redirect('item', 'manage_images', $item_id);
+                        return;
+                    } else {
+                        $errors[] = "Erreur lors du traitement de l'image.";
+                    }
+                }
+            } else {
+                $errors[] = "Aucun fichier sélectionné.";
+            }
+            
+            (new View('manage_images'))->show([
+                "item" => $item, 
+                "currentUser" => $user, 
+                "errors" => $errors
+            ]);
+            return;
         }
-
-
-        $item = Item::getItemById($_GET['param1']);
-        (new View('manage_images'))->show(["item"=>$item,"currentUser"=>$user]);
-
+        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
     }
 
     private function getSourceNature(string $s): string {
