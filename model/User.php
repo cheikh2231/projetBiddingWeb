@@ -138,7 +138,8 @@ class User extends Model {
                 $errors[] = "Confirm password doesn't match.";
         }
         return $errors;
-    } 
+    }
+    //methode validation edit profile
     public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
         $errors = [];
         if(empty($email)||empty($fullname)||empty($pseudo)){
@@ -171,11 +172,34 @@ class User extends Model {
         }
         return $errors;
     }
+    //methode validation edit profile
+    public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
+        $errors = [];
+        if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
+            $errors[] = "All fields are required.";
+        }else{
+            //current password
+            if (!password_verify($currentPassword, $this->getPassword()))
+                $errors[] = "Current password doesn't match";
+            //new password
+            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            if(!preg_match($pattern, $newPassword))
+                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            //confirmPassword
+            if($confirmNewPassword !== $newPassword)
+                $errors[] = "Confirm password doesn't match.";
+        }
+        return $errors;
+    }
+
+
+
+
     //methode ajout/mise à jour User dans la database
     public function persist(): void{
         //mise à jour
         if($this->id !== null){
-            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id]);
+            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password]);
         }        
         else{
         //ajout
