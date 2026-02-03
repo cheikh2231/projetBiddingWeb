@@ -4,7 +4,7 @@ require_once "utils/AppTime.php";
 require_once "model/Item.php";
 class User extends Model {
     
-    private int $id;
+    private ?int $id;
     private string $name; 
     private string $email; 
     private string $pseudo; 
@@ -14,7 +14,7 @@ class User extends Model {
     private ?string $iban;
 
     public function __construct(
-        int $id,
+        ?int $id,
         string $name, 
         string $email, 
         string $pseudo, 
@@ -34,7 +34,7 @@ class User extends Model {
     }
 
    
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }
     public function getEmail(): string { return $this->email; }
     public function getPseudo(): string { return $this->pseudo; }
@@ -96,7 +96,7 @@ class User extends Model {
     }
     
 
-
+    //methode validation LOGIN
     public static function validate_login(string $email, string $password): array {
         $errors = [];
         $user = self::getUserByEmail($email);
@@ -109,6 +109,45 @@ class User extends Model {
         }
         return $errors;
     }
+    //methode validation SIGNUP
+    public static function validate_signup(String $email, String $fullname, String $pseudo, String $password, String $confirmPassword) : array{
+        $errors = [];
+        //verification tout les champs remplis
+        if(empty($email)||empty($fullname)||empty($pseudo)||empty($password)||empty($confirmPassword)){
+            $errors[] = "All fields are required.";    
+        }else{
+            //email
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+                $errors[]= "invalid email format.";
+            else if(self::getUserByEmail($email))
+                $errors[] = "Email already taken.";
+            //fullname
+            if(strlen($fullname) <= 3)
+                $errors[] = "Full name must be more than 3 letters.";
+            //pseudo
+            if(self::getUserByPseudo($pseudo))
+                $errors[] = "Pseudo already taken.";
+            else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
+                $errors[] = "Lenght of the pseudo invalid";
+            //mdp
+            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            if(!preg_match($pattern, $password))
+                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            //confirmPassword
+            if($confirmPassword !== $password)
+                $errors[] = "Confirm password doesn't match.";
+        }
+        return $errors;
+    } 
+    //methode ajout User dans la database
+    public function persist(): void{
+        self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
+        ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+        //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
+        $this->id = self::lastInsertId();
+    }
+
+
 
     public function getBiddedItems(): array {
         $now = AppTime::get_current_datetime();
@@ -243,8 +282,12 @@ class User extends Model {
                     arsort($buyerStats); 
                     $mostLoyalBuyerId = array_key_first($buyerStats);
                 }
-            }
-        return $this->getUserById($mostLoyalBuyerId);    
+                if($mostLoyalBuyerId == null)
+                    return null;
+                 return  $this->getUserById($mostLoyalBuyerId);  
+            }else
+            return null;
+        
     }
 
     public function getPurchasesItems(): array {
@@ -267,7 +310,7 @@ class User extends Model {
     }
 
      public function getMyItemsTopSeller() : ?User {
-
+    
         $sellerStats = [];
         if(!empty($this->getPurchasesItems())){
             foreach ($this->getPurchasesItems() as $purchasesItem) {
@@ -284,8 +327,18 @@ class User extends Model {
                 if (!empty($sellerStats)) {
                     arsort($sellerStats); 
                     $topSellerId = array_key_first($sellerStats);
+                    
                 }
-            }
-        return $this->getUserById($topSellerId);    
+                if($topSellerId == null)
+                    return null;
+                 return  $this->getUserById($topSellerId);  
+        }else
+            return null;
+           
+                
     }
+
+
+   
+
 }
