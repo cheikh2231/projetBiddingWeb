@@ -32,6 +32,7 @@
     <!--centre de la page-->
 <div class="container mb-5">
     <!--1er rectangle-->
+    <div class="card-header-custom">Current Profile Picture</div>
     <div class="card-custom mb-4 ">
         <div class="card-body p-4 d-flex justify-content-center align-items-center">
             <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
@@ -47,7 +48,13 @@
         </div>    
     </div> 
     <!--2e rectangle-->
-   
+    <div class="card-header-custom">Upload New Picture</div>
+    <div class="card-custom mb-4 ">
+        <label class="form-label">Select Image *</label><br>
+
+        <small class = "text-muted">Supported formats: JPG, PNG, GIF, Webp. This will replace your current profile picture.</small>
+
+    </div>
 </div>
 
 <!--Footer -->
