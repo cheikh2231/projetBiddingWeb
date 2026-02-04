@@ -63,7 +63,18 @@
     </div>
     </form>
 </div>
-
+<!-- Partie erreurs -->
+    <?php if(count($errors) != 0):?>
+        <div class="alert alert-danger mt-3" role="alert">
+            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
+            <hr>
+            <p class="mb-0">
+                <?php foreach ($errors as $error): ?>
+                    <?= $error ?><br>
+                <?php endforeach; ?> 
+            </p>
+        </div>
+    <?php endif; ?>   
 <!--Footer -->
 <?php include('view/utilités/footer.php')?>
 

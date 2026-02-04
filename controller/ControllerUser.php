@@ -131,10 +131,12 @@ class ControllerUser extends Controller {
     public function edit_profile_picture() : void {
         $userConnected = $this->get_user_or_redirect();
         $errors = [];
-
+        echo '1';
         if(isset($_FILES['image']) && $_FILES['image']['error']=== self::UPLOAD_ERR_OK){
+                echo '2';
             $errors = User::validate_photoDeProfil($_FILES['image']);
             if(empty($errors)){
+                echo 'salut';
                 $picName = $userConnected->get_new_picture_path($_FILES['image']);
                 $oldFile = $user->getPicturePath();
                 $oldFile = "upload/users".$oldFile;
@@ -143,10 +145,15 @@ class ControllerUser extends Controller {
                 move_uploaded_file($_FILES['image']['tmp_name'], "upload/users/$picName");
                 $user->setPicturePath($picName);
                 $user->persist();
+            }else{
+                echo 'coucou';
+                (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>$errors]);
+
             }
 
         }else{
-            (new View("editProfilePicture"))->show(["user"=>$userConnected]);
+            echo '44444';
+            (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>[]]);
         }
 
     }
