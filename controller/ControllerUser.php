@@ -15,20 +15,22 @@ class ControllerUser extends Controller {
     }
     // méthode login
     public function login(): void {
-        $email = $_POST['email'] ?? '';
-        $password = $_POST['password'] ?? '';
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
         
-        $errors = User::validate_login($email, $password);
+            $errors = User::validate_login($email, $password);
         
-        if (empty($errors)) {
-            $this->is_validate_login($email);
-        } else {
-            
-            (new View("login"))->show([
-                "email" => $email, 
-                "errors" => $errors
-            ]);
+            if (empty($errors)) {
+                $this->is_validate_login($email);
+            } else {
+                (new View("login"))->show(["email" => $email, "errors" => $errors]);
+            }
+        }else{
+            (new View("login"))->show(["errors" =>[]]);
         }
+
+        
     }  
     // fonction si login valide (évite la répétition de code)
     public function is_validate_login(String $emailUser): void{
@@ -119,17 +121,33 @@ class ControllerUser extends Controller {
                 $userConnected->persist();
                 self::profile();
             }else{
-                (new View("editPassword"))->show(["user"=>$userConnected,"errors"=>$errors]);
+                (new View("editPassword"))->show(["errors"=>$errors]);
             }
          }else{
-            (new View("editPassword"))->show(["user"=>$userConnected,"errors"=>[]]);
+            (new View("editPassword"))->show(["errors"=>[]]);
          }
     }
     //fonction edit profile picture
     public function edit_profile_picture() : void {
         $userConnected = $this->get_user_or_redirect();
-        (new View("editProfilePicture"))->show(["user"=>$userConnected]);
+        $errors = [];
 
+        if(isset($_FILES['image']) && $_FILES['image']['error']=== self::UPLOAD_ERR_OK){
+            $errors = User::validate_photoDeProfil($_FILES['image']);
+            if(empty($errors)){
+                $picName = $userConnected->get_new_picture_path($_FILES['image']);
+                $oldFile = $user->getPicturePath();
+                $oldFile = "upload/users".$oldFile;
+                if($oldFile && file_exists($oldFile))
+                    unlink($oldFile);
+                move_uploaded_file($_FILES['image']['tmp_name'], "upload/users/$picName");
+                $user->setPicturePath($picName);
+                $user->persist();
+            }
+
+        }else{
+            (new View("editProfilePicture"))->show(["user"=>$userConnected]);
+        }
 
     }
 }

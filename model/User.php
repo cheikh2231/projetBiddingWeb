@@ -191,7 +191,34 @@ class User extends Model {
         }
         return $errors;
     }
-
+    //fonction validation image de profile
+    public function validate_photoDeProfil(array $file) : array{
+        $errors = [];
+        if(isset($file['image']) && $file['name'] !=''){
+            if($file['error']==0){
+                 $validFormat = ["png", "gif", "jpeg","webp"];
+                if (!in_array($file['type'], $validFormat)) {
+                    $errors['badFormat'] = "invalid format.";
+                }
+            }else{
+                $errors ['error']= "Error while uploading picture.";
+            }
+        }else{
+            $errors['noImage'] = "You have to add a picture.";
+        }
+        return $errors;
+    }
+    //fonction creation de nom image
+    public function get_new_picture_path(array $file): string{
+        if($file['type']== "png")
+            return $this->pseudo.time().".png";
+        else if($file['type']== "gif")
+            return $this->pseudo.time().".gif"; 
+        else if($file['type']== "jneg")
+            return $this->pseudo.time().".jpeg"; 
+        else if($file['type']== "webp")
+            return $this->pseudo.time().".webp";             
+    }
 
 
 
@@ -199,7 +226,7 @@ class User extends Model {
     public function persist(): void{
         //mise à jour
         if($this->id !== null){
-            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password]);
+            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password picture_path=:picture_path WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password, "picture_path"=>$this->picture_path]);
         }        
         else{
         //ajout

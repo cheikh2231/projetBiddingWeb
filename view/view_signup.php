@@ -17,7 +17,7 @@
 <body class="d-flex flex-column justify-content-center align-items-center vh-100">
     <!-- Partie bloc de la page -->
     <div class="logContainer text-center shadow-lg">
-        <h1 class="mb-3 fs-3">Sign in</h1>
+        <h1 class="mb-3 fs-3">Sign up</h1>
         <hr class="mb-4" style="border-color: #444; opacity: 1;">
 
         <!-- début du formulaire -->
