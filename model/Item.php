@@ -131,19 +131,35 @@ class Item extends Model {
     
     public function persist(): array {
         $errors = $this->validate();
+        
         if (empty($errors)) {
             if ($this->id === null) {
+                
                 $sql = "INSERT INTO items (title, description, owner, created_at, duration_days, starting_bid, buy_now_price) 
                         VALUES (?, ?, ?, ?, ?, ?, ?)";
                 self::execute($sql, [
                     $this->title, $this->description, $this->owner, $this->created_at, 
                     $this->duration_days, $this->starting_bid, $this->buy_now_price
                 ]);
+                
+                
                 $this->id = self::lastInsertId();
+
+               
+                $path = "uploads/items/" . $this->id;
+                
+                if (!is_dir($path)) {
+                    
+                    if (!mkdir($path, 0755, true)) {
+                        $errors['folder'] = "Erreur lors de la création du dossier de stockage.";
+                    }
+                }
+                
             } else {
                 $this->update();
             }
         }
+        
         return $errors;
     }
 
@@ -162,12 +178,50 @@ class Item extends Model {
     }
 
     public function delete(): bool {
-        
+
         if ($this->has_bids) return false;
 
+        $pictures = $this->getPictures(); 
+
+       
         self::execute("DELETE FROM bids WHERE item = ?", [$this->id]);
         self::execute("DELETE FROM item_pictures WHERE item = ?", [$this->id]);
-        return self::execute("DELETE FROM items WHERE id = ?", [$this->id]) !== false;
+        $res = self::execute("DELETE FROM items WHERE id = ?", [$this->id]) !== false;
+
+        
+        if ($res) {
+            $itemDirectory = "uploads/items/" . $this->id;
+
+            
+            foreach ($pictures as $path) {
+               
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+                
+                
+                $info = pathinfo($path);
+                $thumbnailPath = $info['dirname'] . '/' . $info['filename'] . '_thumbnail.' . $info['extension'];
+                
+                if (file_exists($thumbnailPath)) {
+                    unlink($thumbnailPath);
+                }
+            }
+
+           
+            if (is_dir($itemDirectory)) {
+                
+                $remainingFiles = array_diff(scandir($itemDirectory), array('.', '..'));
+                foreach ($remainingFiles as $file) {
+                    unlink($itemDirectory . '/' . $file);
+                }
+                
+                
+                rmdir($itemDirectory);
+            }
+        }
+
+        return $res;
     }
 
     
@@ -370,5 +424,42 @@ class Item extends Model {
         
        
         return (int)$max + 1;
+    }
+
+    public function deleteImage(?int $priority): bool {
+        if ($priority === null) return false;
+
+       
+        $sqlFile = "SELECT picture_path FROM item_pictures WHERE item = ? AND priority = ?";
+        $query = self::execute($sqlFile, [$this->id, $priority]);
+        $path = $query->fetchColumn();
+        if ($path && file_exists($path)) {
+            unlink($path);
+        }
+        $info = pathinfo($path);
+        $thumbnailPath = $info['dirname'] . '/' . $info['filename'] . '_thumbnail.' . $info['extension'];
+
+        if (file_exists($thumbnailPath)) {
+            unlink($thumbnailPath);
+        }
+
+        
+        $success = self::execute("DELETE FROM item_pictures WHERE item = ? AND priority = ?", [$this->id, $priority]) !== false;
+
+        
+        if ($success) {
+            $this->updatePriority($priority);
+        }
+                                                                                                                                                                                                                                
+        return $success;
+    }
+
+    public function updatePriority(int $deletedPriority): void {
+        
+        $sql = "UPDATE item_pictures 
+                SET priority = priority - 1 
+                WHERE item = ? AND priority > ?";
+        
+        self::execute($sql, [$this->id, $deletedPriority]);
     }
 }

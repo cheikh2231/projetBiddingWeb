@@ -259,6 +259,11 @@ class ControllerItem extends Controller {
 
     public function manage_images() : void{
         $user = $this->get_user_or_redirect();
+                
+        $config = parse_ini_file('config/dev.ini'); 
+        $max_size_mb = (int)$config['upload_max_size'];
+        $max_res_main = (int)$config['image_max_res_main']; 
+        $max_res_thumb = (int)$config['image_max_res_thumb'];
 
         if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','index');
@@ -268,17 +273,23 @@ class ControllerItem extends Controller {
           $item = Item::getItemById($item_id);
         }
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $errors = [];
-      
-       
-        
-        $config = parse_ini_file('config/dev.ini'); 
-        $max_size_mb = (int)$config['upload_max_size'];
-        $max_res_main = (int)$config['image_max_res_main']; 
-        $max_res_thumb = (int)$config['image_max_res_thumb'];
+         $errors = [];
+         $index = $_POST['image_index'] ?? null;
 
-        
-        if (isset($_FILES['image'])) {
+        if (isset($_POST['delete'])) {
+            if($item->deleteImage($index)){
+                 $this->redirect('item', 'manage_images', $item_id);
+                 return;
+            }
+            $errors[] = "image introuvable ";
+            
+        } elseif (isset($_POST['left'])) {
+            
+        } elseif (isset($_POST['right'])) {
+            
+        }else
+
+         if (isset($_FILES['image'])) {
             $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
             
             if (empty($errors)) {

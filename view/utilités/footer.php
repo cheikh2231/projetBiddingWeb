@@ -49,7 +49,7 @@
 
                     <?php else:?>
                         <div class="col">
-                            <a href="user/index" class="text-decoration-none text-white">
+                            <a href="user/signup" class="text-decoration-none text-white">
                                 <i class="bi bi-balloon-fill fs-4 d-block"></i>
                                 <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Join us</span>
                             </a>
