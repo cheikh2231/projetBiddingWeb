@@ -1,5 +1,5 @@
 <?php
- $uPic = $user->getPicturePath();
+ $userPic = $user->getPicturePath();
 ?>
 
 <!DOCTYPE html>
@@ -34,8 +34,8 @@
     <!--1er rectangle-->
     <div class="card-header-custom">Current Profile Picture</div>
     <div class="card-custom mb-4 ">
-        <div class="card-body p-4 d-flex justify-content-center align-items-center">
-            <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
+        <div class="card-body p-4 d-flex justify-content-center align-items-center">    
+            <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
             <h2><?=  $user->getName() ?></h2>
@@ -54,7 +54,10 @@
         <div class="card-body p-4">
             <div class="mb-3">
                 <label class="form-label">Select Image *</label><br>
-                <input type="file" name="image" accept=".png, .gif, .jpeg, .jpg, .webp"><br>
+                <input type="file" name="image" accept=".png, .gif, .jpeg, .jpg, .webp" class="form-control custom-input">
+                <?php if(isset($errors['picture']))  :?>
+                    <small class= "text-danger"><?=  $errors['picture'] ?></small><br>
+                <?php endif?> 
                 <small class = "text-muted">Supported formats: JPG, PNG, GIF, Webp. This will replace your current profile picture.</small><br><br>
                 <button type="submit" class="btn btn-primary custom-btn-blue">Upload Picture</button>
 
@@ -62,19 +65,26 @@
         </div>        
     </div>
     </form>
+
+    <!-- 3e rectangle -->
+    <?php if($userPic):?>
+    <form id="delete" action="user/delete_profile_picture" method="POST" enctype="multipart/form-data">
+    <div class="card-custom mb-4 ">
+        <div class="card-header-custom">Remove Current Picture</div>
+        <div class="card-body p-4">
+            <div class="mb-3">
+                <h5 class="text-warning">This will permanently delete your current profile picture. You can upload a new one anytime.</h5>
+                <button type="submit" class="btn btn-danger ">Delete Picture</button>
+            </div>
+        </div>        
+    </div>
+    </form>
+    <?php endif ?>
+
+
+
 </div>
-<!-- Partie erreurs -->
-    <?php if(count($errors) != 0):?>
-        <div class="alert alert-danger mt-3" role="alert">
-            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
-            <hr>
-            <p class="mb-0">
-                <?php foreach ($errors as $error): ?>
-                    <?= $error ?><br>
-                <?php endforeach; ?> 
-            </p>
-        </div>
-    <?php endif; ?>   
+
 <!--Footer -->
 <?php include('view/utilités/footer.php')?>
 

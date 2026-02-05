@@ -38,14 +38,20 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Full Name *</label><br>
-                    <input name="fullname" type="text" value="<?=  $user->getName() ?>" placeholder="Your name"><br>
+                    <input name="fullname" type="text" value="<?=  $user->getName() ?>" placeholder="Your name" class="form-control custom-input"><br>
                     <small class = "text-muted">Your complete name as it should appear on your profile.</small>
                 </div>
+                 <?php if(isset($errors['fullName']))  :?>
+                    <small class= "text-danger"><?=  $errors['fullName'] ?></small>
+                <?php endif?>   
                 <div class="mb-3">
                     <label class="form-label">Username *</label><br>
-                    <input name="pseudo" type="text" value="<?=  $user->getPseudo() ?>" placeholder="Pseudo"><br>
+                    <input name="pseudo" type="text" value="<?=  $user->getPseudo() ?>" placeholder="Pseudo" class="form-control custom-input"><br>
                     <small class = "text-muted">This will be your public display on the platform.</small>
                 </div>
+                 <?php if(isset($errors['pseudo']))  :?>
+                    <small class= "text-danger"><?=  $errors['pseudo'] ?></small>
+                <?php endif?>   
             </div>
         </div>
         <!-- bloc 2 -->
@@ -54,32 +60,27 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Email Address *</label><br>
-                    <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email"><br>
+                    <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email" class="form-control custom-input"><br>
                     <small class = "text-muted">We will use this email to send you notifications about your sales and purchases.</small>
                 </div>
+                 <?php if(isset($errors['email']))  :?>
+                    <small class= "text-danger"><?=  $errors['email'] ?></small>
+                <?php endif?>   
                 <div class="mb-3">
                     <label class="form-label">IBAN&nbsp;</label><label class="form-label text-secondary">(Optional)</label><br>
-                    <input name="iban" type="text" value="<?=  $user->getIban() ?>" placeholder="BE99 9999 9999 9999"><br>
+                    <input name="iban" type="text" value="<?=  $user->getIban() ?>" class="form-control custom-input" placeholder="BE99 9999 9999 9999"><br>
                     <small class = "text-muted">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
                 </div>
+                 <?php if(isset($errors['iban']))  :?>
+                    <small class= "text-danger"><?=  $errors['iban'] ?></small>
+                <?php endif?>   
             </div>
         </div>
     </form>
 </div>                
-<!-- Partie erreurs -->
-    <?php if(count($errors) != 0):?>
-        <div class="alert alert-danger mt-3" role="alert">
-            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
-            <hr>
-            <p class="mb-0">
-                <?php foreach ($errors as $error): ?>
-                    <?= $error ?><br>
-                <?php endforeach; ?> 
-            </p>
-        </div>
-    <?php endif; ?>   
-
-
+ <?php if(isset($errors['champs']))  :?>
+    <small class= "text-danger"><?=  $errors['champs'] ?></small>
+<?php endif?>   
 
 <!--Footer -->
 <?php include('view/utilités/footer.php')?>

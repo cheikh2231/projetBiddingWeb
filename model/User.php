@@ -102,10 +102,10 @@ class User extends Model {
         $user = self::getUserByEmail($email);
         if ($user) {
             if (!password_verify($password, $user->getPassword())) {
-                $errors[] = "Wrong password. Please try again.";
+                $errors['password'] = "Wrong password. Please try again.";
             }
         } else {
-            $errors[] = "Can't find a member with the email '$email'. Please sign up.";
+            $errors['email'] = "Can't find a member with the email '$email'. Please sign up.";
         }
         return $errors;
     }
@@ -114,28 +114,28 @@ class User extends Model {
         $errors = [];
         //verification tout les champs remplis
         if(empty($email)||empty($fullname)||empty($pseudo)||empty($password)||empty($confirmPassword)){
-            $errors[] = "All fields are required.";    
+            $errors['champs'] = "All fields are required.";    
         }else{
             //email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-                $errors[]= "invalid email format.";
+                $errors['email']= "invalid email format.";
             else if(self::getUserByEmail($email))
-                $errors[] = "Email already taken.";
+                $errors['email'] = "Email already taken.";
             //fullname
             if(strlen($fullname) < 3)
-                $errors[] = "Full name must be more than 3 letters.";
+                $errors['fullName'] = "Full name must be more than 3 letters.";
             //pseudo
             if(self::getUserByPseudo($pseudo))
-                $errors[] = "Pseudo already taken.";
+                $errors['pseudo'] = "Pseudo already taken.";
             else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
-                $errors[] = "Lenght of the pseudo invalid";
+                $errors['pseudo'] = "Lenght of the pseudo invalid";
             //mdp
             $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
             if(!preg_match($pattern, $password))
-                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+                $errors['password'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
             //confirmPassword
             if($confirmPassword !== $password)
-                $errors[] = "Confirm password doesn't match.";
+                $errors['confirmPassword'] = "Confirm password doesn't match.";
         }
         return $errors;
     }
@@ -143,30 +143,30 @@ class User extends Model {
     public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
         $errors = [];
         if(empty($email)||empty($fullname)||empty($pseudo)){
-            $errors[] = "Email, Name and Pseudo need to be filled in.";
+            $errors['champs'] = "Email, Name and Pseudo need to be filled in.";
         }else{
             //email
             if($email != $this->email){
                 if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-                    $errors[]= "invalid email format.";
+                    $errors['email']= "invalid email format.";
                 if(self::getUserByEmail($email))
-                    $errors[] = "Email already taken.";
+                    $errors['email'] = "Email already taken.";
             }
             //fullname
             if(strlen($fullname) < 3)
-                $errors[] = "Full name must be more than 3 letters.";
+                $errors['fullName'] = "Full name must be more than 3 letters.";
             //pseudo
             if($pseudo != $this->pseudo){
                 if(self::getUserByPseudo($pseudo))
-                    $errors[] = "Pseudo already taken.";
+                    $errors['pseudo'] = "Pseudo already taken.";
                 else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
-                $errors[] = "Lenght of the pseudo invalid";
+                $errors['pseudo'] = "Lenght of the pseudo invalid";
             }
             //iban
             if(!empty($iban)){
                 $ibanPattern = "/^BE\d{2}(\s?\d{4}){3}$/";
                 if (!preg_match($ibanPattern, str_replace(' ', '', $iban))) {
-                    $errors[] = "Invalid iban format";
+                    $errors['iban'] = "Invalid iban format";
                 }
             }
         }
@@ -176,18 +176,18 @@ class User extends Model {
     public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
         $errors = [];
         if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
-            $errors[] = "All fields are required.";
+            $errors['champs'] = "All fields are required.";
         }else{
             //current password
             if (!password_verify($currentPassword, $this->getPassword()))
-                $errors[] = "Current password doesn't match";
+                $errors['currentPassword'] = "Current password doesn't match";
             //new password
             $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
             if(!preg_match($pattern, $newPassword))
-                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+                $errors['newPassword'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
             //confirmPassword
             if($confirmNewPassword !== $newPassword)
-                $errors[] = "Confirm password doesn't match.";
+                $errors['confirmNewPassword'] = "Confirm password doesn't match.";
         }
         return $errors;
     }
@@ -196,26 +196,23 @@ class User extends Model {
         $errors = [];
         if(!isset($file['image']) || $file['name'] ==''){
             if($file['error']!=0)
-                $errors ['error']= "Error while uploading picture.";
+                $errors ['picture']= "Error while uploading picture.";
 
             $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $validFormat = ["png", "gif", "jpeg", "webp", "jpg"];
 
             if (!in_array($extension, $validFormat)) 
-                $errors['badFormat'] = "Invalid format";
+                $errors['picture'] = "Invalid format";
                     
                 
             // verifacation taille du fichier (5242880 = 5mb)
             if($file['size']>5242880)
-                $errors['badFormat'] = "invalid size.";
+                $errors['picture'] = "invalid size.";
                     
             
         }else{
-            $errors['noImage'] = "You have to add a picture.";
+            self::change_or_add_profile_picture($file);
         }
-        self::change_or_add_profile_picture($file);
-        
-
         return $errors;
     }
     private function change_or_add_profile_picture(array $file) : void{

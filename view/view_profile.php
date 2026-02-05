@@ -1,5 +1,5 @@
 <?php
- $uPic = $user->getPicturePath();
+ $userPic = $user->getPicturePath();
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +34,7 @@
 <div class="profile-container">
     
     <div class="section-box header-card text-center">
-        <img src="<?= $uPic ?>" class="avatar-main" alt="Avatar">
+        <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         <div class="profile-info">
             <h2><?= $user->getName()?></h2>
             <div class="sub">@<?= $user->getPseudo()?></div>

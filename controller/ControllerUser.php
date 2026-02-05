@@ -43,7 +43,7 @@ class ControllerUser extends Controller {
         $userEmail = $_GET['param1']."@epfc.eu";
         if(User::getUserByEmail($userEmail))
             $this->is_validate_login($userEmail);
-         $errors[] = "Email has been changed";
+         $errors["logForDebug"] = "Email has been changed";
          (new View("login"))->show([ "errors" => $errors]);
     }
     //fonction logout

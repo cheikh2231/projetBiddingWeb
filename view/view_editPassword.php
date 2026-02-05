@@ -38,9 +38,13 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Current Password *</label><br>
-                    <input name="currentPassword" type="password" placeholder="Enter your current password"><br>
+                    <input name="currentPassword" type="password" placeholder="Enter your current password" class="form-control custom-input">
+                    <?php if(isset($errors['currentPassword']))  :?>
+                        <small class= "text-danger"><?=  $errors['currentPassword'] ?></small><br>
+                    <?php endif?>
                     <small class = "text-muted">Enter your current password to verify your identity.</small>
                 </div>
+                  
             </div>
         </div>
         <!-- bloc 2 -->
@@ -49,35 +53,30 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">New Password *</label><br>
-                    <input name="newPassword" type="password" placeholder="Enter your new password"><br>
+                    <input name="newPassword" type="password" placeholder="Enter your new password" class="form-control custom-input">
+                    <?php if(isset($errors['newPassword']))  :?>
+                        <small class= "text-danger"><?=  $errors['newPassword'] ?></small><br>
+                    <?php endif?>
                     <small class = "text-muted">Password must be 8-16 characters with uppercase, number and punctuation.</small>
                 </div>
+              
                 <div class="mb-3">
                     <label class="form-label">Confirm New Password *</label><label class="form-label text-secondary">(Optional)</label><br>
-                    <input name="confirmNewPassword" type="password" placeholder="Confirm your new password"><br>
+                    <input name="confirmNewPassword" type="password" placeholder="Confirm your new password" class="form-control custom-input">
+                    <?php if(isset($errors['confirmNewPassword']))  :?>
+                    <small class= "text-danger"><?=  $errors['confirmNewPassword'] ?></small><br>
+                <?php endif?>
                     <small class = "text-muted">Re-enter your new password to confirm it matches.</small>
                 </div>
+                
             </div>
         </div>
 
     </form>
 </div>        
-
-
-
-
-<!-- Partie erreurs -->
-    <?php if(count($errors) != 0):?>
-        <div class="alert alert-danger mt-3" role="alert">
-            <h2 class="alert-heading fs-5"><i class="bi bi-exclamation-triangle-fill"></i> ERROR</h2>
-            <hr>
-            <p class="mb-0">
-                <?php foreach ($errors as $error): ?>
-                    <?= $error ?><br>
-                <?php endforeach; ?> 
-            </p>
-        </div>
-    <?php endif; ?>   
+<?php if(isset($errors['champs']))  :?>
+    <small class= "text-danger"><?=  $errors['champs'] ?></small>
+<?php endif?>
 
 
 
