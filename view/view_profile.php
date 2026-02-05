@@ -1,5 +1,8 @@
 <?php
+
  $userPic = $user->getPicturePath();
+ $place = "profile";
+
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +35,7 @@
 </header>
 
     <!--centre de la page-->
+
 <div class="profile-container">
     
     <div class="section-box header-card text-center">

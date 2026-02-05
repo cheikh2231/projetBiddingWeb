@@ -27,7 +27,7 @@
                             <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Browse</span>
                         </a>
                     </div>
-                    <?php if($currentUser!=null):?>
+                    <?php if(isset($_SESSION['user'])):?>
                     <div class="col">
                         <a href="item/list" class="text-decoration-none <?= ($place === 'items') ? 'text-primary' : 'text-white' ?>">
                             <i class="bi bi-house-door fs-4 d-block"></i>

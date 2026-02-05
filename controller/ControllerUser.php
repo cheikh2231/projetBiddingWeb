@@ -74,10 +74,11 @@ class ControllerUser extends Controller {
         }  
         
     }  
+    
     //fonction profile
     public function profile() : void {
         $userConnected = $this->get_user_or_redirect();
-        (new View("profile"))->show(["currentUser"=>$userConnected]);
+        (new View("profile"))->show(["user"=>$userConnected]);
 
 
     }
