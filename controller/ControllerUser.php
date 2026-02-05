@@ -74,7 +74,6 @@ class ControllerUser extends Controller {
         }  
         
     }  
-    
     //fonction profile
     public function profile() : void {
         $userConnected = $this->get_user_or_redirect();
