@@ -194,30 +194,68 @@ class User extends Model {
     //fonction validation image de profile
     public function validate_photoDeProfil(array $file) : array{
         $errors = [];
-        if(isset($file['image']) && $file['name'] !=''){
-            if($file['error']==0){
-                 $validFormat = ["png", "gif", "jpeg","webp"];
-                if (!in_array($file['type'], $validFormat)) {
-                    $errors['badFormat'] = "invalid format.";
-                }
-            }else{
+        if(!isset($file['image']) || $file['name'] ==''){
+            if($file['error']!=0)
                 $errors ['error']= "Error while uploading picture.";
-            }
+
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $validFormat = ["png", "gif", "jpeg", "webp", "jpg"];
+
+            if (!in_array($extension, $validFormat)) 
+                $errors['badFormat'] = "Invalid format";
+                    
+                
+            // verifacation taille du fichier (5242880 = 5mb)
+            if($file['size']>5242880)
+                $errors['badFormat'] = "invalid size.";
+                    
+            
         }else{
             $errors['noImage'] = "You have to add a picture.";
         }
+        self::change_or_add_profile_picture($file);
+        
+
         return $errors;
     }
+    private function change_or_add_profile_picture(array $file) : void{
+        $picName = self::create_picture_name($file);
+        
+        //creation dossier si inexistant
+        $folder = "uploads/users/".$this->id."/";
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755, true);
+        }
+        if($this->picture_path !=null){
+            $oldFile = $folder.$this->picture_path;
+            if($oldFile && file_exists($oldFile)){
+                unlink($oldFile);
+                $extension = pathinfo($oldFile, PATHINFO_EXTENSION);
+                $oldFileThumb = str_replace('.' . $extension, '_thumbnail.' . $extension, $oldFile);
+                if(file_exists($oldFileThumb)) 
+                    unlink($oldFileThumb);
+            }
+        }
+        
+        move_uploaded_file($_FILES['image']['tmp_name'], $folder.$picName);
+        self::setPicturePath($picName);
+        self::persist();
+    }
+
     //fonction creation de nom image
-    public function get_new_picture_path(array $file): string{
+    private function create_picture_name(array $file): string{
         if($file['type']== "png")
             return $this->pseudo.time().".png";
         else if($file['type']== "gif")
             return $this->pseudo.time().".gif"; 
-        else if($file['type']== "jneg")
+        else if($file['type']== "jpeg")
             return $this->pseudo.time().".jpeg"; 
+        else if($file['type']== "jpg")
+            return $this->pseudo.time().".jpg";
         else if($file['type']== "webp")
-            return $this->pseudo.time().".webp";             
+            return $this->pseudo.time().".webp";
+        else
+            return "ERROR new picture name";             
     }
 
 

@@ -48,13 +48,13 @@
         </div>    
     </div> 
     <!--2e rectangle-->
-    <form id="formulaire" action="user/edit_profile_picture" method="POST">
+    <form id="formulaire" action="user/edit_profile_picture" method="POST" enctype="multipart/form-data">
     <div class="card-custom mb-4 ">
         <div class="card-header-custom">Upload New Picture</div>
         <div class="card-body p-4">
             <div class="mb-3">
                 <label class="form-label">Select Image *</label><br>
-                <input type="file" name="image" accept="image/x-png, image/gif, image/jpeg, image/webp"><br>
+                <input type="file" name="image" accept=".png, .gif, .jpeg, .jpg, .webp"><br>
                 <small class = "text-muted">Supported formats: JPG, PNG, GIF, Webp. This will replace your current profile picture.</small><br><br>
                 <button type="submit" class="btn btn-primary custom-btn-blue">Upload Picture</button>
 
