@@ -284,9 +284,13 @@ class ControllerItem extends Controller {
             $errors[] = "image introuvable ";
             
         } elseif (isset($_POST['left'])) {
-            
+            if(($index-1) > 0){
+                $item->swapPic($index-1,$index);
+            }
         } elseif (isset($_POST['right'])) {
-            
+            if(($index+1) <= count($item->getPictures())){
+                $item->swapPic($index,$index+1);
+            }
         }else
 
          if (isset($_FILES['image'])) {

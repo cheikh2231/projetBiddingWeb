@@ -47,11 +47,12 @@
                             <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail">
                             <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1"  >
                                 <input type="hidden" name="image_index" value="<?= $i+1?>">
-
-                                <button type="submit" name="left" class="btn btn-outline-secondary border-2">
-                                    <i class="bi bi-arrow-left-short"></i>
-                                </button>
                                 
+                        
+                                <button type="submit" name="left" class="btn btn-outline-secondary border-2">
+                                        <i class="bi bi-arrow-left-short"></i>
+                                </button>
+                              
                                 <button type="submit" name="right" class="btn btn-outline-secondary border-2">
                                     <i class="bi bi-arrow-right-short"></i>
                                 </button>
