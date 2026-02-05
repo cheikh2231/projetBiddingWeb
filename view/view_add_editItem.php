@@ -1,4 +1,8 @@
 
+<?php  
+    $config = parse_ini_file('config/dev.ini');
+     $defautDuration  = $config['duration_default_value'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,7 +79,7 @@
                 <div class="mb-3">
                     <label class="form-label">Sale Duration (days) *</label>
                     <input type="number" name="duration" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : 7)) ?>">
+                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : $defautDuration)) ?>">
                     <?php if (isset($errors['duration'])): ?>
                         <div class="text-danger small mt-1">
                             <ul>

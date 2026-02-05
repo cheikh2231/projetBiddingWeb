@@ -40,7 +40,7 @@
             
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
-                <a href = "item/index"  class="btn btn-secondary custom-btn-grey">
+                <a href = "item/browse"  class="btn btn-secondary custom-btn-grey">
                     Continue as guest
                 </a>
             </div>

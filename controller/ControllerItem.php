@@ -57,7 +57,7 @@ class ControllerItem extends Controller {
            
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id, "from-".$source, $idImg);
+                    $this->redirect("item", "open", $id);
                     return; 
                 }
             }
@@ -66,7 +66,7 @@ class ControllerItem extends Controller {
                 $amount = floatval($_POST['amount']);
                 $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
                 $newBid->add();
-                $this->redirect("item", "open", $id, "from-".$source, $idImg);
+                $this->redirect("item", "open", $id);
                 return;
             }
         }
@@ -198,15 +198,15 @@ class ControllerItem extends Controller {
             $errors = $newItem->persist();
 
             if (empty($errors)) {
-                $this->redirect("item", "open", $newItem->getId(), "from-items");
+                $this->redirect("item", "open", $newItem->getId());
                 return;
             }
         }
 
         (new View('add_editItem'))->show([ 
             "item" => $newItem, 
-            "errors" => $errors, 
-            "source" => "items" ,
+            "errors" => $errors,
+            "source" => "browse", 
             "currentUser"=>$user
         ]);
     }

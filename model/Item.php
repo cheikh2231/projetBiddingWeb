@@ -466,17 +466,17 @@ class Item extends Model {
 
     public function swapPic(int $iBefore, int $i): void {
 
-    $sql1 = "UPDATE item_pictures SET priority = -1 WHERE item = ? AND priority = ?";
-    self::execute($sql1, [$this->id, $iBefore]);
+        $sql1 = "UPDATE item_pictures SET priority = -1 WHERE item = ? AND priority = ?";
+        self::execute($sql1, [$this->id, $iBefore]);
 
-    if($sql1){
-        $sql2 = "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?";
-        self::execute($sql2, [$iBefore, $this->id, $i]);
+        if($sql1){
+            $sql2 = "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?";
+            self::execute($sql2, [$iBefore, $this->id, $i]);
 
-        if($sql2){
-            $sql3 = "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?";
-            self::execute($sql3, [$i, $this->id, -1]);
+            if($sql2){
+                $sql3 = "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?";
+                self::execute($sql3, [$i, $this->id, -1]);
+            }
         }
     }
-}
 }

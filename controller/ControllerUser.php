@@ -8,7 +8,7 @@ class ControllerUser extends Controller {
     public function index() : void {
         
         if ($this->user_logged()) {
-            $this->redirect("item", "index");
+            $this->redirect("item", "browse");
         } else {
             (new View("login"))->show(["errors" => []]);
         }
@@ -34,7 +34,7 @@ class ControllerUser extends Controller {
     public function is_validate_login(String $emailUser): void{
         $user = User::getUserByEmail($emailUser);
         $this->log_user($user);
-        $this->redirect("item", "index"); 
+        $this->redirect("item", "browse"); 
     }
     //fonction pour log en Debug
     public function log_for_debug():void{

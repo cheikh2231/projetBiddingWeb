@@ -35,8 +35,6 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
     <h5 class="m-0 me-2 text-primary">Item open</h5>
     <i class="bi bi-cart4 fs-4 text-white"></i>
 </header>
-
-
 <div class="container pb-5" style="margin-bottom: 80px;">
     <div class="row">
         <div class="col-12 col-md-6 col-lg-7">
@@ -169,10 +167,12 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 
 
             <div class="card mb-3 bg-dark">
+                <strong class = "ms-2 mt-2 text-muted p-0">Seller Information</strong>
                 <div class="card-body d-flex align-items-center">
                     <?php $uPic = $owner->getPicturePath(); ?>
                     <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
                     <div>
+                        
                         <div class="fw-bold text-light"><?= htmlspecialchars($owner->getPseudo()) ?></div>
                         <div class="text-muted small"><?= $owner->getRole() === "user" ? "Member" : "Admin" ?></div>
                     </div>
