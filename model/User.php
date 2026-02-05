@@ -238,7 +238,7 @@ class User extends Model {
         }
         
         move_uploaded_file($_FILES['image']['tmp_name'], $folder.$picName);
-        self::setPicturePath($picName);
+        self::setPicturePath($folder.$picName);
         self::persist();
     }
 

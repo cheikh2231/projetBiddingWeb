@@ -1,0 +1,108 @@
+:root {
+            --bg-dark: #12141a;
+            --card-container: #1b2028;
+            --header-gray: #323d4d;
+            --item-bg: #1b2028;
+            --item-border: #333b45;
+            --accent-blue: #4a8df8;
+            --text-gray: #8a929e;
+        }
+
+        body {
+            background: linear-gradient(180deg, #0b1324, #0e1a33);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+      
+        }
+
+        /* Largeur maximale pour coller aux bords */
+        .profile-container {
+            width: 98%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-box {
+            background-color: var(--card-container);
+            border: 1px solid var(--item-border);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        /* Card spécifique pour l'en-tête (Avatar + Infos) */
+        .header-card {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-header {
+            background-color: var(--header-gray);
+            padding: 12px 20px;
+            font-weight: 600;
+            color: #bdc3c7;
+            border-bottom: 1px solid var(--item-border);
+        }
+
+        .section-body {
+            padding: 15px 20px;
+        }
+
+        .menu-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--item-bg);
+            border: 1px solid var(--item-border);
+            border-radius: 4px;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .menu-card:last-child { margin-bottom: 0; }
+        .menu-card:hover { background-color: #242b36; border-color: var(--accent-blue); }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--item-border);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--accent-blue);
+            flex-shrink: 0;
+        }
+
+        .content-box h4 {
+            color: var(--accent-blue);
+            font-size: 0.95rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .content-box p {
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        /* Bouton Logout */
+        .logout-card { border-color: #5a2d2d; }
+        .logout-card .icon-box, .logout-card h4 { color: #e74c3c; }
+
+        .avatar-main { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .profile-info h2 { font-size: 1.4rem; margin-bottom: 2px; }
+        .profile-info .sub { color: var(--text-gray); font-size: 0.85rem; }
