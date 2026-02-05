@@ -244,16 +244,11 @@ class User extends Model {
 
     //fonction creation de nom image
     private function create_picture_name(array $file): string{
-        if($file['type']== "png")
-            return $this->pseudo.time().".png";
-        else if($file['type']== "gif")
-            return $this->pseudo.time().".gif"; 
-        else if($file['type']== "jpeg")
-            return $this->pseudo.time().".jpeg"; 
-        else if($file['type']== "jpg")
-            return $this->pseudo.time().".jpg";
-        else if($file['type']== "webp")
-            return $this->pseudo.time().".webp";
+        $formatOfPic = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $valideFormat = ["jpeg","jpg","png","gif","webp"];
+
+        if (in_array($formatOfPic, $valideFormat)) 
+            return $this->pseudo . time() . "." . $formatOfPic;
         else
             return "ERROR new picture name";             
     }
@@ -264,7 +259,7 @@ class User extends Model {
     public function persist(): void{
         //mise à jour
         if($this->id !== null){
-            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password picture_path=:picture_path WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password, "picture_path"=>$this->picture_path]);
+            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password, picture_path=:picture_path WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password, "picture_path"=>$this->picture_path]);
         }        
         else{
         //ajout
