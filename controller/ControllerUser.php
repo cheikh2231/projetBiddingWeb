@@ -134,14 +134,23 @@ class ControllerUser extends Controller {
         if(isset($_FILES['image']) && $_FILES['image']['error']=== UPLOAD_ERR_OK && $_SERVER['REQUEST_METHOD'] === 'POST'){
             $errors = $userConnected->validate_photoDeProfil($_FILES['image']);
             if(empty($errors)){
+                $userConnected->change_or_add_profile_picture($_FILES['image']);
                 self::profile();
             }else{
+                
                 (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>$errors]);
             }
 
         }else{
             (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>[]]);
         }
+
+    }
+    //fonction delete profile picture
+    public function delete_profile_picture() : void{
+        $userConnected = $this->get_user_or_redirect();
+        $userConnected->delete_profile_picture();
+        (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>[]]);
 
     }
 }

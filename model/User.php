@@ -194,7 +194,7 @@ class User extends Model {
     //fonction validation image de profile
     public function validate_photoDeProfil(array $file) : array{
         $errors = [];
-        if(!isset($file['image']) || $file['name'] ==''){
+        if(isset($_FILES['image'])){
             if($file['error']!=0)
                 $errors ['picture']= "Error while uploading picture.";
 
@@ -210,15 +210,16 @@ class User extends Model {
                 $errors['picture'] = "invalid size.";
                     
             
-        }else{
-            self::change_or_add_profile_picture($file);
+        }else{    
+            $errors['picture'] = "no image";
         }
         return $errors;
     }
-    private function change_or_add_profile_picture(array $file) : void{
+    public function change_or_add_profile_picture(array $file) : void{
         $picName = self::create_picture_name($file);
         
         //creation dossier si inexistant
+        
         $folder = "uploads/users/".$this->id."/";
         if (!is_dir($folder)) {
             mkdir($folder, 0755, true);
@@ -248,6 +249,19 @@ class User extends Model {
             return $this->pseudo . time() . "." . $formatOfPic;
         else
             return "ERROR new picture name";             
+    }
+    //fonction delete profile picture
+    public function delete_profile_picture():void{
+        $path = "uploads/users/" . $this->id;
+        $files = glob($path . "/*"); 
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        self::setPicturePath(null);
+        self::persist();
+        rmdir("uploads/users/".$this->id);
     }
 
 
