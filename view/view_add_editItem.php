@@ -1,4 +1,8 @@
 
+<?php  
+    $config = parse_ini_file('config/dev.ini');
+     $defautDuration  = $config['duration_default_value'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +18,7 @@
         $isEdit = $item && $item->getId();
         $titlePage = $isEdit ? "Edit Item" : "Add Item";
         $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+        $place = "add";
 
     ?>
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
@@ -42,7 +47,7 @@
                 <div class="mb-3">
                     <label class="form-label">Item Title *</label>
                     <input type="text" name="title" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['title'] ?? ($item ? $item->getTitle() : '')) ?>" 
+                           value="<?= ($_POST['title'] ?? ($item ? $item->getTitle() : '')) ?>" 
                            placeholder="Ex: iPhone 13 Pro Max">
                     <?php if (isset($errors['title'])): ?>
                         <div class="text-danger small mt-1">
@@ -58,9 +63,9 @@
 
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
-                    <textarea class="form-control" name="description" rows="5"><?= htmlspecialchars($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
+                    <textarea class="form-control" name="description" rows="5"><?= ($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
                      
-                    <?php if (isset($errors['descrition'])): ?>
+                    <?php if (isset($errors['description'])): ?>
                         <div class="text-danger small mt-1">
                             <ul>
                                 <?php foreach ($errors['description'] as $i): ?> 
@@ -74,7 +79,7 @@
                 <div class="mb-3">
                     <label class="form-label">Sale Duration (days) *</label>
                     <input type="number" name="duration" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : 7)) ?>">
+                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : $defautDuration)) ?>">
                     <?php if (isset($errors['duration'])): ?>
                         <div class="text-danger small mt-1">
                             <ul>

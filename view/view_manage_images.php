@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sales</title>
+    <title>manage_images</title>
     <base href="<?= $web_root ?>"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -26,7 +26,7 @@
             <form method="POST" action="item/manage_images/<?=$item->getId()?>" enctype="multipart/form-data">
                 
                 <label for="imageInput">Select Images</label>
-                <input type="file" id="imageInput" name="images[]" multiple accept="image/*">
+                <input type="file" id="imageInput" name="image" multiple accept="image/*">
                 
                 <p class="hint mt-2">You can select multiple images (JPG, PNG, GIF, WebP). Images will be added to the end of your current list.</p>
                 
@@ -45,8 +45,27 @@
                        
                         <div class="cas me-3" style=width:180px;>
                             <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail">
-                            
+                            <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1"  >
+                                <input type="hidden" name="image_index" value="<?= $i+1?>">
+                                
+                        
+                                <button type="submit" name="left" class="btn btn-outline-secondary border-2">
+                                        <i class="bi bi-arrow-left-short"></i>
+                                </button>
+                              
+                                <button type="submit" name="right" class="btn btn-outline-secondary border-2">
+                                    <i class="bi bi-arrow-right-short"></i>
+                                </button>
+                                
+                                <button type="submit" name="delete" class="btn btn-outline-danger bg-danger text-white border-2" >
+                                      
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </form>
+
                         </div>
+
+                        
                     <?php endfor; ?>
 
 
@@ -55,7 +74,7 @@
         </div>
     </div>
 </div>
-
+<?php include 'view/utilités/footer.php'; ?>
 
 </body>
 </html>

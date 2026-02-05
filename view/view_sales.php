@@ -46,18 +46,19 @@
             <div class="col-md-4 mb-4">
                 <div class="card bg-dark text-white p-2">
                     <h5 class="text-white-50">AVERAGE TICKET</h5>
-                    <h1 class="mb-2 text-white"> <?= number_format($somme/ count($sold),2) ?></h1>
+                    <h1 class="mb-2 text-white"> <?= count($sold)>0?number_format($somme/ count($sold),2):0 ?></h1>
                     <h6 class="text-white-50">Median buyer appetite indicator</h6>
                 </div>
             </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card bg-dark text-white p-2">
-                    <h5 class="text-white-50">LOYAL BIDDER</h5>
-                    <h1 class="mb-2 text-white"><?= $currentUser->getMyMostLoyalBidder()->getPseudo() ?></h1>
-                    <h5 class="text-white-50">Who you've bought from the most</h5>
+            <?php if($currentUser->getMyMostLoyalBidder() !== null):?>
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-dark text-white p-2">
+                        <h5 class="text-white-50">LOYAL BIDDER</h5>
+                        <h1 class="mb-2 text-white"><?= $currentUser->getMyMostLoyalBidder()->getPseudo() ?></h1>
+                        <h5 class="text-white-50">Who you've bought from the most</h5>
+                    </div>
                 </div>
-            </div>
+            <?php endif;?>
         </div>
         <?php if (!empty($sold)) : ?>
         

@@ -35,8 +35,6 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
     <h5 class="m-0 me-2 text-primary">Item open</h5>
     <i class="bi bi-cart4 fs-4 text-white"></i>
 </header>
-
-
 <div class="container pb-5" style="margin-bottom: 80px;">
     <div class="row">
         <div class="col-12 col-md-6 col-lg-7">
@@ -45,7 +43,14 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                     <img src="<?= $displayImg ?>" class="card-img-top" alt="Item image"/>
                 </div>
                 <div class="p-2">
+
+                    
                     <div class="mt-1 fw-bold"><?= htmlspecialchars($item->getTitle()) ?></div>
+                     <div class="d-flex flex-column align-items-end gap-1">
+                        <span class="badge bg-secondary ">
+                            <?= $item->getIsAuction()?"Auction":"Direct Sale"?>
+                        </span>
+                    </div>    
                     <p class="text-muted mb-1"><small><?= htmlspecialchars($item->getDescription()) ?></small></p>
                     <p class="text-muted small mb-0">Start: <?= $item->getCreatedAt() ?><br>Ends: <?= $item->getEndAt() ?></p>
                 </div>
@@ -54,7 +59,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
             <?php if (!empty($pics)) : ?>
                 <div class="d-flex flex-wrap mb-3">
                     <?php foreach ($pics as $index => $p) : ?>
-                        <a href="item/open/<?= $item->getId() ?>/from<?= $source ?>/<?= $index + 1 ?>">
+                        <a href="item/open/<?= $item->getId() ?>/from-<?= $source ?>/<?= $index + 1 ?>">
                             <div class="cas me-2 <?= ($index === (max(0, $idImg - 1))) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
                                 <img src="<?= $web_root . $p ?>" class="img-thumbnail">
                             </div>
@@ -88,8 +93,11 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                     <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Pricing</small>
                     <div class="mt-2">
                         <?php if ($item->getIsAuction()): ?>
+                            <span class = text-muted>Starting at € <?= number_format($item->getStartingBid(),2) ?></span>
                             <div class="d-flex justify-content-between mb-1">
+                                
                                 <span>Current Bid</span>
+                                
                                 <span class="text-success fw-bold">€ <?= number_format($item->getMaxBid() ?? $item->getStartingBid(), 2) ?></span>
                             </div>
                         <?php endif; ?>
@@ -121,7 +129,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                                     </span>
                                 <?php endif; ?>
                             </p>
-
+                            
                         </div>
 
                     <?php elseif ($isOwner): ?>
@@ -159,10 +167,12 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 
 
             <div class="card mb-3 bg-dark">
+                <strong class = "ms-2 mt-2 text-muted p-0">Seller Information</strong>
                 <div class="card-body d-flex align-items-center">
                     <?php $uPic = $owner->getPicturePath(); ?>
                     <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
                     <div>
+                        
                         <div class="fw-bold text-light"><?= htmlspecialchars($owner->getPseudo()) ?></div>
                         <div class="text-muted small"><?= $owner->getRole() === "user" ? "Member" : "Admin" ?></div>
                     </div>

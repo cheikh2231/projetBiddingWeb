@@ -37,9 +37,9 @@ class ControllerItem extends Controller {
     public function open(): void {
 
         $id = $_GET['param1'] ?? "";
-        if(isset($_GET["param2"])){
-          $source = $this->getSourceNature($_GET["param2"]);
-        }
+
+        $source = $this->getSourceNature($_GET["param2"]??'');
+
         if ($id === "") {
             $this->redirect("item", "browse");
             return;
@@ -51,18 +51,13 @@ class ControllerItem extends Controller {
         if (!$item) {
             throw new Exception("Item not found"); 
         }        
-        $currentUser = $this->get_user_or_false();
+        $currentUser = $this->get_user_or_redirect();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            
-            if (!$currentUser) {
-                $this->redirect("login", "index");
-                return;
-            }
-
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id, "from-".$source, $idImg);
+                    $this->redirect("item", "open", $id);
                     return; 
                 }
             }
@@ -71,7 +66,7 @@ class ControllerItem extends Controller {
                 $amount = floatval($_POST['amount']);
                 $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
                 $newBid->add();
-                $this->redirect("item", "open", $id, "from-".$source, $idImg);
+                $this->redirect("item", "open", $id);
                 return;
             }
         }
@@ -85,13 +80,15 @@ class ControllerItem extends Controller {
         ]);
     }
     public function list(): void {
-        $user = $this->get_user_or_redirect();
-
-
-        $itemsUser = $user->myItemsAtives();
-        $unsold = $user->getUnsoldItems();
-        $sold = $user->getsoldItems();
-
+        $user = $this->get_user_or_false();
+        $itemsUser = [];
+        $unsold = [];
+        $sold = [];
+        if($user){
+            $itemsUser = $user->myItemsAtives();
+            $unsold = $user->getUnsoldItems();
+            $sold = $user->getsoldItems();
+        }
         (new View("myItems"))->show([
             "itemsUser" => $itemsUser,
             "unsold" => $unsold,
@@ -103,10 +100,9 @@ class ControllerItem extends Controller {
 
     public function edit(): void {
         $user = $this->get_user_or_redirect();
+
         $id = $_GET['param1'] ?? null;
-        if(isset($_GET["param2"])){
-          $source = $this->getSourceNature($_GET["param2"]);
-        }
+        $source = "from-items";
         $item = Item::getItemById($id);
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
@@ -154,12 +150,14 @@ class ControllerItem extends Controller {
         (new View('add_editItem'))->show([ 
             "item" => $item, 
             "errors" => $errors, 
-            "source" => $source 
+            "source" => $source ,
+             "currentUser"=>$user
         ]);
     }
 
     public function add(): void {
         $user = $this->get_user_or_redirect();
+
         $errors = [];
         $newItem = null;
 
@@ -200,20 +198,22 @@ class ControllerItem extends Controller {
             $errors = $newItem->persist();
 
             if (empty($errors)) {
-                $this->redirect("item", "open", $newItem->getId(), "from-items");
+                $this->redirect("item", "open", $newItem->getId());
                 return;
             }
         }
 
         (new View('add_editItem'))->show([ 
             "item" => $newItem, 
-            "errors" => $errors, 
-            "source" => "items" 
+            "errors" => $errors,
+            "source" => "browse", 
+            "currentUser"=>$user
         ]);
     }
 
     public function delete(): void {
         $user = $this->get_user_or_redirect();
+
         $id = $_GET['param1'] ?? null;
         $item = Item::getItemById($id);
 
@@ -232,7 +232,7 @@ class ControllerItem extends Controller {
             }
         }
 
-        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? []]);
+        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user]);
     }
 
 
@@ -240,32 +240,109 @@ class ControllerItem extends Controller {
 
     public function sales() : void {
         $source = "sales";
-         $currentUser = $this->get_user_or_false();
+         $currentUser = $this->get_user_or_redirect();
+  
         $sold = $currentUser->getSoldItems();
         (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
     public function purchases() : void {
         $source = "purchases";
-        $currentUser = $this->get_user_or_false();
+        $currentUser = $this->get_user_or_redirect();
+        if (!$currentUser) {
+            $this->redirect("user", "index");
+            return;
+        }       
         $purchases = $currentUser->getPurchasesItems();
         (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source]);
     }
 
     public function manage_images() : void{
-        $user = $this->get_user_or_false();
-        if(!isset($_GET['param1'])){
+        $user = $this->get_user_or_redirect();
+                
+        $config = parse_ini_file('config/dev.ini'); 
+        $max_size_mb = (int)$config['upload_max_size'];
+        $max_res_main = (int)$config['image_max_res_main']; 
+        $max_res_thumb = (int)$config['image_max_res_thumb'];
+
+        if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','index');
            return;
+        }else{
+          $item_id = $_GET['param1'];
+          $item = Item::getItemById($item_id);
         }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+         $errors = [];
+         $index = $_POST['image_index'] ?? null;
 
+        if (isset($_POST['delete'])) {
+            if($item->deleteImage($index)){
+                 $this->redirect('item', 'manage_images', $item_id);
+                 return;
+            }
+            $errors[] = "image introuvable ";
+            
+        } elseif (isset($_POST['left'])) {
+            if(($index-1) > 0){
+                $item->swapPic($index-1,$index);
+            }
+        } elseif (isset($_POST['right'])) {
+            if(($index+1) <= count($item->getPictures())){
+                $item->swapPic($index,$index+1);
+            }
+        }else
+
+         if (isset($_FILES['image'])) {
+            $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
+            
+            if (empty($errors)) {
+                
+                $folder = "uploads/items/$item_id";
+                $original_name = $_FILES['image']['name'];
+
+    
+                $path_main = $item->process_image(
+                    $_FILES['image']['tmp_name'], 
+                        $folder, 
+                        $original_name, 
+                        $max_res_main, 
+                        $max_res_main
+                    );
+
+                    
+                    $path_thumb = $item->process_image(
+                        $_FILES['image']['tmp_name'], 
+                        $folder, 
+                        $original_name, 
+                        $max_res_thumb, 
+                        $max_res_thumb, 
+                        "_thumbnail"
+                    );
+
+                    if ($path_main && $path_thumb) {
+                        
+                        $item->addPicture( $path_main);
+                        
+                        
+                        $this->redirect('item', 'manage_images', $item_id);
+                        return;
+                    } else {
+                        $errors[] = "Erreur lors du traitement de l'image.";
+                    }
+                }
+            } else {
+                $errors[] = "Aucun fichier sélectionné.";
+            }
+            
+            (new View('manage_images'))->show([
+                "item" => $item, 
+                "currentUser" => $user, 
+                "errors" => $errors
+            ]);
+            return;
         }
-
-
-        $item = Item::getItemWithId($_GET['param1']);
-        (new View('manage_images'))->show(["item"=>$item]);
-
+        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
     }
 
     private function getSourceNature(string $s): string {
@@ -274,7 +351,7 @@ class ControllerItem extends Controller {
             'from-items'      => 'list',
             'from-sales'     => 'sales',
             'from-purchases' => 'purchases',
-            default          => 'index'
+            default          => 'browse'
         };
     }
 
