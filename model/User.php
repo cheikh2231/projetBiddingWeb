@@ -236,10 +236,60 @@ class User extends Model {
         }
         
         move_uploaded_file($_FILES['image']['tmp_name'], $folder.$picName);
+
+        $this->generate_thumbnail($folder.$picName);
         self::setPicturePath($folder.$picName);
         self::persist();
     }
 
+    private function generate_thumbnail(string $sourcePath, int $maxWidth = 360, int $maxHeight = 360): void {
+        if (!extension_loaded('gd')) {
+        return; 
+    }
+
+    $extension = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
+    
+    switch ($extension) {
+        case 'jpeg': case 'jpg': $srcImage = imagecreatefromjpeg($sourcePath); break;
+        case 'png':  $srcImage = imagecreatefrompng($sourcePath); break;
+        case 'gif':  $srcImage = imagecreatefromgif($sourcePath); break;
+        case 'webp': $srcImage = imagecreatefromwebp($sourcePath); break;
+        default: return;
+    }
+
+    $width = imagesx($srcImage);
+    $height = imagesy($srcImage);
+    $ratio = min($maxWidth / $width, $maxHeight / $height);
+    
+    if ($ratio >= 1) {
+        $newWidth = $width;
+        $newHeight = $height;
+    } else {
+        $newWidth = (int)($width * $ratio);
+        $newHeight = (int)($height * $ratio);
+    }
+
+    $thumbnail = imagecreatetruecolor($newWidth, $newHeight);
+
+    if ($extension == 'png' || $extension == 'webp' || $extension == 'gif') {
+        imagealphablending($thumbnail, false);
+        imagesavealpha($thumbnail, true);
+    }
+
+    imagecopyresampled($thumbnail, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+    $thumbPath = str_replace('.' . $extension, '_thumbnail.' . $extension, $sourcePath);
+    
+    switch ($extension) {
+        case 'jpeg': case 'jpg': imagejpeg($thumbnail, $thumbPath, 85); break;
+        case 'png':  imagepng($thumbnail, $thumbPath); break;
+        case 'gif':  imagegif($thumbnail, $thumbPath); break;
+        case 'webp': imagewebp($thumbnail, $thumbPath, 85); break;
+    }
+
+    imagedestroy($srcImage);
+    imagedestroy($thumbnail);
+}
     //fonction creation de nom image
     private function create_picture_name(array $file): string{
         $formatOfPic = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
