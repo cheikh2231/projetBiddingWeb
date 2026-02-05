@@ -102,10 +102,10 @@ class User extends Model {
         $user = self::getUserByEmail($email);
         if ($user) {
             if (!password_verify($password, $user->getPassword())) {
-                $errors[] = "Wrong password. Please try again.";
+                $errors['password'] = "Wrong password. Please try again.";
             }
         } else {
-            $errors[] = "Can't find a member with the email '$email'. Please sign up.";
+            $errors['email'] = "Can't find a member with the email '$email'. Please sign up.";
         }
         return $errors;
     }
@@ -114,37 +114,221 @@ class User extends Model {
         $errors = [];
         //verification tout les champs remplis
         if(empty($email)||empty($fullname)||empty($pseudo)||empty($password)||empty($confirmPassword)){
-            $errors[] = "All fields are required.";    
+            $errors['champs'] = "All fields are required.";    
         }else{
             //email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-                $errors[]= "invalid email format.";
+                $errors['email']= "invalid email format.";
             else if(self::getUserByEmail($email))
-                $errors[] = "Email already taken.";
+                $errors['email'] = "Email already taken.";
             //fullname
-            if(strlen($fullname) <= 3)
-                $errors[] = "Full name must be more than 3 letters.";
+            if(strlen($fullname) < 3)
+                $errors['fullName'] = "Full name must be more than 3 letters.";
             //pseudo
             if(self::getUserByPseudo($pseudo))
-                $errors[] = "Pseudo already taken.";
+                $errors['pseudo'] = "Pseudo already taken.";
             else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
-                $errors[] = "Lenght of the pseudo invalid";
+                $errors['pseudo'] = "Lenght of the pseudo invalid";
             //mdp
             $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
             if(!preg_match($pattern, $password))
-                $errors[] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+                $errors['password'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
             //confirmPassword
             if($confirmPassword !== $password)
-                $errors[] = "Confirm password doesn't match.";
+                $errors['confirmPassword'] = "Confirm password doesn't match.";
         }
         return $errors;
-    } 
-    //methode ajout User dans la database
+    }
+    //methode validation edit profile
+    public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
+        $errors = [];
+        if(empty($email)||empty($fullname)||empty($pseudo)){
+            $errors['champs'] = "Email, Name and Pseudo need to be filled in.";
+        }else{
+            //email
+            if($email != $this->email){
+                if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+                    $errors['email']= "invalid email format.";
+                if(self::getUserByEmail($email))
+                    $errors['email'] = "Email already taken.";
+            }
+            //fullname
+            if(strlen($fullname) < 3)
+                $errors['fullName'] = "Full name must be more than 3 letters.";
+            //pseudo
+            if($pseudo != $this->pseudo){
+                if(self::getUserByPseudo($pseudo))
+                    $errors['pseudo'] = "Pseudo already taken.";
+                else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
+                $errors['pseudo'] = "Lenght of the pseudo invalid";
+            }
+            //iban
+            if(!empty($iban)){
+                $ibanPattern = "/^BE\d{2}(\s?\d{4}){3}$/";
+                if (!preg_match($ibanPattern, str_replace(' ', '', $iban))) {
+                    $errors['iban'] = "Invalid iban format";
+                }
+            }
+        }
+        return $errors;
+    }
+    //methode validation edit profile
+    public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
+        $errors = [];
+        if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
+            $errors['champs'] = "All fields are required.";
+        }else{
+            //current password
+            if (!password_verify($currentPassword, $this->getPassword()))
+                $errors['currentPassword'] = "Current password doesn't match";
+            //new password
+            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            if(!preg_match($pattern, $newPassword))
+                $errors['newPassword'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            //confirmPassword
+            if($confirmNewPassword !== $newPassword)
+                $errors['confirmNewPassword'] = "Confirm password doesn't match.";
+        }
+        return $errors;
+    }
+    //fonction validation image de profile
+    public function validate_photoDeProfil(array $file) : array{
+        $errors = [];
+        if(isset($_FILES['image'])){
+            if($file['error']!=0)
+                $errors ['picture']= "Error while uploading picture.";
+
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $validFormat = ["png", "gif", "jpeg", "webp", "jpg"];
+
+            if (!in_array($extension, $validFormat)) 
+                $errors['picture'] = "Invalid format";
+                    
+                
+            // verifacation taille du fichier (5242880 = 5mb)
+            if($file['size']>5242880)
+                $errors['picture'] = "invalid size.";
+                    
+            
+        }else{    
+            $errors['picture'] = "no image";
+        }
+        return $errors;
+    }
+    public function change_or_add_profile_picture(array $file) : void{
+        $picName = self::create_picture_name($file);
+        
+        //creation dossier si inexistant
+        
+        $folder = "uploads/users/".$this->id."/";
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755, true);
+        }
+        if($this->picture_path !=null){
+            $oldFile = $folder.$this->picture_path;
+            if($oldFile && file_exists($oldFile)){
+                unlink($oldFile);
+                $extension = pathinfo($oldFile, PATHINFO_EXTENSION);
+                $oldFileThumb = str_replace('.' . $extension, '_thumbnail.' . $extension, $oldFile);
+                if(file_exists($oldFileThumb)) 
+                    unlink($oldFileThumb);
+            }
+        }
+        
+        move_uploaded_file($_FILES['image']['tmp_name'], $folder.$picName);
+
+        $this->generate_thumbnail($folder.$picName);
+        self::setPicturePath($folder.$picName);
+        self::persist();
+    }
+
+    private function generate_thumbnail(string $sourcePath, int $maxWidth = 360, int $maxHeight = 360): void {
+        if (!extension_loaded('gd')) {
+        return; 
+    }
+
+    $extension = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
+    
+    switch ($extension) {
+        case 'jpeg': case 'jpg': $srcImage = imagecreatefromjpeg($sourcePath); break;
+        case 'png':  $srcImage = imagecreatefrompng($sourcePath); break;
+        case 'gif':  $srcImage = imagecreatefromgif($sourcePath); break;
+        case 'webp': $srcImage = imagecreatefromwebp($sourcePath); break;
+        default: return;
+    }
+
+    $width = imagesx($srcImage);
+    $height = imagesy($srcImage);
+    $ratio = min($maxWidth / $width, $maxHeight / $height);
+    
+    if ($ratio >= 1) {
+        $newWidth = $width;
+        $newHeight = $height;
+    } else {
+        $newWidth = (int)($width * $ratio);
+        $newHeight = (int)($height * $ratio);
+    }
+
+    $thumbnail = imagecreatetruecolor($newWidth, $newHeight);
+
+    if ($extension == 'png' || $extension == 'webp' || $extension == 'gif') {
+        imagealphablending($thumbnail, false);
+        imagesavealpha($thumbnail, true);
+    }
+
+    imagecopyresampled($thumbnail, $srcImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+    $thumbPath = str_replace('.' . $extension, '_thumbnail.' . $extension, $sourcePath);
+    
+    switch ($extension) {
+        case 'jpeg': case 'jpg': imagejpeg($thumbnail, $thumbPath, 85); break;
+        case 'png':  imagepng($thumbnail, $thumbPath); break;
+        case 'gif':  imagegif($thumbnail, $thumbPath); break;
+        case 'webp': imagewebp($thumbnail, $thumbPath, 85); break;
+    }
+
+    imagedestroy($srcImage);
+    imagedestroy($thumbnail);
+}
+    //fonction creation de nom image
+    private function create_picture_name(array $file): string{
+        $formatOfPic = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $valideFormat = ["jpeg","jpg","png","gif","webp"];
+
+        if (in_array($formatOfPic, $valideFormat)) 
+            return $this->pseudo . time() . "." . $formatOfPic;
+        else
+            return "ERROR new picture name";             
+    }
+    //fonction delete profile picture
+    public function delete_profile_picture():void{
+        $path = "uploads/users/" . $this->id;
+        $files = glob($path . "/*"); 
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        self::setPicturePath(null);
+        self::persist();
+        rmdir("uploads/users/".$this->id);
+    }
+
+
+
+    //methode ajout/mise à jour User dans la database
     public function persist(): void{
-        self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
-        ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
-        //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
-        $this->id = self::lastInsertId();
+        //mise à jour
+        if($this->id !== null){
+            self::execute("UPDATE Users SET email=:email, full_name=:fullname,pseudo=:pseudo, iban=:iban, password=:password, picture_path=:picture_path WHERE id=:id",["email"=>$this->email, "fullname"=>$this->name,"pseudo"=>$this->pseudo,"iban"=>$this->iban, "id"=>$this->id, "password"=>$this->password, "picture_path"=>$this->picture_path]);
+        }        
+        else{
+        //ajout
+            self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
+            ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+            //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
+            $this->id = self::lastInsertId();
+        }
     }
 
 

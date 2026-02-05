@@ -28,16 +28,20 @@
         <form action="user/login" method="post">
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-person"></i></span>
-                <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email">
+                <input type="text" name="email" class="form-control custom-input" placeholder="Mail" aria-label="Email" value="<?= $email??'' ?>">
+                <?php if(isset($errors['email']))  :?>
+                    <small class= "text-danger"><?=  $errors['email'] ?></small>
+                <?php endif?>    
               
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text custom-input-icon"><i class="bi bi-key"></i></span>
                 <input type="password" name="password" class="form-control custom-input" placeholder="*******" aria-label="Password">
-         
             </div>
-            
+            <?php if(isset($errors['password']))  :?>
+                <small class= "text-danger"><?=  $errors['password'] ?></small>
+            <?php endif?>
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
                 <a href = "item/browse"  class="btn btn-secondary custom-btn-grey">
@@ -59,6 +63,9 @@
                 <div>Login as <a href="user/log_for_debug/quhouben" class="email fw-bold">quhouben@epfc.eu</a></div>
                 <div>Login as <a href="user/log_for_debug/xapigeolet" class="email fw-bold">xapigeolet@epfc.eu</a></div>
             </div>
+            <?php if(isset($errors['logForDebug']))  :?>
+                <small class= "text-danger"><?=  $errors['logForDebug'] ?></small>
+            <?php endif?>
 
             <div class="d-flex flex-column gap-1 small-text">
                 <a href="setup/install" class="colorGreen fw-bold">Restore original data</a>
@@ -69,13 +76,6 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <?php if(count($errors) != 0):?>
-        <div class='errors'>
-               <?php foreach ($errors as $error): ?>
-                    <?= $error?> 
-                <?php endforeach; ?>  
-            </ul>
-        </div>
-    <?php endif; ?>                        
+
 </body>
 </html>
