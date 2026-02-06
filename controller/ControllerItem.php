@@ -57,7 +57,7 @@ class ControllerItem extends Controller {
 
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id,$source,$idImg);
+                    $this->redirect("item", "open", $id);
                     return; 
                 }
             }
@@ -66,7 +66,7 @@ class ControllerItem extends Controller {
                 $amount = floatval($_POST['amount']);
                 $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
                 $newBid->add();
-                $this->redirect("item", "open", $id,$source);
+                $this->redirect("item", "open", $id);
                 return;
             }
         }
