@@ -60,7 +60,7 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Email Address *</label><br>
-                    <input type="text" value="<?=  $user->getEmail() ?>"><br>
+                    <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email" class="form-control custom-input"><br>
                     <small class = "text-muted">We will use this email to send you notifications about your sales and purchases.</small>
                 </div>
                  <?php if(isset($errors['email']))  :?>
@@ -68,7 +68,7 @@
                 <?php endif?>   
                 <div class="mb-3">
                     <label class="form-label">IBAN&nbsp;</label><label class="form-label text-secondary">(Optional)</label><br>
-                    <input type="text" value="<?=  $user->getIban() ?>"><br>
+                    <input name="iban" type="text" value="<?=  $user->getIban() ?>" class="form-control custom-input" placeholder="BE99 9999 9999 9999"><br>
                     <small class = "text-muted">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
                 </div>
                  <?php if(isset($errors['iban']))  :?>

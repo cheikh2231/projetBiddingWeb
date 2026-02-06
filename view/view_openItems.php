@@ -21,7 +21,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($item->getTitle()) ?></title>
+    <title>Open item <?= $item->getId()?></title>
     <base href="<?= $web_root ?>"/>
 
     <link href="css/open.css" rel="stylesheet" type="text/css"/>
@@ -59,7 +59,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
             <?php if (!empty($pics)) : ?>
                 <div class="d-flex flex-wrap mb-3">
                     <?php foreach ($pics as $index => $p) : ?>
-                        <a href="item/open/<?= $item->getId() ?>/from-<?= $source ?>/<?= $index + 1 ?>">
+                        <a href="item/open/<?= $item->getId() ?>/from-<?= ($source=="list" ? "items":$source) ?>/<?= $index + 1 ?>">
                             <div class="cas me-2 <?= ($index === (max(0, $idImg - 1))) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
                                 <img src="<?= $web_root . $p ?>" class="img-thumbnail">
                             </div>

@@ -38,13 +38,12 @@ class ControllerItem extends Controller {
 
         $id = $_GET['param1'] ?? "";
 
-        $source = $this->getSourceNature($_GET["param2"]??'');
 
         if ($id === "") {
             $this->redirect("item", "browse");
             return;
         }
-
+        $source = $this->getSourceNature($_GET["param2"]??'');
       
         $idImg = $_GET["param3"] ?? 0;
         $item = Item::getItemById($id);
@@ -54,10 +53,11 @@ class ControllerItem extends Controller {
         $currentUser = $this->get_user_or_redirect();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-           
+
+
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id);
+                    $this->redirect("item", "open", $id,$source,$idImg);
                     return; 
                 }
             }
@@ -66,7 +66,7 @@ class ControllerItem extends Controller {
                 $amount = floatval($_POST['amount']);
                 $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
                 $newBid->add();
-                $this->redirect("item", "open", $id);
+                $this->redirect("item", "open", $id,$source);
                 return;
             }
         }
@@ -250,7 +250,7 @@ class ControllerItem extends Controller {
         $source = "purchases";
         $currentUser = $this->get_user_or_redirect();
         if (!$currentUser) {
-            $this->redirect("user", "index");
+            $this->redirect("user", "browse");
             return;
         }       
         $purchases = $currentUser->getPurchasesItems();
@@ -266,7 +266,7 @@ class ControllerItem extends Controller {
         $max_res_thumb = (int)$config['image_max_res_thumb'];
 
         if(!isset($_GET['param1'])|| $_GET['param1']==''){
-           $this->redirect('item','index');
+           $this->redirect('item','browse');
            return;
         }else{
           $item_id = $_GET['param1'];
