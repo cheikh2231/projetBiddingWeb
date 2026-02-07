@@ -31,7 +31,7 @@
 
             <div class="d-flex flex-column align-items-end gap-1">
                 <?php if ($item->getIsAuction()) : ?>
-                    <span class="badge badge-auction">
+                    <span class="badge badge-auction text-white">
                         <i class="fa-solid fa-gavel"></i> Auction
                     </span>
                 <?php endif; ?>

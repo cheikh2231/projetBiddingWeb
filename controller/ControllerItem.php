@@ -158,7 +158,8 @@ class ControllerItem extends Controller {
     public function add(): void {
         $user = $this->get_user_or_redirect();
 
-        $errors = [];
+        $errors = $_SESSION['errors'] ?? [];
+        unset($_SESSION['errors']); 
         $newItem = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -199,6 +200,10 @@ class ControllerItem extends Controller {
 
             if (empty($errors)) {
                 $this->redirect("item", "open", $newItem->getId());
+                return;
+            }else{
+                $_SESSION['errors'] = $errors;
+                $this->redirect("item", "add");
                 return;
             }
         }

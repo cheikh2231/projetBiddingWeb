@@ -6,22 +6,23 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
     <!-- La partie head -->
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <base href="<?= $web_root ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Lien bootstrap -->
-   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Icones Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <base href="<?= $web_root ?>"/>
+ 
     <!-- CSS -->
-    <link href="css/styleProfile.css" rel="stylesheet" type="text/css"/>
+    <link href="css/styleProfile.css" rel="stylesheet" type="text/css">
 </head>
 
 <!-- la partie body -->
@@ -40,9 +41,9 @@
 <div class="profile-container mb-5 px-5 py-5">
     
     <div class="section-box header-card text-center">
-        <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
+        <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;" alt = "profile">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         <div class="profile-info">
-            <h2><?= $user->getName()?></h2>
+            <h3><?= $user->getName()?></h3>
             <div class="sub">@<?= $user->getPseudo()?></div>
             <div class="sub"><?= $user->getEmail()?></div>
         </div>
