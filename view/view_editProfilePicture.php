@@ -22,7 +22,7 @@
 <!-- la partie body -->
 <body>
     <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
+   <header class="bg-dark border-bottom border-secondary sticky-top">
         <div class="container d-flex justify-content-center align-items-center">
             <h5 class="m-0 me-1 text-primary">Edit Profile Picture</h5>
             <i class="bi bi-cart4 fs-4 text-white"></i>
@@ -31,7 +31,7 @@
     </header>
 
     <!--centre de la page-->
-<div class="container mb-5">
+<div class="container mb-5 py-5 px-5">
     <!--1er rectangle-->
     <div class="card-header-custom">Current Profile Picture</div>
     <div class="card-custom mb-4 ">
@@ -42,10 +42,10 @@
             <h2><?=  $user->getName() ?></h2>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
-            <small class = "text-muted">@<?=  $user->getPseudo() ?></small>
+            <small class = "text-white-50">@<?=  $user->getPseudo() ?></small>
         </div>
         <div class="mb-5 d-flex justify-content-center align-items-center">
-            <small class = "text-muted"><?=  $user->getEmail() ?></small>
+            <small class = "text-white-50"><?=  $user->getEmail() ?></small>
         </div>    
     </div> 
     <!--2e rectangle-->
@@ -59,7 +59,7 @@
                 <?php if(isset($errors['picture']))  :?>
                     <small class= "text-danger"><?=  $errors['picture'] ?></small><br>
                 <?php endif?> 
-                <small class = "text-muted">Supported formats: JPG, PNG, GIF, Webp. This will replace your current profile picture.</small><br><br>
+                <small class = "text-white-50">Supported formats: JPG, PNG, GIF, Webp. This will replace your current profile picture.</small><br><br>
                 <button type="submit" class="btn btn-primary custom-btn-blue">Upload Picture</button>
 
             </div>

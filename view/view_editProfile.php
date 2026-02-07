@@ -6,10 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
-    <!-- Lien bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Icones Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
     <base href="<?= $web_root ?>"/>
     <!-- CSS -->
     <link rel="stylesheet" href="css/add-edit.css">
@@ -18,7 +17,7 @@
 <!-- la partie body -->
 <body>
 <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
+   <header class="bg-dark border-bottom border-secondary sticky-top ">
         <div class="container d-flex justify-content-center align-items-center">
             <h5 class="m-0 me-1 text-primary">Edit Profile</h5>
             <a href="user/profile"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>
@@ -30,7 +29,7 @@
     </header>
 
 <!--centre de la page-->
-<div class="container mb-5">
+<div class="container mb-5 py-5">
     <form id="formulaire" action="user/edit_profile" method="POST">
         <!-- bloc 1 -->
         <div class="card-custom mb-4">
@@ -39,7 +38,7 @@
                 <div class="mb-3">
                     <label class="form-label">Full Name *</label><br>
                     <input name="fullname" type="text" value="<?=  $user->getName() ?>" placeholder="Your name" class="form-control custom-input"><br>
-                    <small class = "text-muted">Your complete name as it should appear on your profile.</small>
+                    <small class = "text-white-50">Your complete name as it should appear on your profile.</small>
                 </div>
                  <?php if(isset($errors['fullName']))  :?>
                     <small class= "text-danger"><?=  $errors['fullName'] ?></small>
@@ -47,7 +46,7 @@
                 <div class="mb-3">
                     <label class="form-label">Username *</label><br>
                     <input name="pseudo" type="text" value="<?=  $user->getPseudo() ?>" placeholder="Pseudo" class="form-control custom-input"><br>
-                    <small class = "text-muted">This will be your public display on the platform.</small>
+                    <small class = "text-white-50">This will be your public display on the platform.</small>
                 </div>
                  <?php if(isset($errors['pseudo']))  :?>
                     <small class= "text-danger"><?=  $errors['pseudo'] ?></small>
@@ -61,7 +60,7 @@
                 <div class="mb-3">
                     <label class="form-label">Email Address *</label><br>
                     <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email" class="form-control custom-input"><br>
-                    <small class = "text-muted">We will use this email to send you notifications about your sales and purchases.</small>
+                    <small class = "text-white-50">We will use this email to send you notifications about your sales and purchases.</small>
                 </div>
                  <?php if(isset($errors['email']))  :?>
                     <small class= "text-danger"><?=  $errors['email'] ?></small>
@@ -69,7 +68,7 @@
                 <div class="mb-3">
                     <label class="form-label">IBAN&nbsp;</label><label class="form-label text-secondary">(Optional)</label><br>
                     <input name="iban" type="text" value="<?=  $user->getIban() ?>" class="form-control custom-input" placeholder="BE99 9999 9999 9999"><br>
-                    <small class = "text-muted">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
+                    <small class = "text-white-50">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
                 </div>
                  <?php if(isset($errors['iban']))  :?>
                     <small class= "text-danger"><?=  $errors['iban'] ?></small>

@@ -38,7 +38,7 @@
 
     <div class="card text-white">
         <div class="card-header">Current Images</div>
-        <div class="card-body" id="previewContainer">
+        <div class="card-body bg-dark" id="previewContainer">
             <?php if (!empty($pics)) : ?>
                 <div class="d-flex flex-wrap mb-3">
                     <?php for ($i=0; $i<count($pics) ;$i++) : ?>

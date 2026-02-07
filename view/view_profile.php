@@ -14,8 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <!-- Lien bootstrap -->
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Icones Bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <base href="<?= $web_root ?>"/>
@@ -26,7 +27,7 @@
 <!-- la partie body -->
 <body>
     <!-- Header -->
-   <header class="bg-dark border-bottom border-secondary sticky-top mb-5">
+   <header class="bg-dark border-bottom border-secondary sticky-top mb-2">
 
     <div class="container d-flex justify-content-center align-items-center">
         <h5 class="m-0 me-1 text-primary">Profile</h5>
@@ -36,7 +37,7 @@
 
     <!--centre de la page-->
 
-<div class="profile-container">
+<div class="profile-container mb-5 px-5 py-5">
     
     <div class="section-box header-card text-center">
         <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>

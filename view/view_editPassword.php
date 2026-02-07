@@ -42,7 +42,7 @@
                     <?php if(isset($errors['currentPassword']))  :?>
                         <small class= "text-danger"><?=  $errors['currentPassword'] ?></small><br>
                     <?php endif?>
-                    <small class = "text-muted">Enter your current password to verify your identity.</small>
+                    <small class = "text-white-50">Enter your current password to verify your identity.</small>
                 </div>
                   
             </div>
@@ -57,7 +57,7 @@
                     <?php if(isset($errors['newPassword']))  :?>
                         <small class= "text-danger"><?=  $errors['newPassword'] ?></small><br>
                     <?php endif?>
-                    <small class = "text-muted">Password must be 8-16 characters with uppercase, number and punctuation.</small>
+                    <small class = "text-white-50">Password must be 8-16 characters with uppercase, number and punctuation.</small>
                 </div>
               
                 <div class="mb-3">
@@ -66,7 +66,7 @@
                     <?php if(isset($errors['confirmNewPassword']))  :?>
                     <small class= "text-danger"><?=  $errors['confirmNewPassword'] ?></small><br>
                 <?php endif?>
-                    <small class = "text-muted">Re-enter your new password to confirm it matches.</small>
+                    <small class = "text-white-50">Re-enter your new password to confirm it matches.</small>
                 </div>
                 
             </div>
