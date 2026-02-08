@@ -14,6 +14,9 @@ $isOwner = $currentUser && ($currentUser->getId() === $owner->getId());
 $currentPrice = $item->getMaxBid() ?? ($item->getStartingBid() > 0 ? $item->getStartingBid() : $item->getBuyNowPrice());
 $backRoute ="item/$source";
 $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg";
+if ($item->getIsAuction()){ $bidValue = ($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid()) ;}
+if ($item->getIsAuction()){ $minBid = ($item->getHasBids() )? $bidValue + 0.01 : $bidValue;}
+if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 1 : $bidValue;}
 
 ?>
 <!DOCTYPE html>
@@ -151,20 +154,20 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                         </div>
                     <?php else: ?>
                         <form method="post" action="item/open/<?= $item->getId() ?>/from-<?= $source ?>">
-                            <?php if ($item->getIsAuction()): $minBid = ($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid()) + 1; ?>
+                            <?php if($item->getIsAuction()):?>
                                 <div class="input-group mb-3"><span class="input-group-text bg-secondary text-white">€</span>
-                                    <input type="number" name="amount" class="form-control bg-dark text-white border-secondary" min="<?= $minBid ?>" value="<?= $minBid ?>" required>
+                                    <input type="number" step = "0.01" name="amount" class="form-control bg-dark text-white border-secondary" min="<?= $minBid ?>" value="<?=  $startingValue?>" required>
                                 </div>
                                 <div class="d-grid gap-2 mb-2"><button class="btn btn-lg btn-success fw-bold" type="submit">Place Bid</button></div>
-                            <?php endif; ?>
+                            <?php endif;?>
                             <?php if ($item->getHasBuyNow()): ?>
                                 <div class="d-grid"><button type="submit" name="buy_now" value="1" class="btn <?= $item->getIsAuction() ? 'btn-outline-primary border-2' : 'btn-lg btn-success fw-bold' ?>">
                                     <i class="bi bi-cart4 me-2"></i>Buy Now <?= $item->getIsAuction() ? "at € ".number_format($item->getBuyNowPrice(), 2) : "" ?>
                                 </button></div>
-
                             <?php endif; ?>
+                            
                         </form>
-                    <?php endif; ?>
+                    <?php endif;?>    
                 </div>
             </div>
 

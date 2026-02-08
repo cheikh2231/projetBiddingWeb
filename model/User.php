@@ -366,7 +366,7 @@ class User extends Model {
         $now = AppTime::get_current_datetime();
         $sql = "SELECT * FROM v_items_status 
                 WHERE owner = :user_id AND end_at < :now AND buy_now_reached = 0 AND has_bids = 0 
-                ORDER BY end_at DESC";
+                ORDER BY end_at ASC";
         return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
     }
 
@@ -375,7 +375,7 @@ class User extends Model {
                 $sql = "SELECT DISTINCT v.*
                 FROM v_items_status v join bids b ON v.id = b.item
                 WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-                ORDER BY b.created_at DESC";
+                ORDER BY v.end_at ASC";
         return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
     }
 

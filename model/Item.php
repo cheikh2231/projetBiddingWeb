@@ -62,7 +62,7 @@ class Item extends Model {
     }
 
     public function setStartingBid(?float $amount): void {
-        $this->starting_bid = ($amount > 0) ? $amount : null;
+        $this->starting_bid = ($amount > 0) ? $amount : 0;
     }
 
     public function setBuyNowPrice(?float $amount): void {

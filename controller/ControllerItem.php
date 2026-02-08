@@ -50,11 +50,13 @@ class ControllerItem extends Controller {
         if (!$item) {
             throw new Exception("Item not found"); 
         }        
-        $currentUser = $this->get_user_or_redirect();
+        $currentUser = $this->get_user_or_false();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-
+            if(!$currentUser){
+                 $this->redirect("user","signup");
+             }
             if (isset($_POST['buy_now'])) {
                 if ($currentUser->buyItem($item)) {
                     $this->redirect("item", "open", $id);
@@ -116,7 +118,7 @@ class ControllerItem extends Controller {
             $item->setDescription(trim($_POST['description'] ?? ''));
             $item->setDurationDays((int)$_POST['duration']);
             
-            $start_bid = floatval($_POST['starting'] ?? null);
+            $start_bid = floatval($_POST['starting'] ?? 0);
 
             $sale_price = floatval($_POST['sale_price'] ?? null);
 
