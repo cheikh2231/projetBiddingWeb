@@ -489,7 +489,7 @@ class User extends Model {
                 $sql = "SELECT DISTINCT v.*
                 FROM v_items_status v join bids b ON v.id = b.item
                 WHERE  v.owner != :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-                ORDER BY b.amount DESC";
+                ORDER BY v.end_at DESC";
         return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
     }
 
