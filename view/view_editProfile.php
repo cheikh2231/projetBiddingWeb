@@ -76,12 +76,17 @@
                     <small class= "text-danger"><?=  $errors['iban'] ?></small>
                 <?php endif?>   
             </div>
+             <?php if(isset($errors['champs']))  :?>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                    <small class= "text-danger"><?=  $errors['champs'] ?></small>
+                    </div>
+                </div>      
+            <?php endif?>  
         </div>
     </form>
 </div>                
- <?php if(isset($errors['champs']))  :?>
-    <small class= "text-danger"><?=  $errors['champs'] ?></small>
-<?php endif?>   
+ 
 
 <!--Footer -->
 <?php include('view/utilités/footer.php')?>
