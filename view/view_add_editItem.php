@@ -7,12 +7,12 @@
     $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
     $place = !$isEdit ? "Add":"Edit";
 
-    $title = $old_data['title'] ?? ($item ? $item->getTitle() : '');
-    $description = $old_data['description'] ?? ($item? $item->getDescription() : '');
-    $duration = $old_data['duration'] ??($item ? $item->getDurationDays() : $defautDuration);
-    $starting =  $old_data['starting'] ?? ($item && $item->getIsAuction() ? $item->getStartingBid() : '');
-    $instant_price = $old_data['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'');
-    $sale_price = $old_data['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'');
+    $title = $POST['title'] ?? ($item ? $item->getTitle() : '');
+    $description = $POST['description'] ?? ($item? $item->getDescription() : '');
+    $duration = $POST['duration'] ??($item ? $item->getDurationDays() : $defautDuration);
+    $starting =  $POST['starting'] ?? ($item && $item->getIsAuction() ? $item->getStartingBid() : '');
+    $instant_price = $POST['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'');
+    $sale_price = $POST['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,10 +29,6 @@
 </head>
 
 <body data-bs-theme="dark" class="bg-primary-subtle">
-    <?php
-
-
-    ?>
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
     <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source : 'item/browse' ?>" class="position-absolute start-0 ms-2">
         <i class="bi bi-arrow-left-short fs-3 text-primary"></i>
