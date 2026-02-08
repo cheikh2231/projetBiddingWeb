@@ -3,12 +3,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
     <title>manage_images</title>
-    <base href="<?= $web_root ?>"/>
+    <base href="<?= $web_root ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="css/manage-images.css" rel="stylesheet" type="text/css"/>
+    <link href="css/manage-images.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -44,7 +45,7 @@
                     <?php for ($i=0; $i<count($pics) ;$i++) : ?>
                        
                         <div class="cas me-3" style=width:180px;>
-                            <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail">
+                            <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail" alt = "itamImage">
                             <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1"  >
                                 <input type="hidden" name="image_index" value="<?= $i+1?>">
                                 

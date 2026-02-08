@@ -1,19 +1,27 @@
 
 <?php  
     $config = parse_ini_file('config/dev.ini');
-     $defautDuration  = $config['duration_default_value'];
-        $isEdit = $item && $item->getId();
-        $titlePage = $isEdit ? "Edit Item" : "Add Item";
-        $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
-        $place = !$isEdit ? "Add":"Edit";
+    $defautDuration  = $config['duration_default_value'];
+    $isEdit = $item && $item->getId();
+    $titlePage = $isEdit ? "Edit Item" : "Add Item";
+    $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+    $place = !$isEdit ? "Add":"Edit";
+
+    $title = $old_data['title'] ?? ($item ? $item->getTitle() : '');
+    $description = $old_data['description'] ?? ($item? $item->getDescription() : '');
+    $duration = $old_data['duration'] ??($item ? $item->getDurationDays() : $defautDuration);
+    $starting =  $old_data['starting'] ?? ($item && $item->getIsAuction() ? $item->getStartingBid() : '');
+    $instant_price = $old_data['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'');
+    $sale_price = $old_data['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'');
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
     <title><?=$place?> Item</title>
-    <base href="<?= $web_root ?>"/>
+    <base href="<?= $web_root ?>">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     
@@ -51,7 +59,7 @@
                 <div class="mb-3">
                     <label class="form-label">Item Title *</label>
                     <input type="text" name="title" class="form-control" 
-                           value="<?= ($_POST['title'] ?? ($item ? $item->getTitle() : '')) ?>" 
+                           value="<?= $title ?>" 
                            placeholder="Ex: iPhone 13 Pro Max">
                     <?php if (isset($errors['title'])): ?>
                         <div class="text-danger small mt-1">
@@ -67,7 +75,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
-                    <textarea class="form-control" name="description" rows="5"><?= ($_POST['description'] ?? ($item ? $item->getDescription() : '')) ?></textarea>
+                    <textarea class="form-control" name="description" rows="5"><?= $description ?></textarea>
                      
                     <?php if (isset($errors['description'])): ?>
                         <div class="text-danger small mt-1">
@@ -83,7 +91,7 @@
                 <div class="mb-3">
                     <label class="form-label">Sale Duration (days) *</label>
                     <input type="number" name="duration" class="form-control" 
-                           value="<?= htmlspecialchars($_POST['duration'] ??($item ? $item->getDurationDays() : $defautDuration)) ?>">
+                           value="<?= $duration ?>">
                     <?php if (isset($errors['duration'])): ?>
                         <div class="text-danger small mt-1">
                             <ul>
@@ -114,8 +122,8 @@
                                 name="starting" 
                                 class="form-control" 
                                 inputmode="decimal" 
-                                pattern="[0-9]*[.,]?[0-9]{0,2}" 
-                                value="<?= $_POST['starting'] ?? ($item? $item->getStartingBid() : '') ?>" 
+                               
+                                value="<?= $starting ?>" 
                                 placeholder="100">
                             <span class="input-group-text">€</span>
                         </div>
@@ -134,7 +142,7 @@
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
                             <div class="input-group">
                                 <input type="text" name="instant_price" class="form-control" 
-                                    value="<?= htmlspecialchars($_POST['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'')) ?>" 
+                                    value="<?= $instant_price ?>" 
                                     placeholder="10">
                                 <span class="input-group-text">€</span>
                             </div>
@@ -161,7 +169,7 @@
                         <label class="form-label">Sale Price</label>
                         <div class="input-group">
                             <input type="text" name="sale_price" class="form-control" 
-                                value="<?= htmlspecialchars($_POST['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'')) ?>" 
+                                value="<?= $sale_price ?>" 
                                 placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
                         </div>

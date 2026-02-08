@@ -20,13 +20,14 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open item <?= $item->getId()?></title>
-    <base href="<?= $web_root ?>"/>
+   
+    <title> item <?= $item->getId()?></title>
+    <base href="<?= $web_root ?>">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="css/open.css" rel="stylesheet" type="text/css"/>
+    <link href="css/open.css" rel="stylesheet" type="text/css">
 </head>
 
 <body data-bs-theme="dark" class="bg-primary-subtle">
@@ -42,7 +43,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
         <div class="col-12 col-md-6 col-lg-7">
             <div class="card mb-3">
                 <div class="ratio ratio-16x9">
-                    <img src="<?= $displayImg ?>" class="card-img-top" alt="Item image"/>
+                    <img src="<?= $displayImg ?>" class="card-img-top" alt="Item image">
                 </div>
                 <div class="p-2">
 
@@ -63,7 +64,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                     <?php foreach ($pics as $index => $p) : ?>
                         <a href="item/open/<?= $item->getId() ?>/from-<?= ($source=="list" ? "items":$source) ?>/<?= $index + 1 ?>">
                             <div class="cas me-2 <?= ($index === (max(0, $idImg - 1))) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
-                                <img src="<?= $web_root . $p ?>" class="img-thumbnail">
+                                <img src="<?= $web_root . $p ?>" class="img-thumbnail" alt = "thumb">
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -172,7 +173,7 @@ $displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://c
                 <strong class = "ms-2 mt-2 text-muted p-0">Seller Information</strong>
                 <div class="card-body d-flex align-items-center">
                     <?php $uPic = $owner->getPicturePath(); ?>
-                    <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
+                    <?= $uPic ? '<img src="'.$uPic.'" class="rounded-circle me-3" alt = "user" style="width:3rem;height:3rem;object-fit:cover;">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
                     <div>
                         
                         <div class="fw-bold text-light"><?= htmlspecialchars($owner->getPseudo()) ?></div>

@@ -109,7 +109,10 @@ class ControllerItem extends Controller {
             return;
         }
 
-        $errors = [];
+        $errors = $_SESSION['error']??[];
+        $old = $_SESSION['old']??[];
+         $_SESSION['error'] = [];
+         $_SESSION['old'] = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            
             $item->setTitle(trim($_POST['title'] ?? ''));
@@ -144,11 +147,16 @@ class ControllerItem extends Controller {
             if (empty($errors)) {
                 $this->redirect("item", "open", $item->getId(), "from-items");
                 return;
+            }else{
+                 $_SESSION['error'] =$errors;
+                 $_SESSION['old'] = $_POST;
+                 $this->redirect("item", "edit", $item->getId());
             }
         }
 
         (new View('add_editItem'))->show([ 
             "item" => $item, 
+            "old_data"=>$old,
             "errors" => $errors, 
             "source" => $source ,
              "currentUser"=>$user
@@ -158,11 +166,13 @@ class ControllerItem extends Controller {
     public function add(): void {
         $user = $this->get_user_or_redirect();
 
-        $errors = $_SESSION['errors'] ?? [];
-        unset($_SESSION['errors']); 
+        $errors = $_SESSION['error'] ?? [];
+        $data = $_SESSION['data'] ?? [];
+        $_SESSION['error' ] = [];
+        $_SESSION['data' ] = [];
         $newItem = null;
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
             $now = AppTime::get_current_datetime();
 
             $start_bid = floatval($_POST['starting'] ?? null);
@@ -197,19 +207,20 @@ class ControllerItem extends Controller {
                 $newItem->setIsDirectSale(true);
             }
             $errors = $newItem->persist();
-
+            
             if (empty($errors)) {
                 $this->redirect("item", "open", $newItem->getId());
                 return;
             }else{
-                $_SESSION['errors'] = $errors;
-                $this->redirect("item", "add");
-                return;
+               $_SESSION['error'] = $errors;
+               $_SESSION['data'] = $_POST;
+               $this->redirect("item","add");
             }
         }
-
+        
         (new View('add_editItem'))->show([ 
             "item" => $newItem, 
+            "old_data" => $data,
             "errors" => $errors,
             "source" => "browse", 
             "currentUser"=>$user

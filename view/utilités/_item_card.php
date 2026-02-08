@@ -59,7 +59,7 @@
 
 
             <?php else: ?>    
-                <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
+                <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt="">
             <?php endif; ?>
         
         <div class="item-body">
