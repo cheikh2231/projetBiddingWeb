@@ -9,11 +9,7 @@
         $isMaxBidder = $item->getMaxBidder()!=null ?  $item->getMaxBidder()==$currentUser:false;
     }
 ?>
-<head>    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-</head>
+
 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
     <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
         class="item-card d-block position-relative flex-grow-1">
@@ -35,7 +31,7 @@
 
             <div class="d-flex flex-column align-items-end gap-1">
                 <?php if ($item->getIsAuction()) : ?>
-                    <span class="badge badge-auction">
+                    <span class="badge badge-auction text-white">
                         <i class="fa-solid fa-gavel"></i> Auction
                     </span>
                 <?php endif; ?>
@@ -50,10 +46,20 @@
         
             <?php if (!empty($pictures)) : ?>
 
-                <img src="<?= $pictures[0] ?>" alt="<?= htmlspecialchars($item->getTitle()) ?>">
+                 <div class="image-wrapper">
+                    <img src="<?= $pictures[0] ?>" class="img-fluid" alt="<?= htmlspecialchars($item->getTitle()) ?>">
+
+                    <?php if (count($pictures) > 1): ?>
+                        <div class="image-count">
+                            <i class="bi bi-images"></i>
+                            <?= count($pictures) ?> images
+                        </div>
+                    <?php endif; ?>
+                </div>
+
 
             <?php else: ?>    
-                <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt=""/>
+                <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt="">
             <?php endif; ?>
         
         <div class="item-body">
@@ -61,19 +67,26 @@
             <div class="item-author">by <?= $username ?></div>
 
             <div class="d-flex justify-content-between align-items-end mt-2">
-                <div class="price">
-                    € <?= number_format(
-                        $item->getHasBuyNow() ? $item->getBuyNowPrice() : ($item->getStartingBid() ?? 0),
-                        2
-                    ) ?>
-                </div>
-
-                <?php if ($item->getIsAuction()) : ?>
+                <?php if($item->getHasBuyNow()) :?>
+                    <div class="price">
+                        € <?= number_format($item->getBuyNowPrice(),
+                            2
+                        ) ?>
+                    </div>
+                <?php else: ?>
+                    <div class="price text-warning">
+                        € <?= number_format($item->getStartingBid(),
+                            2
+                        ) ?>
+                    </div>
+                <?php endif;?>
+                    
+                <?php if ($item->getIsAuction() && $item->getHasBids()) : ?>
                     <div class="text-end">
                         <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
                         <div class="current-bid">
                             € <?= number_format(
-                                $item->getHasBids() ? $item->getMaxBid() : ($item->getStartingBid() ?? 0),
+                               $item->getMaxBid() ,
                                 2
                             ) ?>
                         </div>

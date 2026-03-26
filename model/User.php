@@ -112,6 +112,8 @@ class User extends Model {
     //methode validation SIGNUP
     public static function validate_signup(String $email, String $fullname, String $pseudo, String $password, String $confirmPassword) : array{
         $errors = [];
+        $config = parse_ini_file('config/dev.ini');
+
         //verification tout les champs remplis
         if(empty($email)||empty($fullname)||empty($pseudo)||empty($password)||empty($confirmPassword)){
             $errors['champs'] = "All fields are required.";    
@@ -122,15 +124,15 @@ class User extends Model {
             else if(self::getUserByEmail($email))
                 $errors['email'] = "Email already taken.";
             //fullname
-            if(strlen($fullname) < 3)
+            if(strlen($fullname) < $config['full_name_min'])
                 $errors['fullName'] = "Full name must be more than 3 letters.";
             //pseudo
             if(self::getUserByPseudo($pseudo))
                 $errors['pseudo'] = "Pseudo already taken.";
-            else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
+            else if((strlen($pseudo) < $config['full_name_min'] || strlen($pseudo) > $config['pseudo_max']))
                 $errors['pseudo'] = "Lenght of the pseudo invalid";
             //mdp
-            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            $pattern = $config['mdp_pattern'];
             if(!preg_match($pattern, $password))
                 $errors['password'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
             //confirmPassword
@@ -142,39 +144,47 @@ class User extends Model {
     //methode validation edit profile
     public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
         $errors = [];
-        if(empty($email)||empty($fullname)||empty($pseudo)){
-            $errors['champs'] = "Email, Name and Pseudo need to be filled in.";
-        }else{
-            //email
-            if($email != $this->email){
-                if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-                    $errors['email']= "invalid email format.";
-                if(self::getUserByEmail($email))
-                    $errors['email'] = "Email already taken.";
-            }
-            //fullname
-            if(strlen($fullname) < 3)
-                $errors['fullName'] = "Full name must be more than 3 letters.";
-            //pseudo
-            if($pseudo != $this->pseudo){
-                if(self::getUserByPseudo($pseudo))
-                    $errors['pseudo'] = "Pseudo already taken.";
-                else if((strlen($pseudo) < 3 || strlen($pseudo) > 30))
-                $errors['pseudo'] = "Lenght of the pseudo invalid";
-            }
-            //iban
-            if(!empty($iban)){
-                $ibanPattern = "/^BE\d{2}(\s?\d{4}){3}$/";
-                if (!preg_match($ibanPattern, str_replace(' ', '', $iban))) {
-                    $errors['iban'] = "Invalid iban format";
-                }
+        $config = parse_ini_file('config/dev.ini');
+
+        //email
+        if(empty($email)){
+            $errors['email']= "Email is required.";
+
+        }else if($email != $this->email){
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+                $errors['email']= "invalid email format.";
+            if(self::getUserByEmail($email))
+                $errors['email'] = "Email already taken.";
+        }
+        //fullname
+        if(empty($fullname))
+            $errors['fullName'] = "Full name is required";
+        else if(strlen($fullname) < $config['full_name_min'])
+            $errors['fullName'] = "Full name must be more than 3 letters.";
+        //pseudo
+        if(empty($pseudo))
+            $errors['pseudo'] = "Pseudo is required.";
+        else if($pseudo != $this->pseudo){
+            if(self::getUserByPseudo($pseudo))
+                $errors['pseudo'] = "Pseudo already taken.";
+            else if((strlen($pseudo) < $config['full_name_min'] || strlen($pseudo) > $config['pseudo_max']))
+            $errors['pseudo'] = "Lenght of the pseudo invalid";
+        }
+        //iban
+        if(!empty($iban)){
+            $ibanPattern = $config['iban_pattern'];
+            if (!preg_match($ibanPattern, str_replace(' ', '', $iban))) {
+                $errors['iban'] = "Invalid iban format";
             }
         }
+        
         return $errors;
     }
     //methode validation edit profile
     public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
         $errors = [];
+        $config = parse_ini_file('config/dev.ini');
+
         if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
             $errors['champs'] = "All fields are required.";
         }else{
@@ -182,7 +192,7 @@ class User extends Model {
             if (!password_verify($currentPassword, $this->getPassword()))
                 $errors['currentPassword'] = "Current password doesn't match";
             //new password
-            $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/';
+            $pattern =  $config['mdp_pattern'];
             if(!preg_match($pattern, $newPassword))
                 $errors['newPassword'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
             //confirmPassword
@@ -206,7 +216,10 @@ class User extends Model {
                     
                 
             // verifacation taille du fichier (5242880 = 5mb)
-            if($file['size']>5242880)
+             $config = parse_ini_file('config/dev.ini');
+            $taille_image = $config['taille_image'];
+
+            if($file['size']>$taille_image)
                 $errors['picture'] = "invalid size.";
                     
             
@@ -324,8 +337,8 @@ class User extends Model {
         }        
         else{
         //ajout
-            self::execute("INSERT INTO Users(id,full_name,email,pseudo,password,role,picture_path,iban) VALUES(:id,:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
-            ["id"=>$this->id,"full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
+            self::execute("INSERT INTO Users(full_name,email,pseudo,password,role,picture_path,iban) VALUES(:full_name,:email,:pseudo,:password,:role,:picture_path,:iban)", 
+            ["full_name"=>$this->name,"email"=>$this->email,"pseudo"=>$this->pseudo,"password"=>$this->password,"role"=>$this->role,"picture_path"=>$this->picture_path,"iban"=>$this->iban]);
             //mettre l'id à jour sinon il vaut null. lastInsertId() est une méthode de Model.
             $this->id = self::lastInsertId();
         }
@@ -358,7 +371,7 @@ class User extends Model {
         $now = AppTime::get_current_datetime();
         $sql = "SELECT * FROM v_items_status 
                 WHERE owner = :user_id AND end_at > :now AND buy_now_reached = 0 
-                ORDER BY end_at DESC"; 
+                ORDER BY end_at ASC"; 
         return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
     }
 
@@ -366,7 +379,7 @@ class User extends Model {
         $now = AppTime::get_current_datetime();
         $sql = "SELECT * FROM v_items_status 
                 WHERE owner = :user_id AND end_at < :now AND buy_now_reached = 0 AND has_bids = 0 
-                ORDER BY end_at DESC";
+                ORDER BY end_at ASC";
         return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
     }
 
@@ -375,7 +388,7 @@ class User extends Model {
                 $sql = "SELECT DISTINCT v.*
                 FROM v_items_status v join bids b ON v.id = b.item
                 WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-                ORDER BY b.created_at DESC";
+                ORDER BY v.end_at DESC";
         return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
     }
 
@@ -489,7 +502,7 @@ class User extends Model {
                 $sql = "SELECT DISTINCT v.*
                 FROM v_items_status v join bids b ON v.id = b.item
                 WHERE  v.owner != :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-                ORDER BY b.amount DESC";
+                ORDER BY v.end_at DESC";
         return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
     }
 

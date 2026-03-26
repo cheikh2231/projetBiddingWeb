@@ -8,7 +8,7 @@ class ControllerUser extends Controller {
     public function index() : void {
         
         if ($this->user_logged()) {
-            $this->redirect("item", "index");
+            $this->redirect("item", "browse");
         } else {
             (new View("login"))->show(["errors" => []]);
         }

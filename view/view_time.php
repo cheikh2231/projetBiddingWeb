@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>App time management</title>
-    <base href="<?= $web_root ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-</head>
-<body data-bs-theme="dark">
 
 <footer class="fixed-bottom bg-dark border-top border-secondary p-0 shadow-lg">
     <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -55,6 +44,3 @@
         </div>
     </div>
 </footer>
-
-</body>
-</html>

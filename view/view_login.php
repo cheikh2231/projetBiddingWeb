@@ -3,15 +3,17 @@
     <!-- La partie head -->
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
     <title>Login</title>
+    <base href="<?= $web_root ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Lien bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <!-- Icones Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- CSS -->
     <link rel="stylesheet" href="<?= $web_root ?>css/styles.css">
-    <base href="<?= $web_root ?>"/>
+   
 </head>
 
 
@@ -44,7 +46,9 @@
             <?php endif?>
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary custom-btn-blue">Login</button>
-                <button type="button" class="btn btn-secondary custom-btn-grey">Continue as guest</button>
+                <a href = "item/browse"  class="btn btn-secondary custom-btn-grey">
+                    Continue as guest
+                </a>
             </div>
         </form>
         <div class="mb-3">

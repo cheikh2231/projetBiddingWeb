@@ -15,25 +15,21 @@ En développement, donnez les permissions d'écriture aux dossiers uploads et da
 * mamichel@epfc.eu, password "Password1,", utilisateur
 * quhouben@epfc.eu, password "Password1,", utilisateur
 * xapigeolet@epfc.eu, password "Password1,", utilisateur
-* A compléter...
+* admin@epfc.eu, password "Password1,", admin
 
 ### Liste des bugs connus
 
-* bug 1
-* bug 2
-* ...
+* Auncun
 
 ### URLs deploiement
 
-* étudiant Nom Prenom :
+* étudiant Nom Prenom : Seck Cheikh Anta
   * URL :
   * Mot de passe :
-* étudiant Nom Prenom :
+* étudiant Nom Prenom : Lian Yoann
   * URL :
   * Mot de passe :
-* étudiant Nom Prénom :
-  * URL :
-  * Mot de passe :
+
 
 ### Liste des fonctionnalités supplémentaires
 

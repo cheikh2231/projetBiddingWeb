@@ -28,7 +28,7 @@ abstract class Controller {
      * Remarque : si un des paramètres est vide (null ou string vide), les suivants sont ignorés.
      */
 
-    public function redirect(string $controller = "", string $action = "index", string $param1 = "", string $param2 = "", string $param3 = "", int $statusCode = 303): void {
+    public function redirect(string $controller = "", string $action = "login", string $param1 = "", string $param2 = "", string $param3 = "", int $statusCode = 303): void {
         $web_root = Configuration::get("web_root");
         $default_controller = Configuration::get("default_controller");
         if (empty($controller)) {
