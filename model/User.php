@@ -166,8 +166,12 @@ class User extends Model {
         //fullname
         if(empty($fullname))
             $errors['fullName'] = "Full name is required";
-        else if(strlen($fullname) < $config['full_name_min'])
-            $errors['fullName'] = "Full name must be more than 3 letters.";
+        else if($fullname != $this->name){
+            if(self::getUserByFullname($fullname))
+                $errors['fullname'] = "Fullname already taken.";
+            else if((strlen($fullname) < $config['full_name_min'] || strlen($fullname) > $config['pseudo_max']))
+                $errors['fullname'] = "Lenght of the pseudo invalid";
+        }
         //pseudo
         if(empty($pseudo))
             $errors['pseudo'] = "Pseudo is required.";

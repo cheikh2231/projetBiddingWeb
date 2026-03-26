@@ -97,7 +97,7 @@ class ControllerUser extends Controller {
                 $userConnected->setPseudo($pseudo);
                 if ($iban) $userConnected->setIban($iban);
                 $userConnected->persist();
-                self::profile();
+                $this->redirect("user", "profile");
             }else{
                 (new View("editProfile"))->show(["user"=>$userConnected,"errors"=>$errors]);
             }
@@ -119,7 +119,8 @@ class ControllerUser extends Controller {
             if(empty($errors)){
                 $userConnected->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
                 $userConnected->persist();
-                self::profile();
+                $this->redirect("user", "profile");
+
             }else{
                 (new View("editPassword"))->show(["errors"=>$errors]);
             }
@@ -135,7 +136,8 @@ class ControllerUser extends Controller {
             $errors = $userConnected->validate_photoDeProfil($_FILES['image']);
             if(empty($errors)){
                 $userConnected->change_or_add_profile_picture($_FILES['image']);
-                self::profile();
+                $this->redirect("user", "profile");
+
             }else{
                 
                 (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>$errors]);
@@ -150,7 +152,8 @@ class ControllerUser extends Controller {
     public function delete_profile_picture() : void{
         $userConnected = $this->get_user_or_redirect();
         $userConnected->delete_profile_picture();
-        (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>[]]);
+        $this->redirect("user", "profile");
+
 
     }
 }
