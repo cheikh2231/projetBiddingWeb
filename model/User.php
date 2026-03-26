@@ -72,6 +72,11 @@ class User extends Model {
         $data = $query->fetch();
         return $data ? self::mapToUser($data) : false;
     }
+     public static function getUserByFullname(string $fullname): User|false {
+        $query = self::execute("SELECT * FROM users WHERE full_name = :fullname", ["fullname" => $fullname]);
+        $data = $query->fetch();
+        return $data ? self::mapToUser($data) : false;
+    }
 
     public static function getUserByEmail(string $email): User|false {
         $query = self::execute("SELECT * FROM users WHERE email = :email", ["email" => $email]);
@@ -126,6 +131,8 @@ class User extends Model {
             //fullname
             if(strlen($fullname) < $config['full_name_min'])
                 $errors['fullName'] = "Full name must be more than 3 letters.";
+            else if(self::getUserByFullname($fullname))
+                $errors['fullName'] = "This name is already taken.";
             //pseudo
             if(self::getUserByPseudo($pseudo))
                 $errors['pseudo'] = "Pseudo already taken.";
