@@ -124,7 +124,7 @@ class Item extends Model {
 
     private function titleExistsForOwner(): bool {
         $sql = "SELECT COUNT(*) FROM items WHERE title = ? AND owner = ? AND id != ?";
-        $query = self::execute($sql, [$this->title, $this->owner, $this->id]);
+        $query = self::execute($sql, [$this->title, $this->owner, $this->id ?? -1 ] ); // pour add item => id inexistant donc on compare avec tout les items et on se donne -1 comme id.
         return $query->fetchColumn() > 0;
     }
 

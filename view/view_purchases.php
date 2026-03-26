@@ -1,10 +1,5 @@
 <?php   
-    $somme = 0;
-    foreach ($purchases as $i) {
-       $somme = $somme + $i->getFinalBuyPrice(); 
-    }
-     $place = "purchases"; 
-
+    $place = "purchases"; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
