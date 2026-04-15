@@ -9,7 +9,13 @@
         $isMaxBidder = $item->getMaxBidder()!=null ?  $item->getMaxBidder()==$currentUser:false;
     }
 ?>
-
+<head>    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src = "js/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+</head>
 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
     <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
         class="item-card d-block position-relative flex-grow-1">
