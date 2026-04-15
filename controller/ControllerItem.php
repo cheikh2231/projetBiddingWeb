@@ -183,7 +183,7 @@ class ControllerItem extends Controller {
                 $buy_now_price = $sale_price;
 
             } 
-
+            
             $newItem = new Item(
                 null, 
                 trim($_POST['title'] ?? ''),
@@ -243,10 +243,16 @@ class ControllerItem extends Controller {
 
     public function sales() : void {
         $source = "sales";
-         $currentUser = $this->get_user_or_redirect();
+        $currentUser = $this->get_user_or_redirect();
   
         $sold = $currentUser->getSoldItems();
-        (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source]);
+        //déplacement calcul de la somme
+        $somme = 0;
+        foreach ($sold as $i) {
+            $somme = $somme + $i->getFinalBuyPrice(); 
+        }
+
+        (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
     public function purchases() : void {
@@ -257,7 +263,13 @@ class ControllerItem extends Controller {
             return;
         }       
         $purchases = $currentUser->getPurchasesItems();
-        (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source]);
+        //calcul de la somme déplacer dans le controller (correction)
+        $somme = 0;
+        foreach ($purchases as $i) {
+            $somme = $somme + $i->getFinalBuyPrice(); 
+        }
+
+        (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
     public function manage_images() : void{
@@ -289,10 +301,14 @@ class ControllerItem extends Controller {
         } elseif (isset($_POST['left'])) {
             if(($index-1) > 0){
                 $item->swapPic($index-1,$index);
+                $this->redirect('item', 'manage_images', $item_id);
+                return;
             }
         } elseif (isset($_POST['right'])) {
             if(($index+1) <= count($item->getPictures())){
                 $item->swapPic($index,$index+1);
+                $this->redirect('item', 'manage_images', $item_id);
+                return;
             }
         }else
 
