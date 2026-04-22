@@ -480,33 +480,32 @@ class Item extends Model {
         }
     }
 
-    public static function search(string $query): array {
-    $now = AppTime::get_current_datetime();
-    $pattern = '%' . $query . '%';
-    
-    $sql = "SELECT v.* FROM v_items_status v
-            JOIN users u ON v.owner = u.id  
-            WHERE v.end_at > :now 
-            AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
-            AND (
-                v.title       LIKE :p1 OR
-                v.description LIKE :p2 OR
-                u.pseudo      LIKE :p3
-                
-            )
-            ORDER BY v.end_at ASC";
+    public static function search(string $query, ?User $user): array {
+        $now = AppTime::get_current_datetime();
+        $pattern = '%' . $query . '%';
+        $pattern_conditions = "(v.title LIKE :p OR v.description LIKE :p OR u.pseudo LIKE :p)";
 
-    $query_result = self::execute($sql, [
-            'now' => $now,
-            'p1'  => $pattern,
-            'p2'  => $pattern,
-            'p3'  => $pattern,
-    ]);
+        if ($user === null) {
+            $sql = "SELECT v.* FROM v_items_status v
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.end_at > :now
+                    AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                    AND $pattern_conditions
+                    ORDER BY v.end_at ASC";
+            $params = ['now' => $now, 'p' => $pattern];
+        } else {
+            $sql = "SELECT v.* FROM v_items_status v
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.owner = :user_id
+                    AND $pattern_conditions
+                    ORDER BY v.end_at ASC";
+            $params = ['user_id' => $user->getId(), 'p' => $pattern];
+        }
 
-    $items = [];
-    foreach ($query_result->fetchAll() as $row) {
-        $items[] = self::makeItemFromRow($row);
-    }
+        $items = [];
+        foreach (self::execute($sql, $params)->fetchAll() as $row) {
+            $items[] = self::makeItemFromRow($row);
+        }
         return $items;
     }
 }

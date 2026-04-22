@@ -25,8 +25,8 @@
 <div class="container py-5 px-2">
     <div id="browse-wrapper" data-place="<?= htmlspecialchars($place) ?>">
     <?php if (!empty($itemsUser)) : ?>
-        <h4 class="text-primary">Active Items</h4>
-        <div class="row g-4 mb-5">
+        <h4 class="text-primary" id="title-active">Active Items</h4>
+        <div class="row g-4 mb-5" id="items-active">
             <?php foreach ($itemsUser as $item) : ?>
 
                 <?php include('view/utilités/_item_card.php')?>
@@ -36,8 +36,8 @@
     <?php endif; ?>
 
     <?php if (!empty($unsold)) : ?>
-        <h4 class="text-primary">Unsold Items</h4>
-        <div class="row g-4 mb-5">
+        <h4 class="text-primary"  id="title-unsold">Unsold Items</h4>
+        <div class="row g-4 mb-5"  id="items-unsold">
             <?php foreach ($unsold as $item) : ?>
 
                 <?php include('view/utilités/_item_card.php')?>
@@ -47,8 +47,8 @@
     <?php endif; ?>
 
     <?php if (!empty($sold)) : ?>
-        <h4 class="text-primary">Sold Items</h4>
-        <div class="row g-4">
+        <h4 class="text-primary" id = "title-sold" >Sold Items</h4>
+        <div class="row g-4"  id = "items-sold">
             <?php foreach ($sold as $item) : ?>
                 <?php include('view/utilités/_item_card.php')?>
 

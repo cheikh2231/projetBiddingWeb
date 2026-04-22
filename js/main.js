@@ -1,4 +1,4 @@
-// mes notes : le  grand fou
+// les notes du grand cheikh le FOU
 // doc ready la page est bien charge {} we can continu
 // je place items partici and other dans div browse wrapper 
 // et donc je met la barre de recherche juste devant ce div (before)
@@ -20,33 +20,41 @@ $(document).ready(function () {
 
         
             $('#search-input').on('input', function () {
-                const q = $(this).val().trim();
+                const res = $(this).val().trim();
                 const place =  $('#browse-wrapper').data('place');
-                doSearch(q,place);
-                });
-        }
-
-    function doSearch(q,place) {
-            $.ajax({
-                url: 'index.php?controller=item&action=search',   
-                method: 'GET',
-                data: { q: q , place: place},      
-                dataType: 'json',
-                success: function (items) {
-                    if(place === "browse")
-                        getItems(items);
-                },
-                error: function (xhr) {
-                    console.error('Search failed', xhr.responseText);
-                }
+                doSearch(res,place);
             });
         }
 
-    function getItems(items) {
-        $('#title-participating, #title-other').hide();
+    function doSearch(res,place) {
+        $.ajax({
+            url: 'index.php?controller=item&action=search',   
+            method: 'GET',
+            data: { res: res , place: place},      
+            dataType: 'json',
+            success: function (items) {
+                getItems(items,place);
+            },
+            error: function (xhr) {
+                console.error('Search failed', xhr.responseText);
+            }
+        });
+    }
+
+    function getItems(items,place) {
         $('#no-result-msg').remove();
-        $('#items-participating').empty();
-        $('#items-other').empty();
+        if(place == "browse"){
+            $('#title-participating, #title-other').hide();
+            $('#items-participating').empty();
+            $('#items-other').empty();
+        }else{
+             $('#title-active, #title-sold,#title-unsold').hide();
+             $('#items-active').empty();
+             $('#items-sold').empty();  
+             $('#items-unsold').empty();
+        
+        }
+      
 
         if (items.length === 0) {
             $('#browse-wrapper').prepend(
@@ -54,22 +62,48 @@ $(document).ready(function () {
             );
             return;
         }
-        const hasParticipating = items.some(i => i.isParticipating);
-        if (hasParticipating) {
-            $('#title-participating').text('Items I m Participating In').show();
-        }
-        const nbItemsOther = items.length - items.filter(i => i.isParticipating).length;
-        if(nbItemsOther > 0){
-            $('#title-other').text('Other Available Items').show();
-        }
-    
 
+         if(place == "browse"){
+            const hasParticipating = items.some(i => i.isParticipating);
+            if (hasParticipating) {
+                $('#title-participating').text('Items I m Participating In').show();
+            }
+            const nbItemsOther = items.length - items.filter(i => i.isParticipating).length;
+            if(nbItemsOther > 0){
+                $('#title-other').text('Other Available Items').show();
+            }
+        
+        }else{
+            const hasSolds = items.some(i => i.isSold);
+            const hasUnsolds = items.some(i => i.isUnsold);
+            const hasActives = items.some(i => !i.isSold && !i.isUnsold);
+            if (hasSolds) {
+                $('#title-sold').text('Sold Items').show();
+            }
+             if (hasUnsolds) {
+                $('#title-unsold').text('Unsold Items').show();
+            }
+             if (hasActives) {
+                $('#title-active').text('Active Items').show();
+            }
+            
+        }
+        
         items.forEach(function (item) {
+            if(place == "browse"){
+                if (item.isParticipating) {
+                    $('#items-participating').append(getCard(item));
+                } else {
+                    $('#items-other').append(getCard(item));
+                }
+            }else{
+                if(item.isSold){
+                    $('#items-sold').append(getCard(item));
+                }else if(item.isUnsold){
+                    $('#items-unsold').append(getCard(item)); 
+                }else
+                    $('#items-active').append(getCard(item)); 
 
-            if (item.isParticipating) {
-                $('#items-participating').append(getCard(item));
-            } else {
-                $('#items-other').append(getCard(item));
             }
         });
     }

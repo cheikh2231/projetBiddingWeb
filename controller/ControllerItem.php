@@ -377,16 +377,21 @@ class ControllerItem extends Controller {
     public function search(): void {
         try {
             $user = $this->get_user_or_false();
-            $query = $_GET['q'] ?? '';
+            $query = $_GET['res'] ?? '';
             $place = $_GET['place'] ?? '';
+        
             if ($query === '') {
-                if($place === "browse")
+                if($place == "browse"){
                     $items = Item::getAllActivesItems();
-                else
-                    $item = $user->getMyAllItems();
+                }else{
+                    $items = $user->getMyAllItems();
+                }       
+
             } else {
-                $items = Item::search($query);
+                $items = Item::search($query,($place=="browse"?null:$user));
             }
+            
+    
             $result = [];
             
             foreach ($items as $item) {
@@ -404,6 +409,9 @@ class ControllerItem extends Controller {
                         'picture'     => $item->getPictures()[0] ?? null, 
                         'isParticipating' => $user ? $user->hasBidIn($item) : false,
                         'isMaxBidder'  => $user ? $item->getMaxBidder() == $user : false,
+                        'isSold' => $item->getWinner() != null,
+                        'isUnsold' => $item->isClosed() && $item->getWinner()==null,
+
                 ];
             }
             
