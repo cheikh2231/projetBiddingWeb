@@ -546,6 +546,14 @@ class User extends Model {
                 
     }
 
+    public function getMyAllItems() : array {
+       $now = AppTime::get_current_datetime();
+        $sql = "SELECT * FROM v_items_status 
+                WHERE owner = :user_id
+                ORDER BY end_at ASC"; 
+        return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
+    }
+
 
    
 

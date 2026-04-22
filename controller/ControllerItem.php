@@ -374,4 +374,50 @@ class ControllerItem extends Controller {
         };
     }
 
+    public function search(): void {
+        try {
+            $user = $this->get_user_or_false();
+            $query = $_GET['q'] ?? '';
+            $place = $_GET['place'] ?? '';
+            if ($query === '') {
+                if($place === "browse")
+                    $items = Item::getAllActivesItems();
+                else
+                    $item = $user->getMyAllItems();
+            } else {
+                $items = Item::search($query);
+            }
+            $result = [];
+            
+            foreach ($items as $item) {
+               $result[] = [
+                        'id'          => $item->getId(),
+                        'title'       => $item->getTitle(),
+                        'description' => $item->getDescription(),
+                        'owner'       => $item->getOwner()->getPseudo(),
+                        'price'       => (float)($item->getBuyNowPrice() ?? $item->getStartingBid() ?? 0),
+                        'endAt'       => $item->getEndAt(),
+                        'isAuction'   => $item->getIsAuction(),
+                        'hasBuyNow'   => $item->getHasBuyNow(),
+                        'hasBids'     => $item->getHasBids(),      
+                        'maxBid'      => $item->getMaxBid(),       
+                        'picture'     => $item->getPictures()[0] ?? null, 
+                        'isParticipating' => $user ? $user->hasBidIn($item) : false,
+                        'isMaxBidder'  => $user ? $item->getMaxBidder() == $user : false,
+                ];
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
+
+
+
+    }
 }

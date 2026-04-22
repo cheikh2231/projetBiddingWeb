@@ -479,4 +479,34 @@ class Item extends Model {
             }
         }
     }
+
+    public static function search(string $query): array {
+    $now = AppTime::get_current_datetime();
+    $pattern = '%' . $query . '%';
+    
+    $sql = "SELECT v.* FROM v_items_status v
+            JOIN users u ON v.owner = u.id  
+            WHERE v.end_at > :now 
+            AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+            AND (
+                v.title       LIKE :p1 OR
+                v.description LIKE :p2 OR
+                u.pseudo      LIKE :p3
+                
+            )
+            ORDER BY v.end_at ASC";
+
+    $query_result = self::execute($sql, [
+            'now' => $now,
+            'p1'  => $pattern,
+            'p2'  => $pattern,
+            'p3'  => $pattern,
+    ]);
+
+    $items = [];
+    foreach ($query_result->fetchAll() as $row) {
+        $items[] = self::makeItemFromRow($row);
+    }
+        return $items;
+    }
 }

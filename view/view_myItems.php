@@ -23,7 +23,7 @@
 </header>
 
 <div class="container py-5 px-2">
-
+    <div id="browse-wrapper" data-place="<?= htmlspecialchars($place) ?>">
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary">Active Items</h4>
         <div class="row g-4 mb-5">
@@ -55,10 +55,13 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+            </div>
 </div>
 <?php include 'view/utilités/footer.php'; ?>
 
 <?php include 'view/utilités/footer.php'; ?>
-
+    <script src="js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
