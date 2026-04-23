@@ -137,7 +137,7 @@ class ControllerItem extends Controller {
         $user = $this->get_user_or_redirect();
 
         $id = $_GET['param1'] ?? null;
-    
+        $encoded = $_GET['param2'] ?? "";
         $source = "from-items";
         $item = Item::getItemById($id);
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
@@ -178,7 +178,7 @@ class ControllerItem extends Controller {
             $errors = $item->persist();
 
             if (empty($errors)) {
-                $this->redirect("item", "open", $item->getId(), "from-items");
+                $this->redirect("item", "open", $item->getId(), "from-items",$encoded);
                 return;
             }
         }
@@ -187,7 +187,8 @@ class ControllerItem extends Controller {
             "item" => $item, 
             "errors" => $errors, 
             "source" => $source ,
-             "currentUser"=>$user
+             "currentUser"=>$user,
+             "encoded" => $encoded,
         ]);
     }
 
@@ -253,7 +254,7 @@ class ControllerItem extends Controller {
 
         $id = $_GET['param1'] ?? null;
         $item = Item::getItemById($id);
-
+        $encoded = $_GET['param2'] ?? "";
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
             return;
@@ -262,14 +263,14 @@ class ControllerItem extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
            
             if ($item->delete()) {
-                $this->redirect("item", "list");
+                $this->redirect("item", "list",$encoded);
                 return;
             } else {
                 $errors = ["This item cannot be deleted (it might have bids)."];
             }
         }
 
-        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user]);
+        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user,"encoded"=>$encoded]);
     }
 
 
@@ -313,7 +314,7 @@ class ControllerItem extends Controller {
         $max_size_mb = (int)$config['upload_max_size'];
         $max_res_main = (int)$config['image_max_res_main']; 
         $max_res_thumb = (int)$config['image_max_res_thumb'];
-
+        $encoded = $_GET['param2'] ?? "";
         if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','browse');
            return;
@@ -327,7 +328,7 @@ class ControllerItem extends Controller {
 
         if (isset($_POST['delete'])) {
             if($item->deleteImage($index)){
-                 $this->redirect('item', 'manage_images', $item_id);
+                 $this->redirect('item', 'manage_images', $item_id,$encoded);
                  return;
             }
             $errors[] = "image introuvable ";
@@ -335,13 +336,13 @@ class ControllerItem extends Controller {
         } elseif (isset($_POST['left'])) {
             if(($index-1) > 0){
                 $item->swapPic($index-1,$index);
-                $this->redirect('item', 'manage_images', $item_id);
+                $this->redirect('item', 'manage_images', $item_id,$encoded);
                 return;
             }
         } elseif (isset($_POST['right'])) {
             if(($index+1) <= count($item->getPictures())){
                 $item->swapPic($index,$index+1);
-                $this->redirect('item', 'manage_images', $item_id);
+                $this->redirect('item', 'manage_images', $item_id,$encoded);
                 return;
             }
         }else
@@ -378,7 +379,7 @@ class ControllerItem extends Controller {
                         $item->addPicture( $path_main);
                         
                         
-                        $this->redirect('item', 'manage_images', $item_id);
+                        $this->redirect('item', 'manage_images', $item_id,$encoded);
                         return;
                     } else {
                         $errors[] = "Erreur lors du traitement de l'image.";
@@ -395,7 +396,7 @@ class ControllerItem extends Controller {
             ]);
             return;
         }
-        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
+        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item,"encoded"=>$encoded]);
     }
 
     private function getSourceNature(string $s): string {

@@ -30,7 +30,7 @@
 
 <body data-bs-theme="dark" class="bg-primary-subtle">
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
-    <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source : 'item/browse' ?>" class="position-absolute start-0 ms-2">
+    <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source.($encoded ? '/'.$encoded : "") : 'item/browse' ?>" class="position-absolute start-0 ms-2">
         <i class="bi bi-arrow-left-short fs-3 text-primary"></i>
     </a>
 

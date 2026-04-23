@@ -184,8 +184,8 @@ require_once 'model/User.php';
                     <?php if (!$item->isClosed() && !$item->getHasBids()): ?>
                         <div class="d-grid gap-2">
                             <a href="item/edit/<?= $item->getId()?><?=$encodedClean ?  "/$encodedClean" : ""?>" class="btn btn-outline-light btn-sm"><i class="bi bi-pencil me-2"></i> Edit Details</a>
-                            <a href="item/manage_images/<?= $item->getId() ?>" class="btn btn-outline-info btn-sm"><i class="bi bi-image me-2"></i> Manage Images</a>
-                            <a href="item/delete/<?= $item->getId() ?>" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-2"></i> Delete Item</a>
+                            <a href="item/manage_images/<?= $item->getId() ?><?=$encodedClean ?  "/$encodedClean" : ""?>" class="btn btn-outline-info btn-sm"><i class="bi bi-image me-2"></i> Manage Images</a>
+                            <a href="item/delete/<?= $item->getId() ?><?=$encodedClean ?  "/$encodedClean" : ""?>" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-2"></i> Delete Item</a>
                         </div>
                     <?php else: ?>
                         <div class="alert alert-warning mb-0 small">
