@@ -83,6 +83,15 @@ class ControllerItem extends Controller {
             "success_message" => "" 
         ]);
     }
+    private function getSourceNature(string $s): string {
+        return match ($s) {
+            'from-browse'    => 'browse',
+            'from-items'      => 'list',
+            'from-sales'     => 'sales',
+            'from-purchases' => 'purchases',
+            default          => 'browse'
+        };
+    }
     public function list(): void {
         $user = $this->get_user_or_false();
         $itemsUser = [];
@@ -101,7 +110,9 @@ class ControllerItem extends Controller {
 
         ]);
     }
-
+     //////////////////////////////////
+    ///             EDIT            ///
+    //////////////////////////////////
     public function edit(): void {
         $user = $this->get_user_or_redirect();
 
@@ -114,34 +125,28 @@ class ControllerItem extends Controller {
         }
 
         $errors = [];
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
            
             $item->setTitle(trim($_POST['title'] ?? ''));
             $item->setDescription(trim($_POST['description'] ?? ''));
             $item->setDurationDays((int)$_POST['duration']);
             
             $start_bid = floatval($_POST['starting'] ?? 0);
-
             $sale_price = floatval($_POST['sale_price'] ?? null);
-
             $instant_price = floatval($_POST['instant_price'] ?? null);
 
             $buy_now_price = null;
-            if ($start_bid != null && $start_bid > 0) {
-
+            if($start_bid != null && $start_bid > 0) 
                 $buy_now_price = $instant_price>0 ? $instant_price:null;
-
-            } else if ($sale_price != null && $sale_price > 0) {
-                
+            else if($sale_price != null && $sale_price > 0)
                 $buy_now_price = $sale_price;
-
-            } 
-
+            
             $item->setStartingBid($start_bid);
             $item->setBuyNowPrice($buy_now_price);
-            if($sale_price !== null && $sale_price>0 ){
+
+            if($sale_price !== null && $sale_price>0)
                 $item->setIsDirectSale(true);
-            }else 
+            else 
                 $item->setIsDirectSale(false);
             $errors = $item->persist();
 
@@ -158,10 +163,11 @@ class ControllerItem extends Controller {
              "currentUser"=>$user
         ]);
     }
-
+    //////////////////////////////////
+    ///              add           ///
+    //////////////////////////////////
     public function add(): void {
         $user = $this->get_user_or_redirect();
-
         $errors = [];
         
         $newItem = null;
@@ -170,21 +176,15 @@ class ControllerItem extends Controller {
             $now = AppTime::get_current_datetime();
 
             $start_bid = floatval($_POST['starting'] ?? null);
-
             $sale_price = floatval($_POST['sale_price'] ?? null);
-
             $instant_price = floatval($_POST['instant_price'] ?? null);
 
             $buy_now_price = null;
-            if ($start_bid != null && $start_bid > 0) {
-
+            if ($start_bid != null && $start_bid > 0)
                 $buy_now_price = $instant_price>0 ? $instant_price:null;
-
-            } else if ($sale_price != null && $sale_price > 0) {
-                
+            else if ($sale_price != null && $sale_price > 0)
                 $buy_now_price = $sale_price;
-
-            } 
+            
             
             $newItem = new Item(
                 null, 
@@ -197,9 +197,8 @@ class ControllerItem extends Controller {
                 $buy_now_price
             );
 
-            if($sale_price>0 ){
+            if($sale_price>0 )
                 $newItem->setIsDirectSale(true);
-            }
             $errors = $newItem->persist();
             
             if (empty($errors)) {
@@ -216,6 +215,55 @@ class ControllerItem extends Controller {
         ]);
     }
 
+    ///////////////////////////////////////////////////
+    ///     Validation asynchrone add and edit      ///
+    ///////////////////////////////////////////////////
+    public function validate_async(): void{
+        $user= $this->get_user_or_false(); //recuperer l'utilisateur
+        if(!$user){
+            header('Content-Type: application/json');
+            echo json_encode(['auth' => ['User must be logged in.']]);
+            return;
+        }
+
+        $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
+        if($id === "")
+            $id = null;
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $duration = (int)($_POST['duration'] ?? 0);
+        $starting = floatval($_POST['starting'] ?? 0);
+        $sale_price = floatval($_POST['sale_price'] ?? 0);
+        $instant_price = floatval($_POST['instant_price'] ?? 0);
+        $buy_now_price = null;
+
+        if($starting > 0)
+            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
+        else if($sale_price > 0)
+            $buy_now_price = $sale_price;
+        
+        $tempItem= new Item( //creation du item temporaire pour voir si OK
+            $id ? (int)$id : null,
+            $title,
+            $description,
+            $user->getId(),
+            AppTime::get_current_datetime(),
+            $duration,
+            $starting,
+            $buy_now_price
+        );
+
+        $tempItem->setIsDirectSale($sale_price > 0);
+        $errors = $tempItem->validate();
+
+        header('Content-Type: application/json');
+        echo json_encode($errors);
+    }
+
+
+    //////////////////////////////////
+    ///            delete          ///
+    //////////////////////////////////
     public function delete(): void {
         $user = $this->get_user_or_redirect();
 
@@ -240,9 +288,9 @@ class ControllerItem extends Controller {
         (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user]);
     }
 
-
-
-
+    //////////////////////////////////
+    ///            sales           ///
+    //////////////////////////////////
     public function sales() : void {
         $source = "sales";
         $currentUser = $this->get_user_or_redirect();
@@ -257,6 +305,9 @@ class ControllerItem extends Controller {
         (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
+    //////////////////////////////////
+    ///          purchases         ///
+    //////////////////////////////////
     public function purchases() : void {
         $source = "purchases";
         $currentUser = $this->get_user_or_redirect();
@@ -274,6 +325,10 @@ class ControllerItem extends Controller {
         (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
+    //////////////////////////////////
+    ///        MANAGE PICTURE      ///
+    //////////////////////////////////
+        //synchrone
     public function manage_images() : void{
         $user = $this->get_user_or_redirect();
                 
@@ -365,57 +420,9 @@ class ControllerItem extends Controller {
         }
         (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
     }
+        //asynchrone
+    //coder ici
 
-    private function getSourceNature(string $s): string {
-        return match ($s) {
-            'from-browse'    => 'browse',
-            'from-items'      => 'list',
-            'from-sales'     => 'sales',
-            'from-purchases' => 'purchases',
-            default          => 'browse'
-        };
-    }
-        // validate asynchrone
-    public function validate_async(): void{
-        $user= $this->get_user_or_false(); //recuperer l'utilisateur
-        if(!$user){
-            header('Content-Type: application/json');
-            echo json_encode(['auth' => ['User must be logged in.']]);
-            return;
-        }
-
-        $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
-        if($id === "")
-            $id = null;
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $duration = (int)($_POST['duration'] ?? 0);
-        $starting = floatval($_POST['starting'] ?? 0);
-        $sale_price = floatval($_POST['sale_price'] ?? 0);
-        $instant_price = floatval($_POST['instant_price'] ?? 0);
-        $buy_now_price = null;
-
-        if($starting > 0)
-            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
-        else if($sale_price > 0)
-            $buy_now_price = $sale_price;
-        
-        $tempItem= new Item( //creation du item temporaire pour voir si OK
-            $id ? (int)$id : null,
-            $title,
-            $description,
-            $user->getId(),
-            AppTime::get_current_datetime(),
-            $duration,
-            $starting,
-            $buy_now_price
-        );
-
-        $tempItem->setIsDirectSale($sale_price > 0);
-        $errors = $tempItem->validate();
-
-        header('Content-Type: application/json');
-        echo json_encode($errors);
-    }
-
+    
+       
 }
