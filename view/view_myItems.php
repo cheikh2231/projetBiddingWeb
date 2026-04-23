@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 </head>
 
 <body>
@@ -23,7 +22,7 @@
 </header>
 
 <div class="container py-5 px-2">
-    <div id="browse-wrapper" data-place="<?= htmlspecialchars($place) ?>">
+    <div id="browse-wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary" id="title-active">Active Items</h4>
         <div class="row g-4 mb-5" id="items-active">

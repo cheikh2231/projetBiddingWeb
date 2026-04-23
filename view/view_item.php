@@ -28,7 +28,7 @@
 
 <div class="container py-5 px-2">
 
-    <div id="browse-wrapper" data-place ="<?= htmlspecialchars($place) ?>">
+    <div id="browse-wrapper" data-place ="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
         
         <?php if (!empty($itemsUser)) : ?>
             <h4 class="text-primary" id="title-participating">Items I'm Participating In</h4>

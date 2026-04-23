@@ -1,23 +1,6 @@
 <?php 
 require_once 'model/Bids.php';
 require_once 'model/User.php';
-
-
-$bids = $item->getBids();
-$pics = $item->getPictures();
-$owner = $item->getOwner();
-
-
-
-$isOwner = $currentUser && ($currentUser->getId() === $owner->getId());
-
-$currentPrice = $item->getMaxBid() ?? ($item->getStartingBid() > 0 ? $item->getStartingBid() : $item->getBuyNowPrice());
-$backRoute ="item/$source";
-$displayImg = !empty($pics) ? $web_root . $pics[max(0, $idImg - 1)] : "https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg";
-if ($item->getIsAuction()){ $bidValue = ($item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid()) ;}
-if ($item->getIsAuction()){ $minBid = ($item->getHasBids() )? $bidValue + 0.01 : $bidValue;}
-if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 1 : $bidValue;}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,9 +48,19 @@ if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 
             <?php if (!empty($pics)) : ?>
                 <div class="d-flex flex-wrap mb-3">
                     <?php foreach ($pics as $index => $p) : ?>
-                        <a href="item/open/<?= $item->getId() ?>/from-<?= ($source=="list" ? "items":$source) ?>/<?= $index + 1 ?>">
-                            <div class="cas me-2 <?= ($index === (max(0, $idImg - 1))) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
-                                <img src="<?= $web_root . $p ?>" class="img-thumbnail" alt = "thumb">
+                        <?php
+                            $state = $encodedClean 
+                                ? (UrlSafeEncoder::url_safe_decode($encodedClean) ?? []) 
+                                : [];
+                            $img = $index + 1;    
+                            if(!empty($state)){
+                                $state['img'] = $img;
+                                $img = UrlSafeEncoder::url_safe_encode($state);
+                            }
+                        ?>
+                        <a href="item/open/<?= $item->getId() ?>/from-<?= ($source === "list" ? "items" : $source) ?>/<?= $img ?>">
+                            <div class="cas me-2 <?= ($index === max(0, $idImg - 1)) ? 'border border-primary border-2' : '' ?>" style="width:80px;">
+                                <img src="<?= $web_root . $p ?>" class="img-thumbnail" alt="thumb">
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -118,7 +111,7 @@ if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 
                     <hr class="my-3 border-secondary opacity-50">
 
                      <?php if($item->isClosed() && $isOwner) : ?>
-                           <?php if($item->getWinner()!== null) :?> 
+                           <?php if($item->getWinner()!== null):?> 
                                 <strong class="text-center text-muted" ><?=$item->getWinner()->getPseudo() ?> won this item for € <?= number_format($item->getMaxBid(), 2) ?>. </strong>
                             <?php else :?>
                                 <small class="text-center text-muted" style="font-size: 0.75rem;">this listing ended without a buyer.</small>    
@@ -153,7 +146,7 @@ if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 
                             <small class="text-center text-muted" style="font-size: 0.75rem;">You cannot bid on your own listing.</small>
                         </div>
                     <?php else: ?>
-                        <form method="post" action="item/open/<?= $item->getId() ?>/from-<?= $source ?>">
+                        <form method="post" action="item/open/<?= $item->getId() ?>/from-<?= $source ?><?= $encodedClean ? '/'.$encodedClean : '' ?>">
                             <?php if($item->getIsAuction()):?>
                                 <div class="input-group mb-3"><span class="input-group-text bg-secondary text-white">€</span>
                                     <input type="number" step = "0.01" name="amount" class="form-control bg-dark text-white border-secondary" min="<?= $minBid ?>" value="<?=  $startingValue?>" required>
@@ -190,7 +183,7 @@ if ($item->getIsAuction()){ $startingValue = ($item->getHasBids())? $bidValue + 
                 <div class="card bg-dark p-3">
                     <?php if (!$item->isClosed() && !$item->getHasBids()): ?>
                         <div class="d-grid gap-2">
-                            <a href="item/edit/<?= $item->getId() ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-pencil me-2"></i> Edit Details</a>
+                            <a href="item/edit/<?= $item->getId()?><?=$encodedClean ?  "/$encodedClean" : ""?>" class="btn btn-outline-light btn-sm"><i class="bi bi-pencil me-2"></i> Edit Details</a>
                             <a href="item/manage_images/<?= $item->getId() ?>" class="btn btn-outline-info btn-sm"><i class="bi bi-image me-2"></i> Manage Images</a>
                             <a href="item/delete/<?= $item->getId() ?>" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-2"></i> Delete Item</a>
                         </div>

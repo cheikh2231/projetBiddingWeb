@@ -17,14 +17,13 @@ $(document).ready(function () {
                         placeholder="Search items...">
                 </div>
             `);
-
-        
             $('#search-input').on('input', function () {
                 const res = $(this).val().trim();
                 const place =  $('#browse-wrapper').data('place');
                 doSearch(res,place);
             });
         }
+            $('#search-input').val( $('#browse-wrapper').data('search')).trigger('input');
 
     function doSearch(res,place) {
         $.ajax({
@@ -32,8 +31,8 @@ $(document).ready(function () {
             method: 'GET',
             data: { res: res , place: place},      
             dataType: 'json',
-            success: function (items) {
-                getItems(items,place);
+            success: function (response) {
+                getItems(response.items, place, response.encoded);
             },
             error: function (xhr) {
                 console.error('Search failed', xhr.responseText);
@@ -41,7 +40,7 @@ $(document).ready(function () {
         });
     }
 
-    function getItems(items,place) {
+    function getItems(items,place,encoded) {
         $('#no-result-msg').remove();
         if(place == "browse"){
             $('#title-participating, #title-other').hide();
@@ -92,24 +91,24 @@ $(document).ready(function () {
         items.forEach(function (item) {
             if(place == "browse"){
                 if (item.isParticipating) {
-                    $('#items-participating').append(getCard(item));
+                    $('#items-participating').append(getCard(item,encoded,place));
                 } else {
-                    $('#items-other').append(getCard(item));
+                    $('#items-other').append(getCard(item,encoded,place));
                 }
             }else{
                 if(item.isSold){
-                    $('#items-sold').append(getCard(item));
+                    $('#items-sold').append(getCard(item,encoded,place));
                 }else if(item.isUnsold){
-                    $('#items-unsold').append(getCard(item)); 
+                    $('#items-unsold').append(getCard(item,encoded,place)); 
                 }else
-                    $('#items-active').append(getCard(item)); 
+                    $('#items-active').append(getCard(item,encoded,place)); 
 
             }
         });
     }
 
 
-    function getCard(item){
+    function getCard(item,encoded,place){
         
         // badges
         const badges = [];
@@ -154,10 +153,12 @@ $(document).ready(function () {
             : diffDays > 0
                 ? `<div class="time-left"><i class="bi bi-clock-history"></i> ${diffDays}d ${diffHours}h left</div>`
                 : `<div class="time-inf1day"><i class="bi bi-clock-history"></i> ${diffHours}h ${diffMins}min left</div>`;
-
+        const route = encoded 
+            ? `item/open/${item.id}/from-${place}/${encoded}`
+            : `item/open/${item.id}/from-${place}`;
         const card = `
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <a href="item/open/${item.id}/from-browse"
+                <a href=${route}
                    class="item-card d-block position-relative flex-grow-1">
                     <div class="badge-container">
                         <div></div>
