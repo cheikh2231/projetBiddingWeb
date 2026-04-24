@@ -369,60 +369,50 @@ class ControllerItem extends Controller {
             }
         }else
 
-         if (isset($_FILES['image'])) {
+         if(isset($_FILES['image'])) {
             $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
             
-            if (empty($errors)) {
-                
+            if(empty($errors)){
                 $folder = "uploads/items/$item_id";
                 $original_name = $_FILES['image']['name'];
 
-    
                 $path_main = $item->process_image(
                     $_FILES['image']['tmp_name'], 
                         $folder, 
                         $original_name, 
                         $max_res_main, 
                         $max_res_main
-                    );
+                );
 
-                    
-                    $path_thumb = $item->process_image(
-                        $_FILES['image']['tmp_name'], 
-                        $folder, 
-                        $original_name, 
-                        $max_res_thumb, 
-                        $max_res_thumb, 
-                        "_thumbnail"
-                    );
+                $path_thumb = $item->process_image(
+                    $_FILES['image']['tmp_name'], 
+                    $folder, 
+                    $original_name, 
+                    $max_res_thumb, 
+                    $max_res_thumb, 
+                    "_thumbnail"
+                );
 
-                    if ($path_main && $path_thumb) {
-                        
-                        $item->addPicture( $path_main);
-                        
-                        
-                        $this->redirect('item', 'manage_images', $item_id);
-                        return;
-                    } else {
-                        $errors[] = "Erreur lors du traitement de l'image.";
-                    }
-                }
-            } else {
-                $errors[] = "Aucun fichier sélectionné.";
+                if($path_main && $path_thumb){ 
+                    $item->addPicture( $path_main);
+                    $this->redirect('item', 'manage_images', $item_id);
+                    return;
+                }else
+                    $errors[] = "Erreur lors du traitement de l'image.";
             }
+        }else
+            $errors[] = "Aucun fichier sélectionné.";
             
-            (new View('manage_images'))->show([
-                "item" => $item, 
-                "currentUser" => $user, 
-                "errors" => $errors
-            ]);
-            return;
+        (new View('manage_images'))->show([
+            "item" => $item, 
+            "currentUser" => $user, 
+            "errors" => $errors
+        ]);
+        return;
         }
         (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
     }
-        //asynchrone
-    //coder ici
 
+        //  ASYNCHRONE
     
-       
 }
