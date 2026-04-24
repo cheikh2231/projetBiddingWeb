@@ -56,8 +56,7 @@
                                     <i class="bi bi-arrow-right-short"></i>
                                 </button>
                                 
-                                <button type="submit" name="delete" class="btn btn-outline-danger bg-danger text-white border-2" >
-                                      
+                                <button type="button" class="btn-delete btn btn-outline-danger bg-danger text-white border-2" > 
                                     <i class="bi bi-x"></i>
                                 </button>
                             </form>
@@ -68,8 +67,27 @@
         </div>
     </div>
 </div>
-<?php include 'view/utilités/footer.php'; ?>
 
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content text-white"> 
+        <div class="modal-header">
+            <h5 class="modal-title">Delete image</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      <div class="modal-body">
+        Are you sure you want to delete this image?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php include 'view/utilités/footer.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>

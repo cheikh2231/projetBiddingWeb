@@ -40,4 +40,30 @@ $(document).ready(function(){
         }
     });
     sortContainer.disableSelection();
+
+    ////////////////////////
+    ///   delete modal   ///
+    ////////////////////////
+
+    $('.btn-delete').on('click', function(e) {
+        e.preventDefault();
+        formToSubmit = $(this).closest('form'); 
+        $('#deleteModal').modal('show');        
+    });
+
+    $('#btnConfirmDelete').on('click', function() {
+        if (formToSubmit) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'delete',
+                value: '1'
+            }).appendTo(formToSubmit);
+            formToSubmit.submit();
+        }
+    });
+
 });
+
+
+
+
