@@ -414,5 +414,28 @@ class ControllerItem extends Controller {
     }
 
         //  ASYNCHRONE
-    
+    public function update_image_order_async(): void{
+        header('Content-Type: application/json');
+        $user = $this->get_user_or_false(); // get user
+        if(!$user){
+            echo json_encode(['success' => false, 'error' => 'Non autorisé.']);
+            return;
+        }
+
+        $item_id = $_POST['item_id'] ?? null;
+        $order = $_POST['order'] ?? [];
+        if (!$item_id || empty($order)){ //verifie item id et tableau pas vide
+            echo json_encode(['success' => false, 'error' => 'Données invalides.']);
+            return;
+        }
+
+        $item = Item::getItemById($item_id);
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) { //verifie item et propriétaire
+            echo json_encode(['success' => false, 'error' => 'Accès refusé.']);
+            return;
+        }
+
+        $item->swapPicAsync($order);
+        echo json_encode(['success' => true]);
+    }
 }
