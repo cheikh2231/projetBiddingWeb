@@ -1,0 +1,43 @@
+$(document).ready(function(){
+    const sortContainer=$('#sortable-images');
+
+    sortContainer.sortable({
+        items: '.sortable-item',
+        cursor: 'grabbing', 
+        placeholder: 'ui-sortable-placeholder',
+        containment: 'parent',
+        tolerance: 'pointer', 
+        
+        update : function(event,ui){
+            var newOrder=[]; //nouvelle ordre
+            $('.sortable-item').each(function(){
+                newOrder.push($(this).attr('dataOrder'));
+            });
+            const itemId=sortContainer.attr('itemId');
+
+            $.ajax({
+                url:'item/update_image_order_async',
+                method:'POST',
+                dataType:'json',
+                data:{
+                    item_id: itemId,
+                    order: newOrder
+                },
+                success:function(response){
+                    if(response.success){ //success
+                        $('.sortable-item').each(function(idx) {
+                            var newPos=idx+1;
+                            $(this).attr('dataOrder', newPos);
+                            $(this).find('input[name="image_index"]').val(newPos); //changement dans la vue
+                        });
+                    }else //echec serveur
+                        sortContainer.sortable('cancel'); 
+                },
+                error:function(){ //echec reseaux 
+                    sortContainer.sortable('cancel');
+                }
+            });
+        }
+    });
+    sortContainer.disableSelection();
+});

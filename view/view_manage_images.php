@@ -3,7 +3,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
- 
     <title>manage_images</title>
     <base href="<?= $web_root ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,15 +40,14 @@
         <div class="card-header">Current Images</div>
         <div class="card-body bg-dark" id="previewContainer">
             <?php if (!empty($pics)) : ?>
-                <div class="d-flex flex-wrap mb-3">
+                <div class="d-flex flex-wrap mb-3" id="sortable-images" itemId="<?= $item->getId() ?>">
                     <?php for ($i=0; $i<count($pics) ;$i++) : ?>
                        
-                        <div class="cas me-3" style=width:180px;>
+                        <div class="cas me-3 mb-3 sortable-item" dataOrder="<?= $i+1 ?>" style="width:180px;">
                             <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail" alt = "itamImage">
-                            <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1"  >
+                            <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1 d-flex justify-content-between">
                                 <input type="hidden" name="image_index" value="<?= $i+1?>">
                                 
-                        
                                 <button type="submit" name="left" class="btn btn-outline-secondary border-2">
                                         <i class="bi bi-arrow-left-short"></i>
                                 </button>
@@ -63,19 +61,19 @@
                                     <i class="bi bi-x"></i>
                                 </button>
                             </form>
-
                         </div>
-
-                        
                     <?php endfor; ?>
-
-
                 </div>
             <?php endif; ?> 
         </div>
     </div>
 </div>
 <?php include 'view/utilités/footer.php'; ?>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<script src="js/swapImage.js"></script>
 
 </body>
 </html>
