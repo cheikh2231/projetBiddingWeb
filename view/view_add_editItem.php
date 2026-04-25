@@ -4,7 +4,7 @@
     $defautDuration  = $config['duration_default_value'];
     $isEdit = $item && $item->getId();
     $titlePage = $isEdit ? "Edit Item" : "Add Item";
-    $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+    $formAction = $isEdit ? "item/edit/" . $item->getId() . ($encoded ? "/$encoded" : "") : "item/add";
     $place = !$isEdit ? "Add":"Edit";
 
     $title = $_POST['title'] ?? ($item ? $item->getTitle() : '');

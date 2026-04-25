@@ -15,7 +15,7 @@
 <body>
 
     <header class="bg-dark p-0 d-flex justify-content-center align-items-center border-bottom border-secondar sticky-top">
-        <a href="item/open/<?= $item->getId()?>/from-items"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>
+        <a href="item/open/<?= $item->getId()?>/from-items<?=($encoded ? '/'.$encoded : "") ?>"><i class="bi bi-arrow-left-short fs-3 text-primary position-absolute start-0 top-0"></i></a>
         <h5 class="m-0 me-2 text-primary">Manage images</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </header>
@@ -24,7 +24,7 @@
     <div class="card  text-white">
         <div class="card-header ">Add New Images</div>
         <div class="card-body bg-dark ">
-            <form method="POST" action="item/manage_images/<?=$item->getId()?>" enctype="multipart/form-data">
+            <form method="POST" action="item/manage_images/<?=$item->getId()?><?=($encoded ? '/'.$encoded : "")?>" enctype="multipart/form-data">
                 
                 <label for="imageInput">Select Images</label>
                 <input type="file" id="imageInput" name="image" multiple accept="image/*">
@@ -46,7 +46,7 @@
                        
                         <div class="cas me-3" style=width:180px;>
                             <img src="<?= $web_root . $pics[$i] ?>" class = "img-thumbnail" alt = "itamImage">
-                            <form method = "POST" action = "item/manage_images/<?= $item->getId() ?> " class = "mt-1"  >
+                            <form method = "POST" action = "item/manage_images/<?= $item->getId() ?><?=($encoded ? '/'.$encoded : "")?>" class = "mt-1"  >
                                 <input type="hidden" name="image_index" value="<?= $i+1?>">
                                 
                         

@@ -29,6 +29,7 @@ class ControllerItem extends Controller {
             "itemsUser" => $itemsUserBidded, 
             "items" => $items,
             "currentUser" => $currentUser,
+            
             "searchName" => $searchName,
         ]);
     }
@@ -135,10 +136,8 @@ class ControllerItem extends Controller {
 }
     public function edit(): void {
         $user = $this->get_user_or_redirect();
-
         $id = $_GET['param1'] ?? null;
         $encoded = $_GET['param2'] ?? "";
-        $source = "from-items";
         $item = Item::getItemById($id);
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
@@ -178,7 +177,7 @@ class ControllerItem extends Controller {
             $errors = $item->persist();
 
             if (empty($errors)) {
-                $this->redirect("item", "open", $item->getId(), "from-items",$encoded);
+                $this->redirect("item", "open", $item->getId(),"from-items",$encoded);
                 return;
             }
         }
@@ -186,9 +185,9 @@ class ControllerItem extends Controller {
         (new View('add_editItem'))->show([ 
             "item" => $item, 
             "errors" => $errors, 
-            "source" => $source ,
              "currentUser"=>$user,
              "encoded" => $encoded,
+             "source" => "from-items",
         ]);
     }
 
@@ -352,7 +351,7 @@ class ControllerItem extends Controller {
             
             if (empty($errors)) {
                 
-                $folder = "uploads/items/$item_id";
+                $folder = "uploads/items/$item_id/$encoded";
                 $original_name = $_FILES['image']['name'];
 
     
@@ -392,7 +391,8 @@ class ControllerItem extends Controller {
             (new View('manage_images'))->show([
                 "item" => $item, 
                 "currentUser" => $user, 
-                "errors" => $errors
+                "errors" => $errors,
+                "encoded" => $encoded
             ]);
             return;
         }
@@ -432,24 +432,27 @@ class ControllerItem extends Controller {
             $result = [];
             
             foreach ($items as $item) {
-               $result[] = [
-                        'id'          => $item->getId(),
-                        'title'       => $item->getTitle(),
-                        'description' => $item->getDescription(),
-                        'owner'       => $item->getOwner()->getPseudo(),
-                        'price'       => (float)($item->getBuyNowPrice() ?? $item->getStartingBid() ?? 0),
-                        'endAt'       => $item->getEndAt(),
-                        'isAuction'   => $item->getIsAuction(),
-                        'hasBuyNow'   => $item->getHasBuyNow(),
-                        'hasBids'     => $item->getHasBids(),      
-                        'maxBid'      => $item->getMaxBid(),       
-                        'picture'     => $item->getPictures()[0] ?? null, 
+                $isMyItemOnBrowse = $place === "browse" && $item->getOwner()->getId() === $user->getId();
+
+                if (!$isMyItemOnBrowse) {
+                    $result[] = [
+                        'id'              => $item->getId(),
+                        'title'           => $item->getTitle(),
+                        'description'     => $item->getDescription(),
+                        'owner'           => $item->getOwner()->getPseudo(),
+                        'price'           => (float)($item->getBuyNowPrice() ?? $item->getStartingBid() ?? 0),
+                        'endAt'           => $item->getEndAt(),
+                        'isAuction'       => $item->getIsAuction(),
+                        'hasBuyNow'       => $item->getHasBuyNow(),
+                        'hasBids'         => $item->getHasBids(),
+                        'maxBid'          => $item->getMaxBid(),
+                        'picture'         => $item->getPictures()[0] ?? null,
                         'isParticipating' => $user ? $user->hasBidIn($item) : false,
-                        'isMaxBidder'  => $user ? $item->getMaxBidder() == $user : false,
-                        'isSold' => $item->getWinner() != null,
-                        'isUnsold' => $item->isClosed() && $item->getWinner()==null,
-                        
-                ];
+                        'isMaxBidder'     => $user ? $item->getMaxBidder() == $user : false,
+                        'isSold'          => $item->getWinner() !== null,
+                        'isUnsold'        => $item->isClosed() && $item->getWinner() === null,
+                    ];
+                }       
             }
             
             header('Content-Type: application/json');
