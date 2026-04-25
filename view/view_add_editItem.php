@@ -116,11 +116,10 @@
 
                     <div class="mb-3">
                         <label class="form-label">Starting Bid</label>
-                        <div class="input-group">
-                            <input type="text" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
-                            <span class="input-group-text">€</span>
-                        </div>
-                    
+                
+                    <div class="input-group">
+                        <input type="text" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
+                        <span class="input-group-text">€</span>
                         <div id="startingAndOrSaleError" class="invalid-feedback fw-bold"></div>
                         <?php if (isset($errors['startingAndOrSale'])): ?>
                             <div class="text-danger small mt-1 php-error">
@@ -131,6 +130,7 @@
                                 </ul> 
                             </div>
                         <?php endif; ?>
+                    </div>
 
                         <div class="mt-3 mb-0">
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
@@ -161,21 +161,21 @@
                     
                     <div class="mb-0">
                         <label class="form-label">Sale Price</label>
-                        <div class="input-group">
+                
+                       <div class="input-group">
                             <input type="text" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
+                            <div id="salePriceError" class="invalid-feedback fw-bold"></div>
+                            <?php if (isset($errors['startingAndOrSale'])): ?>
+                                <div class="text-danger small mt-1 php-error">
+                                    <ul>
+                                        <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                            <li><span class="text-danger"><?= $i ?></span></li>
+                                        <?php endforeach;?>
+                                    </ul> 
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        
-                        <div id="salePriceError" class="invalid-feedback fw-bold"></div>
-                        <?php if (isset($errors['startingAndOrSale'])): ?>
-                            <div class="text-danger small mt-1 php-error">
-                                <ul>
-                                    <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
-                                        <li><span class="text-danger"><?= $i ?></span></li>
-                                    <?php endforeach;?>
-                                </ul> 
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
