@@ -54,7 +54,7 @@
         <div class="mb-3">
             <a href="user/signup" class="link-primary text-decoration-none small">New here ? Click here to subscribe !</a>
         </div>
-
+        <?php if (Configuration::is_dev()) :?>
         <div class="mt-4 pt-2 border-top border-secondary">
             <h3 class="colorYellow fs-5 mb-3">For Debug Purpose</h3>
             
@@ -75,6 +75,7 @@
                 <a href="setup/restore" class="colorYellow fw-bold">Restore personal data</a>
             </div>
         </div>
+        <?php endif;?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -22,7 +22,7 @@
 </header>
 
 <div class="container py-5 px-2">
-    <div id="browse-wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
+    <div id="wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary" id="title-active">Active Items</h4>
         <div class="row g-4 mb-5" id="items-active">
@@ -61,6 +61,6 @@
 <?php include 'view/utilités/footer.php'; ?>
     <script src="js/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
 </body>
 </html>

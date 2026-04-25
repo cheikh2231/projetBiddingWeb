@@ -427,7 +427,7 @@ class ControllerItem extends Controller {
                 }       
 
             } else {
-                $items = Item::search($query,($place=="browse"?null:$user));
+                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null) ));
                 $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query]);
             }
             
@@ -435,7 +435,10 @@ class ControllerItem extends Controller {
             $result = [];
             
             foreach ($items as $item) {
-                $isMyItemOnBrowse = $place === "browse" && $item->getOwner()->getId() === $user->getId();
+                $isMyItemOnBrowse = false;
+                if($user){
+                    $isMyItemOnBrowse = $place === "browse" && $item->getOwner()->getId() === $user->getId();
+                }
 
                 if (!$isMyItemOnBrowse) {
                     $result[] = [
@@ -454,6 +457,7 @@ class ControllerItem extends Controller {
                         'isMaxBidder'     => $user ? $item->getMaxBidder() == $user : false,
                         'isSold'          => $item->getWinner() !== null,
                         'isUnsold'        => $item->isClosed() && $item->getWinner() === null,
+                        'pictureCount' =>  count($item->getPictures()),
                     ];
                 }       
             }

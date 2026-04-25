@@ -8,9 +8,9 @@
 // val revuperr la value et faire un search qui fera appel au search cote php
 $(document).ready(function () {  
 
-        if ($('#browse-wrapper').length) {
+        if ($('#wrapper').length) {
 
-            $('#browse-wrapper').before(`
+            $('#wrapper').before(`
                 <div class="mb-4 container" id="search-wrapper">
                     <input type="text" id="search-input" 
                         class="form-control" 
@@ -19,11 +19,11 @@ $(document).ready(function () {
             `);
             $('#search-input').on('input', function () {
                 const res = $(this).val().trim();
-                const place =  $('#browse-wrapper').data('place');
+                const place =  $('#wrapper').data('place');
                 doSearch(res,place);
             });
         }
-            $('#search-input').val( $('#browse-wrapper').data('search')).trigger('input');
+            $('#search-input').val( $('#wrapper').data('search')).trigger('input');
 
     function doSearch(res,place) {
         $.ajax({
@@ -56,7 +56,7 @@ $(document).ready(function () {
       
 
         if (items.length === 0) {
-            $('#browse-wrapper').prepend(
+            $('#wrapper').prepend(
                 '<p id="no-result-msg" class="text-center text-secondary mt-4">No item found.</p>'
             );
             return;
@@ -108,39 +108,39 @@ $(document).ready(function () {
     }
 
 
-    function getCard(item,encoded,place){
-        
-        // badges
-        const badges = [];
-        if (item.isAuction) badges.push(`<span class="badge badge-auction text-white"><i class="fa-solid fa-gavel"></i> Auction</span>`);
-        if (item.hasBuyNow) badges.push(`<span class="badge badge-buy"><i class="bi bi-bag"></i> Buy Now</span>`);
-        if (item.isParticipating){
-            if(item.isMaxBidder){
-                badges.push(`<span class="badge badge-green">  <i class="bi bi-trophy"></i> Highest Bidder </span>`);
-            }else
-                badges.push(` <span class="badge badge-dark"> Bidder </span>`);
-        } 
-        // image
-        const imgHtml = item.picture
-            ? `<div class="image-wrapper">
-                <img src="${item.picture}" class="img-fluid" alt="${item.title}">
-               </div>`
-            : `<img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg" alt="">`;
+  function getCard(item, encoded, place) {
 
-        // prix
+        const badgesLeft = [];
+        const badgesRight = [];
+
+        if (item.isAuction) badgesRight.push(`<span class="badge badge-auction text-white"><i class="fa-solid fa-gavel"></i> Auction</span>`);
+        if (item.hasBuyNow) badgesRight.push(`<span class="badge badge-buy"><i class="bi bi-bag"></i> Buy Now</span>`);
+        if (item.isParticipating) {
+            if (item.isMaxBidder) {
+                badgesLeft.push(`<span class="badge badge-green"><i class="bi bi-trophy"></i> Highest Bidder</span>`);
+            } else {
+                badgesLeft.push(`<span class="badge badge-dark">Bidder</span>`);
+            }
+        }
+
+       const imgHtml = item.picture
+    ? `<div class="image-wrapper">
+        <img src="${item.picture}" class="img-fluid" alt="${item.title}">
+        ${item.pictureCount > 1 ? `<div class="image-count"><i class="bi bi-images"></i> ${item.pictureCount} images</div>` : ''}
+       </div>`
+    : `<img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg" alt="">`;
+
         const priceHtml = item.hasBuyNow
             ? `<div class="price">€ ${parseFloat(item.price).toFixed(2)}</div>`
             : `<div class="price text-warning">€ ${parseFloat(item.price).toFixed(2)}</div>`;
 
-        // current bid
         const bidHtml = (item.isAuction && item.hasBids)
             ? `<div class="text-end">
                 <div class="text-secondary" style="font-size:0.875rem;">Current bid</div>
                 <div class="current-bid">€ ${parseFloat(item.maxBid).toFixed(2)}</div>
-               </div>`
+            </div>`
             : '';
 
-        // time left
         const endAt = new Date(item.endAt);
         const now = new Date();
         const diffMs = endAt - now;
@@ -153,17 +153,21 @@ $(document).ready(function () {
             : diffDays > 0
                 ? `<div class="time-left"><i class="bi bi-clock-history"></i> ${diffDays}d ${diffHours}h left</div>`
                 : `<div class="time-inf1day"><i class="bi bi-clock-history"></i> ${diffHours}h ${diffMins}min left</div>`;
-        const route = encoded 
+
+        const route = encoded
             ? `item/open/${item.id}/from-${place}/${encoded}`
             : `item/open/${item.id}/from-${place}`;
-        const card = `
+
+        return `
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <a href=${route}
-                   class="item-card d-block position-relative flex-grow-1">
+                <a href="${route}" class="item-card d-block position-relative flex-grow-1">
                     <div class="badge-container">
-                        <div></div>
+                        <div class="d-flex flex-column align-items-start gap-1">
+                            ${badgesLeft.join('')}
+                        </div>
                         <div class="d-flex flex-column align-items-end gap-1">
-                            ${badges.join('')}
+                            ${badgesRight.join('')}
+                        
                         </div>
                     </div>
                     ${imgHtml}
@@ -178,7 +182,5 @@ $(document).ready(function () {
                     </div>
                 </a>
             </div>`;
-
-        return card;
     }
 });

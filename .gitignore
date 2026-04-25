@@ -51,7 +51,7 @@ Thumbs.db
 # Test artifacts and temporary files
 /test-results/
 cookies.txt
-
+config/prod.ini
 /uploads/*
 !/uploads/.keep
 

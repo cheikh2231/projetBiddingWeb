@@ -38,10 +38,15 @@
         <h5 class="m-0 me-2 text-primary"><?= $titlePage ?></h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
-
-    <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0">
+    <?php if ($isEdit):?>
+    <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0" >
         <i class="bi bi-floppy fs-4 text-primary"></i>
     </button>
+    <?php else :?>
+         <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0" disabled>
+        <i class="bi bi-floppy fs-4 text-primary"></i>
+    </button>
+        <?php endif;?>
 </header>
 
 
@@ -118,7 +123,7 @@
                         <label class="form-label">Starting Bid</label>
                 
                     <div class="input-group">
-                        <input type="text" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
+                        <input  type="number" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
                         <span class="input-group-text">€</span>
                         <div id="startingAndOrSaleError" class="invalid-feedback fw-bold"></div>
                         <?php if (isset($errors['startingAndOrSale'])): ?>
@@ -135,9 +140,9 @@
                         <div class="mt-3 mb-0">
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
                             <div class="input-group">
-                                <input type="text" name="instant_price" id="instantPriceInput" class="form-control" value="<?= $instant_price ?>" placeholder="10">
+                                <input type="number" name="instant_price" id="instantPriceInput" class="form-control" value="<?= $instant_price ?>" placeholder="10">
                                 <span class="input-group-text">€</span>
-                            </div>
+                        
 
                             <div id="instantPriceError" class="invalid-feedback fw-bold"></div>
                             <?php if (isset($errors['instant_price'])): ?>
@@ -149,6 +154,7 @@
                                     </ul> 
                                 </div>
                             <?php endif; ?>
+                            </div>
                         </div>                        
                     </div>
                 </div>
@@ -163,7 +169,7 @@
                         <label class="form-label">Sale Price</label>
                 
                        <div class="input-group">
-                            <input type="text" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
+                            <input type="number" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
                             <div id="salePriceError" class="invalid-feedback fw-bold"></div>
                             <?php if (isset($errors['startingAndOrSale'])): ?>
