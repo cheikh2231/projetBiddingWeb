@@ -410,32 +410,7 @@ class ControllerItem extends Controller {
             default          => 'browse'
         };
     }
-        // validate asynchrone
-    public function validate_async(): void {
-        
-        $user = $this->get_user_or_false();
-        if (!$user) {
-            header('Content-Type: application/json');
-            echo json_encode(['auth' => ['User must be logged in.']]);
-            return;
-        }
 
-        $item_id = $_POST['item_id'] ?? null;
-        $order = $_POST['order'] ?? [];
-        if (!$item_id || empty($order)){ //verifie item id et tableau pas vide
-            echo json_encode(['success' => false, 'error' => 'Données invalides.']);
-            return;
-        }
-
-        $item = Item::getItemById($item_id);
-        if (!$item || $item->getOwner()->getId() !== $user->getId()) { //verifie item et propriétaire
-            echo json_encode(['success' => false, 'error' => 'Accès refusé.']);
-            return;
-        }
-
-        $item->swapPicAsync($order);
-        echo json_encode(['success' => true]);
-    }
 
     public function search(): void {
         $encoded = "";
@@ -530,6 +505,78 @@ class ControllerItem extends Controller {
             "currentUser"=>$user,
             "searchName" => $searchName,
         ]);
+    }
+
+        //  ASYNCHRONE
+    public function update_image_order_async(): void{
+        header('Content-Type: application/json');
+        $user = $this->get_user_or_false(); // get user
+        if(!$user){
+            echo json_encode(['success' => false, 'error' => 'Non autorisé.']);
+            return;
+        }
+
+        $item_id = $_POST['item_id'] ?? null;
+        $order = $_POST['order'] ?? [];
+        if (!$item_id || empty($order)){ //verifie item id et tableau pas vide
+            echo json_encode(['success' => false, 'error' => 'Données invalides.']);
+            return;
+        }
+
+        $item = Item::getItemById($item_id);
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) { //verifie item et propriétaire
+            echo json_encode(['success' => false, 'error' => 'Accès refusé.']);
+            return;
+        }
+
+        $item->swapPicAsync($order);
+        echo json_encode(['success' => true]);
+    }
+
+
+///////////////////////////////////////////////////
+    ///     Validation asynchrone add and edit      ///
+    ///////////////////////////////////////////////////
+    public function validate_async(): void{
+        $user= $this->get_user_or_false(); //recuperer l'utilisateur
+        if(!$user){
+            header('Content-Type: application/json');
+            echo json_encode(['auth' => ['User must be logged in.']]);
+            return;
+        }
+
+        $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
+        if($id === "")
+            $id = null;
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $duration = (int)($_POST['duration'] ?? 0);
+        $starting = floatval($_POST['starting'] ?? 0);
+        $sale_price = floatval($_POST['sale_price'] ?? 0);
+        $instant_price = floatval($_POST['instant_price'] ?? 0);
+        $buy_now_price = null;
+
+        if($starting > 0)
+            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
+        else if($sale_price > 0)
+            $buy_now_price = $sale_price;
+        
+        $tempItem= new Item( //creation du item temporaire pour voir si OK
+            $id ? (int)$id : null,
+            $title,
+            $description,
+            $user->getId(),
+            AppTime::get_current_datetime(),
+            $duration,
+            $starting,
+            $buy_now_price
+        );
+
+        $tempItem->setIsDirectSale($sale_price > 0);
+        $errors = $tempItem->validate();
+
+        header('Content-Type: application/json');
+        echo json_encode($errors);
     }
 
 
