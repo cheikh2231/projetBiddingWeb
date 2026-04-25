@@ -1,3 +1,5 @@
+
+
 <?php
 require_once "framework/Controller.php";
 require_once 'model/Item.php';
@@ -407,6 +409,65 @@ class ControllerItem extends Controller {
             'from-purchases' => 'purchases',
             default          => 'browse'
         };
+    }
+        // validate asynchrone
+    public function validate_async(): void {
+        
+        $user = $this->get_user_or_false();
+        if (!$user) {
+            header('Content-Type: application/json');
+            echo json_encode(['auth' => ['User must be logged in.']]);
+            return;
+        }
+
+        // 2. Récupération des données POST
+        $id = $_POST['item_id'] ?? null;
+        if ($id === "") $id = null;
+
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $duration = (int)($_POST['duration'] ?? 0);
+        
+        $starting = floatval($_POST['starting'] ?? 0);
+        $sale_price = floatval($_POST['sale_price'] ?? 0);
+        $instant_price = floatval($_POST['instant_price'] ?? 0);
+
+        // 3. Logique métier pour déterminer le prix d'achat immédiat ($buy_now_price)
+        // On reproduit ici la même logique que dans tes méthodes add() et edit()
+        $buy_now_price = null;
+        if ($starting > 0) {
+            // Cas d'une enchère : le prix immédiat est optionnel
+            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
+        } else if ($sale_price > 0) {
+            // Cas d'une vente directe : le prix de vente est le buy_now_price
+            $buy_now_price = $sale_price;
+        }
+
+        // 4. Création de l'objet Item temporaire pour la validation
+        $tempItem = new Item(
+            $id ? (int)$id : null,
+            $title,
+            $description,
+            $user->getId(),
+            AppTime::get_current_datetime(), // Date de création fictive pour la validation
+            $duration,
+            $starting,
+            $buy_now_price
+        );
+
+        // 5. Prise en compte du type de vente pour la validation
+        if ($sale_price > 0) {
+            $tempItem->setIsDirectSale(true);
+        } else {
+            $tempItem->setIsDirectSale(false);
+        }
+
+        // 6. Appel de la méthode de validation du modèle
+        $errors = $tempItem->validate();
+
+        // 7. Envoi de la réponse JSON au JavaScript
+        header('Content-Type: application/json');
+        echo json_encode($errors);
     }
 
     public function search(): void {

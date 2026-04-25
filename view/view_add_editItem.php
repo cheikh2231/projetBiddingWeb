@@ -48,17 +48,19 @@
 <div class="container mb-5 py-5">
     <form id="editItemForm" action="<?= $formAction ?>" method="POST">
 
+        <input type="hidden" name="item_id" value="<?= $item ? $item->getId() : '' ?>">
+
         <div class="card-custom mb-4">
             <div class="card-header-custom">Basic Information</div>
             <div class="card-body p-4">
 
                 <div class="mb-3">
                     <label class="form-label">Item Title *</label>
-                    <input type="text" name="title" class="form-control" 
-                           value="<?= $title ?>" 
-                           placeholder="Ex: iPhone 13 Pro Max">
+                    <input type="text" name="title" id="titleInput" class="form-control" value="<?= $title ?>" placeholder="Ex: iPhone 13 Pro Max">
+
+                    <div id="titleError" class="invalid-feedback fw-bold"></div>   
                     <?php if (isset($errors['title'])): ?>
-                        <div class="text-danger small mt-1">
+                        <div class="text-danger small mt-1 php-error">
                             <ul>
                                 <?php foreach ($errors['title'] as $i): ?> 
                                     <li><span class="text-danger"><?= $i ?></span></li>
@@ -66,15 +68,15 @@
                             </ul> 
                         </div>
                     <?php endif; ?>
-                  
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Description *</label>
-                    <textarea class="form-control" name="description" rows="5"><?= $description ?></textarea>
-                     
+                    <textarea class="form-control" name="description" id="descriptionInput" rows="5"><?= $description ?></textarea>
+
+                    <div id="descriptionError" class="invalid-feedback fw-bold"></div>                     
                     <?php if (isset($errors['description'])): ?>
-                        <div class="text-danger small mt-1">
+                        <div class="text-danger small mt-1 php-error">
                             <ul>
                                 <?php foreach ($errors['description'] as $i): ?> 
                                     <li><span class="text-danger"><?= $i ?></span></li>
@@ -86,10 +88,11 @@
 
                 <div class="mb-3">
                     <label class="form-label">Sale Duration (days) *</label>
-                    <input type="number" name="duration" class="form-control" 
-                           value="<?= $duration ?>">
+
+                    <input type="number" name="duration" id="durationInput" class="form-control" value="<?= $duration ?>">
+                    <div id="durationError" class="invalid-feedback fw-bold"></div>
                     <?php if (isset($errors['duration'])): ?>
-                        <div class="text-danger small mt-1">
+                        <div class="text-danger small mt-1 php-error">
                             <ul>
                                 <?php foreach ($errors['duration'] as $i): ?> 
                                     <li><span class="text-danger"><?= $i ?></span></li>
@@ -114,43 +117,38 @@
                     <div class="mb-3">
                         <label class="form-label">Starting Bid</label>
                         <div class="input-group">
-                            <input type="text" 
-                                name="starting" 
-                                class="form-control" 
-                                inputmode="decimal" 
-                               
-                                value="<?= $starting ?>" 
-                                placeholder="100">
+                            <input type="text" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
                             <span class="input-group-text">€</span>
                         </div>
-                        
-                    <?php if (isset($errors['startingAndOrSale'])): ?>
-                        <div class="text-danger small mt-1">
-                            <ul>
-                                <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
-                                    <li><span class="text-danger"><?= $i ?></span></li>
-                                <?php endforeach;?>
-                            </ul> 
-                        </div>
-                    <?php endif; ?>
+                    
+                        <div id="startingAndOrSaleError" class="invalid-feedback fw-bold"></div>
+                        <?php if (isset($errors['startingAndOrSale'])): ?>
+                            <div class="text-danger small mt-1 php-error">
+                                <ul>
+                                    <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                        <li><span class="text-danger"><?= $i ?></span></li>
+                                    <?php endforeach;?>
+                                </ul> 
+                            </div>
+                        <?php endif; ?>
 
                         <div class="mt-3 mb-0">
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
                             <div class="input-group">
-                                <input type="text" name="instant_price" class="form-control" 
-                                    value="<?= $instant_price ?>" 
-                                    placeholder="10">
+                                <input type="text" name="instant_price" id="instantPriceInput" class="form-control" value="<?= $instant_price ?>" placeholder="10">
                                 <span class="input-group-text">€</span>
                             </div>
-                    <?php if (isset($errors['instant_price'])): ?>
-                        <div class="text-danger small mt-1">
-                            <ul>
-                                <?php foreach ($errors['instant_price'] as $i): ?> 
-                                    <li><span class="text-danger"><?= $i ?></span></li>
-                                <?php endforeach;?>
-                            </ul> 
-                        </div>
-                    <?php endif; ?>
+
+                            <div id="instantPriceError" class="invalid-feedback fw-bold"></div>
+                            <?php if (isset($errors['instant_price'])): ?>
+                                <div class="text-danger small mt-1 php-error">
+                                    <ul>
+                                        <?php foreach ($errors['instant_price'] as $i): ?> 
+                                            <li><span class="text-danger"><?= $i ?></span></li>
+                                        <?php endforeach;?>
+                                    </ul> 
+                                </div>
+                            <?php endif; ?>
                         </div>                        
                     </div>
                 </div>
@@ -164,20 +162,20 @@
                     <div class="mb-0">
                         <label class="form-label">Sale Price</label>
                         <div class="input-group">
-                            <input type="text" name="sale_price" class="form-control" 
-                                value="<?= $sale_price ?>" 
-                                placeholder="e.g., 150.00">
+                            <input type="text" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
                         </div>
-                    <?php if (isset($errors['startingAndOrSale'])): ?>
-                        <div class="text-danger small mt-1">
-                            <ul>
-                                <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
-                                    <li><span class="text-danger"><?= $i ?></span></li>
-                                <?php endforeach;?>
-                            </ul> 
-                        </div>
-                    <?php endif; ?>
+                        
+                        <div id="salePriceError" class="invalid-feedback fw-bold"></div>
+                        <?php if (isset($errors['startingAndOrSale'])): ?>
+                            <div class="text-danger small mt-1 php-error">
+                                <ul>
+                                    <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                        <li><span class="text-danger"><?= $i ?></span></li>
+                                    <?php endforeach;?>
+                                </ul> 
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -190,6 +188,29 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php include 'view/utilités/footer.php'; ?>
+
+<div class="modal fade" id="confirmLeaveModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Unsaved changes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        You have unsaved changes. Leave anyway ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmLeaveBtn">Leave</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/add-edit-item.js"></script>
+
+</body>
+</html>
 
 </body>
 </html>
