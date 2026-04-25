@@ -480,6 +480,7 @@ class Item extends Model {
         }
     }
 
+
     public static function search(string $query, ?User $user): array {
         $now = AppTime::get_current_datetime();
         $pattern = '%' . $query . '%';
@@ -507,5 +508,22 @@ class Item extends Model {
             $items[] = self::makeItemFromRow($row);
         }
         return $items;
+    }
+    public function swapPicAsync(array $orderTab): void{
+        foreach($orderTab as $oldPosition){ //boucle pour liberer les slots (on les met en (leur position)*-1)
+            self::execute(
+                "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?", 
+                [-((int)$oldPosition), $this->id, (int)$oldPosition]
+            );
+        }
+        
+        foreach($orderTab as $index =>$oldPosition){ //boucle pour remettre dans le bonne ordre
+            $newPosition = $index + 1;
+            self::execute(
+                "UPDATE item_pictures SET priority = ? WHERE item = ? AND priority = ?", 
+                [$newPosition, $this->id, -((int)$oldPosition)]
+            );
+        }
+
     }
 }

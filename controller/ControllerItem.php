@@ -147,34 +147,28 @@ class ControllerItem extends Controller {
         }
 
         $errors = [];
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
            
             $item->setTitle(trim($_POST['title'] ?? ''));
             $item->setDescription(trim($_POST['description'] ?? ''));
             $item->setDurationDays((int)$_POST['duration']);
             
             $start_bid = floatval($_POST['starting'] ?? 0);
-
             $sale_price = floatval($_POST['sale_price'] ?? null);
-
             $instant_price = floatval($_POST['instant_price'] ?? null);
 
             $buy_now_price = null;
-            if ($start_bid != null && $start_bid > 0) {
-
+            if($start_bid != null && $start_bid > 0) 
                 $buy_now_price = $instant_price>0 ? $instant_price:null;
-
-            } else if ($sale_price != null && $sale_price > 0) {
-                
+            else if($sale_price != null && $sale_price > 0)
                 $buy_now_price = $sale_price;
-
-            } 
-
+            
             $item->setStartingBid($start_bid);
             $item->setBuyNowPrice($buy_now_price);
-            if($sale_price !== null && $sale_price>0 ){
+
+            if($sale_price !== null && $sale_price>0)
                 $item->setIsDirectSale(true);
-            }else 
+            else 
                 $item->setIsDirectSale(false);
             $errors = $item->persist();
 
@@ -192,10 +186,11 @@ class ControllerItem extends Controller {
              "source" => "from-items",
         ]);
     }
-
+    //////////////////////////////////
+    ///              add           ///
+    //////////////////////////////////
     public function add(): void {
         $user = $this->get_user_or_redirect();
-
         $errors = [];
         
         $newItem = null;
@@ -204,21 +199,15 @@ class ControllerItem extends Controller {
             $now = AppTime::get_current_datetime();
 
             $start_bid = floatval($_POST['starting'] ?? null);
-
             $sale_price = floatval($_POST['sale_price'] ?? null);
-
             $instant_price = floatval($_POST['instant_price'] ?? null);
 
             $buy_now_price = null;
-            if ($start_bid != null && $start_bid > 0) {
-
+            if ($start_bid != null && $start_bid > 0)
                 $buy_now_price = $instant_price>0 ? $instant_price:null;
-
-            } else if ($sale_price != null && $sale_price > 0) {
-                
+            else if ($sale_price != null && $sale_price > 0)
                 $buy_now_price = $sale_price;
-
-            } 
+            
             
             $newItem = new Item(
                 null, 
@@ -231,9 +220,8 @@ class ControllerItem extends Controller {
                 $buy_now_price
             );
 
-            if($sale_price>0 ){
+            if($sale_price>0 )
                 $newItem->setIsDirectSale(true);
-            }
             $errors = $newItem->persist();
             
             if (empty($errors)) {
@@ -250,6 +238,9 @@ class ControllerItem extends Controller {
         ]);
     }
 
+    //////////////////////////////////
+    ///            delete          ///
+    //////////////////////////////////
     public function delete(): void {
         $user = $this->get_user_or_redirect();
 
@@ -274,9 +265,9 @@ class ControllerItem extends Controller {
         (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user,"encoded"=>$encoded]);
     }
 
-
-
-
+    //////////////////////////////////
+    ///            sales           ///
+    //////////////////////////////////
     public function sales() : void {
         $source = "sales";
         $currentUser = $this->get_user_or_redirect();
@@ -291,6 +282,9 @@ class ControllerItem extends Controller {
         (new View('sales'))->show(["sold"=>$sold,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
+    //////////////////////////////////
+    ///          purchases         ///
+    //////////////////////////////////
     public function purchases() : void {
         $source = "purchases";
         $currentUser = $this->get_user_or_redirect();
@@ -308,6 +302,10 @@ class ControllerItem extends Controller {
         (new View('purchases'))->show(["purchases"=>$purchases,"currentUser"=>$currentUser,"source"=>$source,"somme"=>$somme]);
     }
 
+    //////////////////////////////////
+    ///        MANAGE PICTURE      ///
+    //////////////////////////////////
+        //synchrone
     public function manage_images() : void{
         $user = $this->get_user_or_redirect();
                 
@@ -348,7 +346,7 @@ class ControllerItem extends Controller {
             }
         }else
 
-         if (isset($_FILES['image'])) {
+         if(isset($_FILES['image'])) {
             $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
             
             if (empty($errors)) {
@@ -356,24 +354,22 @@ class ControllerItem extends Controller {
                 $folder = "uploads/items/$item_id/$encoded";
                 $original_name = $_FILES['image']['name'];
 
-    
                 $path_main = $item->process_image(
                     $_FILES['image']['tmp_name'], 
                         $folder, 
                         $original_name, 
                         $max_res_main, 
                         $max_res_main
-                    );
+                );
 
-                    
-                    $path_thumb = $item->process_image(
-                        $_FILES['image']['tmp_name'], 
-                        $folder, 
-                        $original_name, 
-                        $max_res_thumb, 
-                        $max_res_thumb, 
-                        "_thumbnail"
-                    );
+                $path_thumb = $item->process_image(
+                    $_FILES['image']['tmp_name'], 
+                    $folder, 
+                    $original_name, 
+                    $max_res_thumb, 
+                    $max_res_thumb, 
+                    "_thumbnail"
+                );
 
                     if ($path_main && $path_thumb) {
                         
@@ -389,6 +385,8 @@ class ControllerItem extends Controller {
             } else {
                 $errors[] = "Aucun fichier sélectionné.";
             }
+        }else{
+            $errors[] = "Aucun fichier sélectionné.";
             
             (new View('manage_images'))->show([
                 "item" => $item, 
@@ -398,8 +396,10 @@ class ControllerItem extends Controller {
             ]);
             return;
         }
-        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item,"encoded"=>$encoded]);
-    }
+         (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item,"encoded"=>$encoded]);
+        }
+       
+    
 
     private function getSourceNature(string $s): string {
         return match ($s) {
@@ -420,54 +420,21 @@ class ControllerItem extends Controller {
             return;
         }
 
-        // 2. Récupération des données POST
-        $id = $_POST['item_id'] ?? null;
-        if ($id === "") $id = null;
-
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $duration = (int)($_POST['duration'] ?? 0);
-        
-        $starting = floatval($_POST['starting'] ?? 0);
-        $sale_price = floatval($_POST['sale_price'] ?? 0);
-        $instant_price = floatval($_POST['instant_price'] ?? 0);
-
-        // 3. Logique métier pour déterminer le prix d'achat immédiat ($buy_now_price)
-        // On reproduit ici la même logique que dans tes méthodes add() et edit()
-        $buy_now_price = null;
-        if ($starting > 0) {
-            // Cas d'une enchère : le prix immédiat est optionnel
-            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
-        } else if ($sale_price > 0) {
-            // Cas d'une vente directe : le prix de vente est le buy_now_price
-            $buy_now_price = $sale_price;
+        $item_id = $_POST['item_id'] ?? null;
+        $order = $_POST['order'] ?? [];
+        if (!$item_id || empty($order)){ //verifie item id et tableau pas vide
+            echo json_encode(['success' => false, 'error' => 'Données invalides.']);
+            return;
         }
 
-        // 4. Création de l'objet Item temporaire pour la validation
-        $tempItem = new Item(
-            $id ? (int)$id : null,
-            $title,
-            $description,
-            $user->getId(),
-            AppTime::get_current_datetime(), // Date de création fictive pour la validation
-            $duration,
-            $starting,
-            $buy_now_price
-        );
-
-        // 5. Prise en compte du type de vente pour la validation
-        if ($sale_price > 0) {
-            $tempItem->setIsDirectSale(true);
-        } else {
-            $tempItem->setIsDirectSale(false);
+        $item = Item::getItemById($item_id);
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) { //verifie item et propriétaire
+            echo json_encode(['success' => false, 'error' => 'Accès refusé.']);
+            return;
         }
 
-        // 6. Appel de la méthode de validation du modèle
-        $errors = $tempItem->validate();
-
-        // 7. Envoi de la réponse JSON au JavaScript
-        header('Content-Type: application/json');
-        echo json_encode($errors);
+        $item->swapPicAsync($order);
+        echo json_encode(['success' => true]);
     }
 
     public function search(): void {
