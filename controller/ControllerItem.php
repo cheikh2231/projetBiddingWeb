@@ -204,8 +204,7 @@ class ControllerItem extends Controller {
    public function add(): void {
     $user = $this->get_user_or_redirect();
     $errors = [];
-    $config = parse_ini_file('config/dev.ini');
-    $defautDuration = $config['duration_default_value'];
+    $defautDuration = Configuration::get('duration_default_value');
 
     $newItem = null;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -331,10 +330,9 @@ class ControllerItem extends Controller {
     public function manage_images() : void{
         $user = $this->get_user_or_redirect();
                 
-        $config = parse_ini_file('config/dev.ini'); 
-        $max_size_mb = (int)$config['upload_max_size'];
-        $max_res_main = (int)$config['image_max_res_main']; 
-        $max_res_thumb = (int)$config['image_max_res_thumb'];
+        $max_size_mb  = (int)Configuration::get('upload_max_size');
+        $max_res_main = (int)Configuration::get('image_max_res_main');
+        $max_res_thumb = (int)Configuration::get('image_max_res_thumb');
         $encoded = $_GET['param2'] ?? "";
         if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','browse');
