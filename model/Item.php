@@ -2,7 +2,7 @@
 
 require_once "framework/Model.php";
 require_once "utils/AppTime.php";
-
+require_once "framework/Configuration.php";
 class Item extends Model {
     public function __construct(
        
@@ -73,15 +73,13 @@ class Item extends Model {
         $errors = [];
         
         
-        $config = parse_ini_file('config/dev.ini');
-
        
-        $minTitle    = $config['title_min_length'];
-        $maxTitle    = $config['title_max_length'];
-        $minDuration = $config['duration_min_value'];
-        $maxDuration = $config['duration_max_value'];
+        $minTitle    = Configuration::get('title_min_length');
+        $maxTitle    = Configuration::get('title_max_length');
+        $minDuration =Configuration::get('duration_min_value');
+        $maxDuration = Configuration::get('duration_max_value');
 
-        $minDescription = $config['min_description_if_not_empty'];
+        $minDescription = Configuration::get('min_description_if_not_empty');
         $titleLen = strlen($this->title);
         if ($titleLen < $minTitle) {
             $errors['title'][] = "Title must be at least $minTitle characters.";
@@ -320,7 +318,7 @@ class Item extends Model {
     public function validate_photo(array $file) : array {
         $errors = [];
     
-        $max_size = 5 * 1024 * 1024; 
+        $max_size = Configuration::get('taille_image');
         $valid_types = ["image/gif", "image/jpeg", "image/png", "image/webp"];
 
         if (!isset($file['tmp_name']) || $file['tmp_name'] == '') {
@@ -480,6 +478,35 @@ class Item extends Model {
         }
     }
 
+
+    public static function search(string $query, ?User $user): array {
+        $now = AppTime::get_current_datetime();
+        $pattern = '%' . $query . '%';
+        $pattern_conditions = "(v.title LIKE :p OR v.description LIKE :p OR u.pseudo LIKE :p)";
+
+        if ($user === null) {
+            $sql = "SELECT v.* FROM v_items_status v
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.end_at > :now
+                    AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                    AND $pattern_conditions
+                    ORDER BY v.end_at ASC";
+            $params = ['now' => $now, 'p' => $pattern];
+        } else {
+            $sql = "SELECT v.* FROM v_items_status v
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.owner = :user_id
+                    AND $pattern_conditions
+                    ORDER BY v.end_at ASC";
+            $params = ['user_id' => $user->getId(), 'p' => $pattern];
+        }
+
+        $items = [];
+        foreach (self::execute($sql, $params)->fetchAll() as $row) {
+            $items[] = self::makeItemFromRow($row);
+        }
+        return $items;
+    }
     public function swapPicAsync(array $orderTab): void{
         foreach($orderTab as $oldPosition){ //boucle pour liberer les slots (on les met en (leur position)*-1)
             self::execute(
@@ -495,5 +522,6 @@ class Item extends Model {
                 [$newPosition, $this->id, -((int)$oldPosition)]
             );
         }
+
     }
 }

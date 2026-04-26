@@ -5,12 +5,13 @@ require_once "framework/Controller.php";
 require_once 'model/Item.php';
 require_once 'model/Bids.php';
 require_once 'model/User.php';
+require_once 'utils/UrlSafeEncoder.php';
 class ControllerItem extends Controller {
     
     public function browse(): void {
         $currentUser = $this->get_user_or_false();
         $itemsUserBidded = [];
-
+        $searchName = "";
         if ($currentUser) {
            
             $itemsUserBidded = $currentUser->getBiddedItems();
@@ -24,11 +25,14 @@ class ControllerItem extends Controller {
             
             $items = Item::getAllActivesItems();
         }
-
+        $searchName = $this->decodeAndGetName('param1');
+     
         (new View("item"))->show([
             "itemsUser" => $itemsUserBidded, 
             "items" => $items,
-            "currentUser" => $currentUser
+            "currentUser" => $currentUser,
+            
+            "searchName" => $searchName,
         ]);
     }
 
@@ -36,88 +40,106 @@ class ControllerItem extends Controller {
         $this->browse();
     }
 
-    public function open(): void {
+   public function open(): void {
+    $id = $_GET['param1'] ?? "";
 
-        $id = $_GET['param1'] ?? "";
+    if ($id === "") {
+        $this->redirect("item", "browse");
+        return;
+    }
 
+    $source  = $this->getSourceNature($_GET["param2"] ?? '');
+    $encoded = $_GET["param3"] ?? "";
+    $state   = [];
+    // Décoder tout j'encode et la recherche et l'id de l'image
+    if ($encoded !== "") {
+        $decoded = UrlSafeEncoder::url_safe_decode($encoded);
+        $state   = is_array($decoded) ? $decoded : [];
+    }
 
-        if ($id === "") {
-            $this->redirect("item", "browse");
-            return;
+    // je recupere l'id de l'image
+    $idImg = isset($state['img']) ? (int)$state['img'] : (empty($state) ? (int)$encoded:0);
+
+    // encode sans l'id de l'image pour la redirection vers browse ou list
+    $stateClean = $state;
+    unset($stateClean['img']);
+    $encodedClean = !empty($stateClean) ? UrlSafeEncoder::url_safe_encode($stateClean) : "";
+
+    $item = Item::getItemById($id);
+    if (!$item) {
+        throw new Exception("Item not found");
+    }
+
+    $currentUser = $this->get_user_or_false();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!$currentUser) {
+            $this->redirect("user", "signup");
         }
-        $source = $this->getSourceNature($_GET["param2"]??'');
-      
-        $idImg = $_GET["param3"] ?? 0;
-        $item = Item::getItemById($id);
-        if (!$item) {
-            throw new Exception("Item not found"); 
-        }        
-        $currentUser = $this->get_user_or_false();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            if(!$currentUser){
-                 $this->redirect("user","signup");
-             }
-            if (isset($_POST['buy_now'])) {
-                if ($currentUser->buyItem($item)) {
-                    $this->redirect("item", "open", $id);
-                    return; 
+        if (isset($_POST['buy_now'])) {
+            if ($currentUser->buyItem($item)) {
+                if ($encodedClean) {
+                    $this->redirect("item", "open", $id, "from-".$source, $encodedClean);
+                } else {
+                    $this->redirect("item", "open", $id, "from-".$source);
                 }
-            }
-
-            if (isset($_POST['amount'])) {
-                $amount = floatval($_POST['amount']);
-                $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime() , $amount);
-                $newBid->add();
-                $this->redirect("item", "open", $id);
                 return;
             }
         }
-
-        (new View("openItems"))->show([
-            "item" => $item, 
-            "source" => $source, 
-            "idImg" => $idImg,
-            "currentUser" => $currentUser,
-            "success_message" => "" 
-        ]);
-    }
-    private function getSourceNature(string $s): string {
-        return match ($s) {
-            'from-browse'    => 'browse',
-            'from-items'      => 'list',
-            'from-sales'     => 'sales',
-            'from-purchases' => 'purchases',
-            default          => 'browse'
-        };
-    }
-    public function list(): void {
-        $user = $this->get_user_or_false();
-        $itemsUser = [];
-        $unsold = [];
-        $sold = [];
-        if($user){
-            $itemsUser = $user->myItemsAtives();
-            $unsold = $user->getUnsoldItems();
-            $sold = $user->getsoldItems();
+        
+        if (isset($_POST['amount'])) {
+            $amount = floatval($_POST['amount']);
+            $newBid = new Bids($currentUser->getId(), $id, AppTime::get_current_datetime(), $amount);
+            $newBid->add();
+            if ($encodedClean) {
+                $this->redirect("item", "open", $id, "from-".$source, $encodedClean);
+            } else {
+                $this->redirect("item", "open", $id, "from-".$source);
+            }
+            return;
         }
-        (new View("myItems"))->show([
-            "itemsUser" => $itemsUser,
-            "unsold" => $unsold,
-            "sold" => $sold,
-            "currentUser"=>$user
-
-        ]);
     }
-     //////////////////////////////////
-    ///             EDIT            ///
-    //////////////////////////////////
+
+    $bids  = $item->getBids();
+    $pics  = $item->getPictures();
+    $owner = $item->getOwner();
+
+    $isOwner      = $currentUser && ($currentUser->getId() === $owner->getId());
+    $currentPrice = $item->getMaxBid() ?? ($item->getStartingBid() > 0 ? $item->getStartingBid() : $item->getBuyNowPrice());
+    $backRoute    = "item/$source".($encodedClean ? "/$encodedClean" : "");
+    $displayImg   = !empty($pics)
+        ? $pics[max(0, $idImg - 1)]
+        : "https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg";
+
+    $minBid = $startingValue = null;
+    if ($item->getIsAuction()) {
+        $bidValue      = $item->getHasBids() ? $item->getMaxBid() : $item->getStartingBid();
+        $minBid        = $item->getHasBids() ? $bidValue + 0.01   : $bidValue;
+        $startingValue = $item->getHasBids() ? $bidValue + 1      : $bidValue;
+    }
+
+    (new View("openItems"))->show([
+        "item"          => $item,
+        "source"        => $source,
+        "idImg"         => $idImg,
+        "currentUser"   => $currentUser,
+        "bids"          => $bids,
+        "pics"          => $pics,
+        "owner"         => $owner,
+        "isOwner"       => $isOwner,
+        "currentPrice"  => $currentPrice,
+        "backRoute"     => $backRoute,
+        "displayImg"    => $displayImg,
+        "minBid"        => $minBid,
+        "startingValue" => $startingValue,
+        "encodedClean"       => $encodedClean,  
+        "encodedFull"   => $encoded,       
+    ]);
+}
     public function edit(): void {
         $user = $this->get_user_or_redirect();
-
         $id = $_GET['param1'] ?? null;
-        $source = "from-items";
+        $encoded = $_GET['param2'] ?? "";
         $item = Item::getItemById($id);
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
@@ -151,7 +173,7 @@ class ControllerItem extends Controller {
             $errors = $item->persist();
 
             if (empty($errors)) {
-                $this->redirect("item", "open", $item->getId(), "from-items");
+                $this->redirect("item", "open", $item->getId(),"from-items",$encoded);
                 return;
             }
         }
@@ -159,8 +181,9 @@ class ControllerItem extends Controller {
         (new View('add_editItem'))->show([ 
             "item" => $item, 
             "errors" => $errors, 
-            "source" => $source ,
-             "currentUser"=>$user
+             "currentUser"=>$user,
+             "encoded" => $encoded,
+             "source" => "from-items",
         ]);
     }
     //////////////////////////////////
@@ -215,52 +238,6 @@ class ControllerItem extends Controller {
         ]);
     }
 
-    ///////////////////////////////////////////////////
-    ///     Validation asynchrone add and edit      ///
-    ///////////////////////////////////////////////////
-    public function validate_async(): void{
-        $user= $this->get_user_or_false(); //recuperer l'utilisateur
-        if(!$user){
-            header('Content-Type: application/json');
-            echo json_encode(['auth' => ['User must be logged in.']]);
-            return;
-        }
-
-        $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
-        if($id === "")
-            $id = null;
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $duration = (int)($_POST['duration'] ?? 0);
-        $starting = floatval($_POST['starting'] ?? 0);
-        $sale_price = floatval($_POST['sale_price'] ?? 0);
-        $instant_price = floatval($_POST['instant_price'] ?? 0);
-        $buy_now_price = null;
-
-        if($starting > 0)
-            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
-        else if($sale_price > 0)
-            $buy_now_price = $sale_price;
-        
-        $tempItem= new Item( //creation du item temporaire pour voir si OK
-            $id ? (int)$id : null,
-            $title,
-            $description,
-            $user->getId(),
-            AppTime::get_current_datetime(),
-            $duration,
-            $starting,
-            $buy_now_price
-        );
-
-        $tempItem->setIsDirectSale($sale_price > 0);
-        $errors = $tempItem->validate();
-
-        header('Content-Type: application/json');
-        echo json_encode($errors);
-    }
-
-
     //////////////////////////////////
     ///            delete          ///
     //////////////////////////////////
@@ -269,7 +246,7 @@ class ControllerItem extends Controller {
 
         $id = $_GET['param1'] ?? null;
         $item = Item::getItemById($id);
-
+        $encoded = $_GET['param2'] ?? "";
         if (!$item || $item->getOwner()->getId() !== $user->getId()) {
             $this->redirect("item", "list");
             return;
@@ -278,14 +255,14 @@ class ControllerItem extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
            
             if ($item->delete()) {
-                $this->redirect("item", "list");
+                $this->redirect("item", "list",$encoded);
                 return;
             } else {
                 $errors = ["This item cannot be deleted (it might have bids)."];
             }
         }
 
-        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user]);
+        (new View("deleteItems"))->show(["item" => $item, "errors" => $errors ?? [],"currentUser"=>$user,"encoded"=>$encoded]);
     }
 
     //////////////////////////////////
@@ -336,7 +313,7 @@ class ControllerItem extends Controller {
         $max_size_mb = (int)$config['upload_max_size'];
         $max_res_main = (int)$config['image_max_res_main']; 
         $max_res_thumb = (int)$config['image_max_res_thumb'];
-
+        $encoded = $_GET['param2'] ?? "";
         if(!isset($_GET['param1'])|| $_GET['param1']==''){
            $this->redirect('item','browse');
            return;
@@ -344,13 +321,17 @@ class ControllerItem extends Controller {
           $item_id = $_GET['param1'];
           $item = Item::getItemById($item_id);
         }
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) {
+            $this->redirect('item', 'browse');
+            return;
+        }
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $errors = [];
          $index = $_POST['image_index'] ?? null;
 
         if (isset($_POST['delete'])) {
             if($item->deleteImage($index)){
-                 $this->redirect('item', 'manage_images', $item_id);
+                 $this->redirect('item', 'manage_images', $item_id,$encoded);
                  return;
             }
             $errors[] = "image introuvable ";
@@ -358,13 +339,13 @@ class ControllerItem extends Controller {
         } elseif (isset($_POST['left'])) {
             if(($index-1) > 0){
                 $item->swapPic($index-1,$index);
-                $this->redirect('item', 'manage_images', $item_id);
+                $this->redirect('item', 'manage_images', $item_id,$encoded);
                 return;
             }
         } elseif (isset($_POST['right'])) {
             if(($index+1) <= count($item->getPictures())){
                 $item->swapPic($index,$index+1);
-                $this->redirect('item', 'manage_images', $item_id);
+                $this->redirect('item', 'manage_images', $item_id,$encoded);
                 return;
             }
         }else
@@ -372,8 +353,9 @@ class ControllerItem extends Controller {
          if(isset($_FILES['image'])) {
             $errors = $item->validate_photo($_FILES['image'], $max_size_mb);
             
-            if(empty($errors)){
-                $folder = "uploads/items/$item_id";
+            if (empty($errors)) {
+                
+                $folder = "uploads/items/$item_id/$encoded";
                 $original_name = $_FILES['image']['name'];
 
                 $path_main = $item->process_image(
@@ -393,24 +375,144 @@ class ControllerItem extends Controller {
                     "_thumbnail"
                 );
 
-                if($path_main && $path_thumb){ 
-                    $item->addPicture( $path_main);
-                    $this->redirect('item', 'manage_images', $item_id);
-                    return;
-                }else
-                    $errors[] = "Erreur lors du traitement de l'image.";
+                    if ($path_main && $path_thumb) {
+                        
+                        $item->addPicture( $path_main);
+                        
+                        
+                        $this->redirect('item', 'manage_images', $item_id,$encoded);
+                        return;
+                    } else {
+                        $errors[] = "Erreur lors du traitement de l'image.";
+                    }
+                }
+            } else {
+                $errors[] = "Aucun fichier sélectionné.";
             }
-        }else
+        }else{
             $errors[] = "Aucun fichier sélectionné.";
             
-        (new View('manage_images'))->show([
-            "item" => $item, 
-            "currentUser" => $user, 
-            "errors" => $errors
-        ]);
-        return;
+            (new View('manage_images'))->show([
+                "item" => $item, 
+                "currentUser" => $user, 
+                "errors" => $errors,
+                "encoded" => $encoded
+            ]);
+            return;
         }
-        (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item]);
+         (new View('manage_images'))->show(["currentUser" =>$user , "item"=>$item,"encoded"=>$encoded]);
+        }
+       
+    
+
+    private function getSourceNature(string $s): string {
+        return match ($s) {
+            'from-browse'    => 'browse',
+            'from-items'      => 'list',
+            'from-sales'     => 'sales',
+            'from-purchases' => 'purchases',
+            default          => 'browse'
+        };
+    }
+
+
+    public function search(): void {
+        $encoded = "";
+        try {
+            $user = $this->get_user_or_false();
+            $query = $_GET['res'] ?? '';
+            $place = $_GET['place'] ?? '';
+
+            if ($query === '') {
+                if($place == "browse"){
+                    $items = Item::getAllActivesItems();
+                }else{
+                    $items = $user->getMyAllItems();
+                }       
+
+            } else {
+                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null) ));
+                $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query]);
+            }
+            
+    
+            $result = [];
+            
+            foreach ($items as $item) {
+                $isMyItemOnBrowse = false;
+                if($user){
+                    $isMyItemOnBrowse = $place === "browse" && $item->getOwner()->getId() === $user->getId();
+                }
+
+                if (!$isMyItemOnBrowse) {
+                    $result[] = [
+                        'id'              => $item->getId(),
+                        'title'           => $item->getTitle(),
+                        'description'     => $item->getDescription(),
+                        'owner'           => $item->getOwner()->getPseudo(),
+                        'price'           => (float)($item->getBuyNowPrice() ?? $item->getStartingBid() ?? 0),
+                        'endAt'           => $item->getEndAt(),
+                        'isAuction'       => $item->getIsAuction(),
+                        'hasBuyNow'       => $item->getHasBuyNow(),
+                        'hasBids'         => $item->getHasBids(),
+                        'maxBid'          => $item->getMaxBid(),
+                        'picture'         => $item->getPictures()[0] ?? null,
+                        'isParticipating' => $user ? $user->hasBidIn($item) : false,
+                        'isMaxBidder'     => $user ? $item->getMaxBidder() == $user : false,
+                        'isSold'          => $item->getWinner() !== null,
+                        'isUnsold'        => $item->isClosed() && $item->getWinner() === null,
+                        'pictureCount' =>  count($item->getPictures()),
+                    ];
+                }       
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'items'   => $result,
+                'encoded' => $encoded
+            ]);
+            exit;
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
+
+
+
+    }
+    
+    private function decodeAndGetName(String $param) : ?String {
+        $encoded = $_GET[$param] ?? "";
+        if ($encoded) {
+            $decoded = UrlSafeEncoder::url_safe_decode($encoded);
+            $searchName = is_array($decoded) ? ($decoded['search'] ?? '') : '';
+            return $searchName;
+        }
+        return "";
+    }
+
+     public function list(): void {
+        $user = $this->get_user_or_false();
+        $itemsUser = [];
+        $unsold = [];
+        $sold = [];
+        $searchName = "";
+        if($user){
+            $itemsUser = $user->myItemsAtives();
+            $unsold = $user->getUnsoldItems();
+            $sold = $user->getsoldItems();
+        }
+
+        $searchName = $this->decodeAndGetName('param1');
+        (new View("myItems"))->show([
+            "itemsUser" => $itemsUser,
+            "unsold" => $unsold,
+            "sold" => $sold,
+            "currentUser"=>$user,
+            "searchName" => $searchName,
+        ]);
     }
 
         //  ASYNCHRONE
@@ -438,4 +540,82 @@ class ControllerItem extends Controller {
         $item->swapPicAsync($order);
         echo json_encode(['success' => true]);
     }
+
+
+///////////////////////////////////////////////////
+    ///     Validation asynchrone add and edit      ///
+    ///////////////////////////////////////////////////
+    public function validate_async(): void{
+        $user= $this->get_user_or_false(); //recuperer l'utilisateur
+        if(!$user){
+            header('Content-Type: application/json');
+            echo json_encode(['auth' => ['User must be logged in.']]);
+            return;
+        }
+
+        $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
+        if($id === "")
+            $id = null;
+        $title = trim($_POST['title'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $duration = (int)($_POST['duration'] ?? 0);
+        $starting = floatval($_POST['starting'] ?? 0);
+        $sale_price = floatval($_POST['sale_price'] ?? 0);
+        $instant_price = floatval($_POST['instant_price'] ?? 0);
+        $buy_now_price = null;
+
+        if($starting > 0)
+            $buy_now_price = ($instant_price > 0) ? $instant_price : null;
+        else if($sale_price > 0)
+            $buy_now_price = $sale_price;
+        
+        $tempItem= new Item( //creation du item temporaire pour voir si OK
+            $id ? (int)$id : null,
+            $title,
+            $description,
+            $user->getId(),
+            AppTime::get_current_datetime(),
+            $duration,
+            $starting,
+            $buy_now_price
+        );
+
+        $tempItem->setIsDirectSale($sale_price > 0);
+        $errors = $tempItem->validate();
+
+        header('Content-Type: application/json');
+        echo json_encode($errors);
+    }
+
+    public function images_async(): void {
+        header('Content-Type: application/json');
+        
+        $id = $_GET['param1'] ?? null;
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing item id']);
+            return;
+        }
+        
+        $item = Item::getItemById($id);
+        if (!$item) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Item not found']);
+            return;
+        }
+        
+        // Le serveur construit les URLs
+        $base = rtrim((isset($_SERVER['HTTPS']) ? 'https' : 'http') 
+            . '://' . $_SERVER['HTTP_HOST'] 
+            . dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
+        
+        $images = array_map(
+            fn($path) => $base . ltrim($path, '/'),
+            $item->getPictures()
+        );
+        
+        echo json_encode(['images' => $images]);
+    }
+
+
 }

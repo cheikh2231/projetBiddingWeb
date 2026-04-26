@@ -4,7 +4,7 @@
     $defautDuration  = $config['duration_default_value'];
     $isEdit = $item && $item->getId();
     $titlePage = $isEdit ? "Edit Item" : "Add Item";
-    $formAction = $isEdit ? "item/edit/" . $item->getId() . "/from-$source" : "item/add";
+    $formAction = $isEdit ? "item/edit/" . $item->getId() . ($encoded ? "/$encoded" : "") : "item/add";
     $place = !$isEdit ? "Add":"Edit";
 
     $title = $_POST['title'] ?? ($item ? $item->getTitle() : '');
@@ -30,7 +30,7 @@
 
 <body data-bs-theme="dark" class="bg-primary-subtle">
 <header class="bg-dark p-1 d-flex justify-content-center align-items-center border-bottom border-secondary mb-4 sticky-top position-relative">
-    <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source : 'item/browse' ?>" class="position-absolute start-0 ms-2">
+    <a href="<?= $isEdit ? 'item/open/'.$item->getId().'/'.$source.($encoded ? '/'.$encoded : "") : 'item/browse' ?>" class="position-absolute start-0 ms-2">
         <i class="bi bi-arrow-left-short fs-3 text-primary"></i>
     </a>
 
@@ -39,9 +39,10 @@
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
 
-    <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0">
+    <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0" >
         <i class="bi bi-floppy fs-4 text-primary"></i>
     </button>
+   
 </header>
 
 
@@ -116,11 +117,10 @@
 
                     <div class="mb-3">
                         <label class="form-label">Starting Bid</label>
-                        <div class="input-group">
-                            <input type="text" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
-                            <span class="input-group-text">€</span>
-                        </div>
-                    
+                
+                    <div class="input-group">
+                        <input  type="number" name="starting" id="startingInput" class="form-control" inputmode="decimal" value="<?= $starting ?>" placeholder="100">
+                        <span class="input-group-text">€</span>
                         <div id="startingAndOrSaleError" class="invalid-feedback fw-bold"></div>
                         <?php if (isset($errors['startingAndOrSale'])): ?>
                             <div class="text-danger small mt-1 php-error">
@@ -131,13 +131,14 @@
                                 </ul> 
                             </div>
                         <?php endif; ?>
+                    </div>
 
                         <div class="mt-3 mb-0">
                             <label class="form-label">Instant Purchase Price <span class="text-optional">(optional)</span></label>
                             <div class="input-group">
-                                <input type="text" name="instant_price" id="instantPriceInput" class="form-control" value="<?= $instant_price ?>" placeholder="10">
+                                <input type="number" name="instant_price" id="instantPriceInput" class="form-control" value="<?= $instant_price ?>" placeholder="10">
                                 <span class="input-group-text">€</span>
-                            </div>
+                        
 
                             <div id="instantPriceError" class="invalid-feedback fw-bold"></div>
                             <?php if (isset($errors['instant_price'])): ?>
@@ -149,6 +150,7 @@
                                     </ul> 
                                 </div>
                             <?php endif; ?>
+                            </div>
                         </div>                        
                     </div>
                 </div>
@@ -161,21 +163,21 @@
                     
                     <div class="mb-0">
                         <label class="form-label">Sale Price</label>
-                        <div class="input-group">
-                            <input type="text" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
+                
+                       <div class="input-group">
+                            <input type="number" name="sale_price" id="salePriceInput" class="form-control" value="<?= $sale_price ?>" placeholder="e.g., 150.00">
                             <span class="input-group-text">€</span>
+                            <div id="salePriceError" class="invalid-feedback fw-bold"></div>
+                            <?php if (isset($errors['startingAndOrSale'])): ?>
+                                <div class="text-danger small mt-1 php-error">
+                                    <ul>
+                                        <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
+                                            <li><span class="text-danger"><?= $i ?></span></li>
+                                        <?php endforeach;?>
+                                    </ul> 
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        
-                        <div id="salePriceError" class="invalid-feedback fw-bold"></div>
-                        <?php if (isset($errors['startingAndOrSale'])): ?>
-                            <div class="text-danger small mt-1 php-error">
-                                <ul>
-                                    <?php foreach ($errors['startingAndOrSale'] as $i): ?> 
-                                        <li><span class="text-danger"><?= $i ?></span></li>
-                                    <?php endforeach;?>
-                                </ul> 
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
 

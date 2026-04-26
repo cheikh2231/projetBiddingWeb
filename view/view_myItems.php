@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 </head>
 
 <body>
@@ -23,10 +22,10 @@
 </header>
 
 <div class="container py-5 px-2">
-
+    <div id="wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
     <?php if (!empty($itemsUser)) : ?>
-        <h4 class="text-primary">Active Items</h4>
-        <div class="row g-4 mb-5">
+        <h4 class="text-primary" id="title-active">Active Items</h4>
+        <div class="row g-4 mb-5" id="items-active">
             <?php foreach ($itemsUser as $item) : ?>
 
                 <?php include('view/utilités/_item_card.php')?>
@@ -36,8 +35,8 @@
     <?php endif; ?>
 
     <?php if (!empty($unsold)) : ?>
-        <h4 class="text-primary">Unsold Items</h4>
-        <div class="row g-4 mb-5">
+        <h4 class="text-primary"  id="title-unsold">Unsold Items</h4>
+        <div class="row g-4 mb-5"  id="items-unsold">
             <?php foreach ($unsold as $item) : ?>
 
                 <?php include('view/utilités/_item_card.php')?>
@@ -47,18 +46,21 @@
     <?php endif; ?>
 
     <?php if (!empty($sold)) : ?>
-        <h4 class="text-primary">Sold Items</h4>
-        <div class="row g-4">
+        <h4 class="text-primary" id = "title-sold" >Sold Items</h4>
+        <div class="row g-4"  id = "items-sold">
             <?php foreach ($sold as $item) : ?>
                 <?php include('view/utilités/_item_card.php')?>
 
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+            </div>
 </div>
 <?php include 'view/utilités/footer.php'; ?>
 
 <?php include 'view/utilités/footer.php'; ?>
-
+    <script src="js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/search.js"></script>
 </body>
 </html>

@@ -28,7 +28,7 @@
             </p>
 
             <form method="POST" class="d-flex justify-content-center gap-3">
-                <a href="item/open/<?= $item->getId() ?>" class="btn btn-secondary px-4">Cancel</a>
+                <a href="item/open/<?= $item->getId() ?>/from-items<?=($encoded ? '/'.$encoded : "")?>" class="btn btn-secondary px-4">Cancel</a>
                 
                 <button type="submit" name="delete" class="btn btn-danger px-4">Delete</button>
             </form>

@@ -58,3 +58,10 @@ input[type="file"] {
     margin-right: 1rem;
     margin-bottom: 1rem;
 }
+
+.sortable-item img {
+    cursor: grab;
+}
+.sortable-item img:active {
+    cursor: grabbing;
+}
