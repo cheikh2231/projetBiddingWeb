@@ -24,11 +24,11 @@ En développement, donnez les permissions d'écriture aux dossiers uploads et da
 ### URLs deploiement
 
 * étudiant Nom Prenom : Seck Cheikh Anta
-  * URL :
-  * Mot de passe :
+  * URL : http://infolab.epfc.eu:58317/prwb_2526_a07/
+  * Mot de passe : Serigneseck1
 * étudiant Nom Prenom : Lian Yoann
-  * URL :
-  * Mot de passe :
+  * URL : http://infolab.epfc.eu:58316/prwb_2526_a07/
+  * Mot de passe : Password1,
 
 
 ### Liste des fonctionnalités supplémentaires

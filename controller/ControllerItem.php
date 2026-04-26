@@ -321,6 +321,10 @@ class ControllerItem extends Controller {
           $item_id = $_GET['param1'];
           $item = Item::getItemById($item_id);
         }
+        if (!$item || $item->getOwner()->getId() !== $user->getId()) {
+            $this->redirect('item', 'browse');
+            return;
+        }
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $errors = [];
          $index = $_POST['image_index'] ?? null;
@@ -581,6 +585,36 @@ class ControllerItem extends Controller {
 
         header('Content-Type: application/json');
         echo json_encode($errors);
+    }
+
+    public function images_async(): void {
+        header('Content-Type: application/json');
+        
+        $id = $_GET['param1'] ?? null;
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing item id']);
+            return;
+        }
+        
+        $item = Item::getItemById($id);
+        if (!$item) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Item not found']);
+            return;
+        }
+        
+        // Le serveur construit les URLs
+        $base = rtrim((isset($_SERVER['HTTPS']) ? 'https' : 'http') 
+            . '://' . $_SERVER['HTTP_HOST'] 
+            . dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
+        
+        $images = array_map(
+            fn($path) => $base . ltrim($path, '/'),
+            $item->getPictures()
+        );
+        
+        echo json_encode(['images' => $images]);
     }
 
 

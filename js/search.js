@@ -1,11 +1,4 @@
-// les notes du grand cheikh le FOU
-// doc ready la page est bien charge {} we can continu
-// je place items partici and other dans div browse wrapper 
-// et donc je met la barre de recherche juste devant ce div (before)
-// lorseque je tappe sur la barre 
-//je recup l'element search-input on input
-// je recupere l'element ecrit $(this) envelpper l'elementdans un objet Jq
-// val revuperr la value et faire un search qui fera appel au search cote php
+
 $(document).ready(function () {  
 
         if ($('#wrapper').length) {

@@ -38,15 +38,11 @@
         <h5 class="m-0 me-2 text-primary"><?= $titlePage ?></h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
-    <?php if ($isEdit):?>
+
     <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0" >
         <i class="bi bi-floppy fs-4 text-primary"></i>
     </button>
-    <?php else :?>
-         <button type="submit" form="editItemForm" class="position-absolute end-0 me-3 btn btn-link p-0" disabled>
-        <i class="bi bi-floppy fs-4 text-primary"></i>
-    </button>
-        <?php endif;?>
+   
 </header>
 
 
