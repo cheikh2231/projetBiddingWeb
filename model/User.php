@@ -310,7 +310,10 @@ class User extends Model {
                 $sql = "SELECT DISTINCT v.*
                 FROM v_items_status v join bids b ON v.id = b.item
                 WHERE  v.owner = :user_id AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
-                ORDER BY v.end_at DESC";
+                ORDER BY (  SELECT b2.created_at FROM bids b2 
+                    WHERE b2.item = v.id 
+                    ORDER BY b2.amount DESC, b2.created_at ASC 
+                    LIMIT 1) DESC";
         return $this->fetchItems($sql, ['now' => $now,'user_id'=> $this->id]);
     }
 
@@ -410,13 +413,25 @@ class User extends Model {
     }
 
     public function getPurchasesItems(): array {
-         $purchases = [];
-        foreach ($this->getAllOtherItemSold() as $item) {
-           if($item->getWinner()->getId()==$this->id){
-                $purchases[]=$item;
-           }
-        }
-        return $purchases;
+        $now = AppTime::get_current_datetime();
+        $sql = "SELECT DISTINCT v.*
+                FROM v_items_status v
+                JOIN bids b ON v.id = b.item
+                WHERE v.owner != :user_id
+                AND (v.buy_now_reached OR (v.has_bids AND end_at < :now))
+                AND (
+                    SELECT b2.owner FROM bids b2
+                    WHERE b2.item = v.id
+                    ORDER BY b2.amount DESC, b2.created_at ASC
+                    LIMIT 1
+                ) = :user_id
+                ORDER BY (
+                    SELECT b3.created_at FROM bids b3
+                    WHERE b3.item = v.id
+                    ORDER BY b3.amount DESC, b3.created_at ASC
+                    LIMIT 1
+                ) DESC";
+        return $this->fetchItems($sql, ['now' => $now, 'user_id' => $this->id]);
     }
 
     private function getAllOtherItemSold(): array {
