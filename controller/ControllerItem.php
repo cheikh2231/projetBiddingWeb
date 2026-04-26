@@ -136,7 +136,7 @@ class ControllerItem extends Controller {
         "encodedFull"   => $encoded,       
     ]);
 }
-    public function edit(): void {
+   public function edit(): void {
         $user = $this->get_user_or_redirect();
         $id = $_GET['param1'] ?? null;
         $encoded = $_GET['param2'] ?? "";
@@ -146,97 +146,119 @@ class ControllerItem extends Controller {
             return;
         }
 
+        $config = parse_ini_file('config/dev.ini');
         $errors = [];
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-           
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $item->setTitle(trim($_POST['title'] ?? ''));
             $item->setDescription(trim($_POST['description'] ?? ''));
             $item->setDurationDays((int)$_POST['duration']);
-            
-            $start_bid = floatval($_POST['starting'] ?? 0);
-            $sale_price = floatval($_POST['sale_price'] ?? null);
-            $instant_price = floatval($_POST['instant_price'] ?? null);
 
-            $buy_now_price = null;
-            if($start_bid != null && $start_bid > 0) 
-                $buy_now_price = $instant_price>0 ? $instant_price:null;
-            else if($sale_price != null && $sale_price > 0)
-                $buy_now_price = $sale_price;
-            
-            $item->setStartingBid($start_bid);
-            $item->setBuyNowPrice($buy_now_price);
-
-            if($sale_price !== null && $sale_price>0)
-                $item->setIsDirectSale(true);
-            else 
-                $item->setIsDirectSale(false);
-            $errors = $item->persist();
-
-            if (empty($errors)) {
-                $this->redirect("item", "open", $item->getId(),"from-items",$encoded);
-                return;
-            }
-        }
-
-        (new View('add_editItem'))->show([ 
-            "item" => $item, 
-            "errors" => $errors, 
-             "currentUser"=>$user,
-             "encoded" => $encoded,
-             "source" => "from-items",
-        ]);
-    }
-    //////////////////////////////////
-    ///              add           ///
-    //////////////////////////////////
-    public function add(): void {
-        $user = $this->get_user_or_redirect();
-        $errors = [];
-        
-        $newItem = null;
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = $_POST;
-            $now = AppTime::get_current_datetime();
-
-            $start_bid = floatval($_POST['starting'] ?? null);
-            $sale_price = floatval($_POST['sale_price'] ?? null);
+            $start_bid     = floatval($_POST['starting'] ?? 0);
+            $sale_price    = floatval($_POST['sale_price'] ?? null);
             $instant_price = floatval($_POST['instant_price'] ?? null);
 
             $buy_now_price = null;
             if ($start_bid != null && $start_bid > 0)
-                $buy_now_price = $instant_price>0 ? $instant_price:null;
+                $buy_now_price = $instant_price > 0 ? $instant_price : null;
             else if ($sale_price != null && $sale_price > 0)
                 $buy_now_price = $sale_price;
-            
-            
-            $newItem = new Item(
-                null, 
-                trim($_POST['title'] ?? ''),
-                trim($_POST['description'] ?? ''),
-                $user->getId(),
-                $now,
-                (int)($_POST['duration'] ?? 0),
-                $start_bid,
-                $buy_now_price
-            );
 
-            if($sale_price>0 )
-                $newItem->setIsDirectSale(true);
-            $errors = $newItem->persist();
-            
+            $item->setStartingBid($start_bid);
+            $item->setBuyNowPrice($buy_now_price);
+
+            if ($sale_price !== null && $sale_price > 0)
+                $item->setIsDirectSale(true);
+            else
+                $item->setIsDirectSale(false);
+
+            $errors = $item->persist();
+
             if (empty($errors)) {
-                $this->redirect("item", "open", $newItem->getId());
+                $this->redirect("item", "open", $item->getId(), "from-items", $encoded);
                 return;
             }
         }
-        
-        (new View('add_editItem'))->show([ 
-            "item" => $newItem, 
-            "errors" => $errors,
-            "source" => "browse", 
-            "currentUser"=>$user
-        ]);
+
+        (new View('add_editItem'))->show([
+            "item"          => $item,
+            "errors"        => $errors,
+            "currentUser"   => $user,
+            "encoded"       => $encoded,
+            "source"        => "from-items",
+            "isEdit"        => true,
+            "titlePage"     => "Edit Item",
+            "formAction"    => "item/edit/" . $item->getId() . ($encoded ? "/$encoded" : ""),
+            "title"         => $_POST['title'] ?? $item->getTitle(),
+            "description"   => $_POST['description'] ?? $item->getDescription(),
+            "duration"      => $_POST['duration'] ?? $item->getDurationDays(),
+            "starting"      => $_POST['starting'] ?? ($item->getIsAuction() ? $item->getStartingBid() : ''),
+            "instant_price" => $_POST['instant_price'] ?? ($item->getIsAuction() && $item->getHasBuyNow() ? $item->getBuyNowPrice() : ''),
+            "sale_price"    => $_POST['sale_price'] ?? ($item->getIsDirectSale() ? $item->getBuyNowPrice() : ''),
+            "place" => "edit"
+            ]);
     }
+    //////////////////////////////////
+    ///              add           ///
+    //////////////////////////////////
+   public function add(): void {
+    $user = $this->get_user_or_redirect();
+    $errors = [];
+    $config = parse_ini_file('config/dev.ini');
+    $defautDuration = $config['duration_default_value'];
+
+    $newItem = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $now = AppTime::get_current_datetime();
+
+        $start_bid     = floatval($_POST['starting'] ?? null);
+        $sale_price    = floatval($_POST['sale_price'] ?? null);
+        $instant_price = floatval($_POST['instant_price'] ?? null);
+
+        $buy_now_price = null;
+        if ($start_bid != null && $start_bid > 0)
+            $buy_now_price = $instant_price > 0 ? $instant_price : null;
+        else if ($sale_price != null && $sale_price > 0)
+            $buy_now_price = $sale_price;
+
+        $newItem = new Item(
+            null,
+            trim($_POST['title'] ?? ''),
+            trim($_POST['description'] ?? ''),
+            $user->getId(),
+            $now,
+            (int)($_POST['duration'] ?? 0),
+            $start_bid,
+            $buy_now_price
+        );
+
+        if ($sale_price > 0)
+            $newItem->setIsDirectSale(true);
+        $errors = $newItem->persist();
+
+        if (empty($errors)) {
+            $this->redirect("item", "open", $newItem->getId());
+            return;
+        }
+    }
+
+    (new View('add_editItem'))->show([
+        "item"          => $newItem,
+        "errors"        => $errors,
+        "source"        => "browse",
+        "currentUser"   => $user,
+        "isEdit"        => false,
+        "titlePage"     => "Add Item",
+        "formAction"    => "item/add",
+        "title"         => $_POST['title'] ?? '',
+        "description"   => $_POST['description'] ?? '',
+        "duration"      => $_POST['duration'] ?? $defautDuration,
+        "starting"      => $_POST['starting'] ?? '',
+        "instant_price" => $_POST['instant_price'] ?? '',
+        "sale_price"    => $_POST['sale_price'] ?? '',
+        "place" => "add"
+    ]);
+}
 
     //////////////////////////////////
     ///            delete          ///

@@ -1,19 +1,4 @@
 
-<?php  
-    $config = parse_ini_file('config/dev.ini');
-    $defautDuration  = $config['duration_default_value'];
-    $isEdit = $item && $item->getId();
-    $titlePage = $isEdit ? "Edit Item" : "Add Item";
-    $formAction = $isEdit ? "item/edit/" . $item->getId() . ($encoded ? "/$encoded" : "") : "item/add";
-    $place = !$isEdit ? "Add":"Edit";
-
-    $title = $_POST['title'] ?? ($item ? $item->getTitle() : '');
-    $description = $_POST['description'] ?? ($item? $item->getDescription() : '');
-    $duration = $_POST['duration'] ??($item ? $item->getDurationDays() : $defautDuration);
-    $starting =  $_POST['starting'] ?? ($item && $item->getIsAuction() ? $item->getStartingBid() : '');
-    $instant_price = $_POST['instant_price'] ?? ($item?(($item->getIsAuction() && $item->getHasBuyNow()) ? $item->getBuyNowPrice() : ''):'');
-    $sale_price = $_POST['sale_price'] ?? ($item ? (($item->getIsDirectSale() ? $item->getBuyNowPrice() : '')):'');
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

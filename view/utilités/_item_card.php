@@ -1,38 +1,18 @@
-<?php
-    $pictures = $item->getPictures();
-    $itemOwner = $item->getOwner();
-    $username = $itemOwner->getPseudo();
-    $isNotOwner = false;
-    $isMaxBidder = false;
-    if($currentUser!=null){
-        $isNotOwner = $itemOwner!=$currentUser;
-        $isMaxBidder = $item->getMaxBidder()!=null ?  $item->getMaxBidder()==$currentUser:false;
-    }
-?>
-<head>    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src = "js/jquery.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-</head>
 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
     <a href="Item/open/<?= $item->getId() ?>/from-<?= $place ?>"
         class="item-card d-block position-relative flex-grow-1">
 
         <div class="badge-container">
             <div>
-                <?php if($isNotOwner && $currentUser->hasBidIn($item)) :?>
-                        <?php if ($isMaxBidder): ?>
-                            <span class="badge badge-green"> 
-                                <i class="bi bi-trophy"></i> Highest Bidder
-                            </span>
-                        <?php else : ?>
-                            <span class="badge badge-dark">
-                                 Bidder
-                            </span>
-                        <?php endif; ?>
-                 <?php endif;?>
+                <?php if($currentUser != null && $item->getOwner() != $currentUser && $currentUser->hasBidIn($item)) :?>
+                    <?php if ($item->getMaxBidder() != null && $item->getMaxBidder() == $currentUser): ?>
+                        <span class="badge badge-green"> 
+                            <i class="bi bi-trophy"></i> Highest Bidder
+                        </span>
+                    <?php else : ?>
+                        <span class="badge badge-dark">Bidder</span>
+                    <?php endif; ?>
+                <?php endif;?>
             </div>
 
             <div class="d-flex flex-column align-items-end gap-1">
@@ -42,7 +22,6 @@
                     </span>
                 <?php endif; ?>
                 <?php if ($item->getHasBuyNow()) : ?>
-                    
                     <span class="badge badge-buy"> 
                         <i class="bi bi-bag"></i> Buy Now
                     </span>
@@ -50,57 +29,42 @@
             </div>
         </div>
         
-            <?php if (!empty($pictures)) : ?>
-
-                 <div class="image-wrapper">
-                    <img src="<?= $pictures[0] ?>" class="img-fluid" alt="<?= htmlspecialchars($item->getTitle()) ?>">
-
-                    <?php if (count($pictures) > 1): ?>
-                        <div class="image-count">
-                            <i class="bi bi-images"></i>
-                            <?= count($pictures) ?> images
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-
-            <?php else: ?>    
-                <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg"  alt="">
-            <?php endif; ?>
+        <?php $pictures = $item->getPictures(); ?>
+        <?php if (!empty($pictures)) : ?>
+            <div class="image-wrapper">
+                <img src="<?= $pictures[0] ?>" class="img-fluid" alt="<?= htmlspecialchars($item->getTitle()) ?>">
+                <?php if (count($pictures) > 1): ?>
+                    <div class="image-count">
+                        <i class="bi bi-images"></i>
+                        <?= count($pictures) ?> images
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>    
+            <img src="https://clipart-library.com/2023/disappearance-clipart-33563200-MISSING-red-Rubber-Stamp-over-a-white-background--Stock-Photo.jpg" alt="">
+        <?php endif; ?>
         
         <div class="item-body">
             <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
-            <div class="item-author">by <?= $username ?></div>
+            <div class="item-author">by <?= htmlspecialchars($item->getOwner()->getPseudo()) ?></div>
 
             <div class="d-flex justify-content-between align-items-end mt-2">
                 <?php if($item->getHasBuyNow()) :?>
-                    <div class="price">
-                        € <?= number_format($item->getBuyNowPrice(),
-                            2
-                        ) ?>
-                    </div>
+                    <div class="price">€ <?= number_format($item->getBuyNowPrice(), 2) ?></div>
                 <?php else: ?>
-                    <div class="price text-warning">
-                        € <?= number_format($item->getStartingBid(),
-                            2
-                        ) ?>
-                    </div>
+                    <div class="price text-warning">€ <?= number_format($item->getStartingBid(), 2) ?></div>
                 <?php endif;?>
                     
                 <?php if ($item->getIsAuction() && $item->getHasBids()) : ?>
                     <div class="text-end">
                         <div class="text-secondary" style="font-size: 0.875rem;">Current bid</div>
-                        <div class="current-bid">
-                            € <?= number_format(
-                               $item->getMaxBid() ,
-                                2
-                            ) ?>
-                        </div>
+                        <div class="current-bid">€ <?= number_format($item->getMaxBid(), 2) ?></div>
                     </div>
                 <?php endif; ?>
             </div>
+
             <?php if($item->isClosed()) :?>
-                  <div class="time-left">
+                <div class="time-left">
                     <i class="bi bi-clock-history text-white-50"> closed</i>
                 </div>   
             <?php else :
@@ -122,29 +86,27 @@
         
     </a>
     
-    <?php if ($item->getWinner() != null && ($place=="sales" || $place == "purchases")):?>
-    
-            <div class="item-footer-sold mt-2 pb-0 text-secondary">
-                    <div class="d-flex align-items-center gap-2">
-                        <?php if($place == "sales"): ?>
-                            <i class="bi bi-currency-euro"></i>
-                        <?php else:?>
-                            <i class="bi bi-tag-fill"></i>
-                        <?php endif;?>
-                        <span><?= ($place == "sales") ? " Final price":" Paid" ?> € <?= number_format($item->getMaxBid(), 2) ?></span>
-                    </div>
-                    <?php if($place == "sales"): ?>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-trophy"></i>
-                            <span><?= htmlspecialchars($item->getWinner()->getPseudo()) ?></span>
-                        </div>
-                    <?php endif;?>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-clock"></i>
-                        <span>Closed on <?= (new DateTime($item->getBids()[0]->getCreatedAt()))->format('d/m/Y H:i:s') ?></span>
-                    </div>
+    <?php if ($item->getWinner() != null && ($place == "sales" || $place == "purchases")):?>
+        <div class="item-footer-sold mt-2 pb-0 text-secondary">
+            <div class="d-flex align-items-center gap-2">
+                <?php if($place == "sales"): ?>
+                    <i class="bi bi-currency-euro"></i>
+                <?php else:?>
+                    <i class="bi bi-tag-fill"></i>
+                <?php endif;?>
+                <span><?= ($place == "sales") ? "Final price" : "Paid" ?> € <?= number_format($item->getMaxBid(), 2) ?></span>
             </div>
-       
+            <?php if($place == "sales"): ?>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-trophy"></i>
+                    <span><?= htmlspecialchars($item->getWinner()->getPseudo()) ?></span>
+                </div>
+            <?php endif;?>
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock"></i>
+                <span>Closed on <?= (new DateTime($item->getBids()[0]->getCreatedAt()))->format('d/m/Y H:i:s') ?></span>
+            </div>
+        </div>
     <?php endif;?>
     
 </div>
