@@ -70,6 +70,8 @@ class ControllerItem extends Controller {
         throw new Exception("Item not found");
     }
 
+    $categories = $item->getCategories();
+
     $currentUser = $this->get_user_or_false();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -133,7 +135,8 @@ class ControllerItem extends Controller {
         "minBid"        => $minBid,
         "startingValue" => $startingValue,
         "encodedClean"       => $encodedClean,  
-        "encodedFull"   => $encoded,       
+        "encodedFull"   => $encoded,    
+        "categories" => $categories,    
     ]);
 }
    public function edit(): void {
@@ -145,7 +148,8 @@ class ControllerItem extends Controller {
             $this->redirect("item", "list");
             return;
         }
-
+        $allCategories = Category::getAllCategories();
+        $selectedCategories = $item->getId() ? array_map(fn($c) => $c->getId(), $item->getCategories()) : [];
         $config = parse_ini_file('config/dev.ini');
         $errors = [];
 
@@ -172,8 +176,9 @@ class ControllerItem extends Controller {
             else
                 $item->setIsDirectSale(false);
 
-            $errors = $item->persist();
-
+            $item->setNbCategory(count($_POST['categories'] ?? []));
+            $errors = $item->persist($_POST['categories'] ?? []);
+           
             if (empty($errors)) {
                 $this->redirect("item", "open", $item->getId(), "from-items", $encoded);
                 return;
@@ -195,7 +200,9 @@ class ControllerItem extends Controller {
             "starting"      => $_POST['starting'] ?? ($item->getIsAuction() ? $item->getStartingBid() : ''),
             "instant_price" => $_POST['instant_price'] ?? ($item->getIsAuction() && $item->getHasBuyNow() ? $item->getBuyNowPrice() : ''),
             "sale_price"    => $_POST['sale_price'] ?? ($item->getIsDirectSale() ? $item->getBuyNowPrice() : ''),
-            "place" => "edit"
+            "place" => "edit",
+            "allCategories" => $allCategories,
+            "selectedCategories" => $selectedCategories,
             ]);
     }
     //////////////////////////////////
@@ -205,7 +212,7 @@ class ControllerItem extends Controller {
     $user = $this->get_user_or_redirect();
     $errors = [];
     $defautDuration = Configuration::get('duration_default_value');
-
+    $allCategories = Category::getAllCategories();
     $newItem = null;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $now = AppTime::get_current_datetime();
@@ -239,6 +246,7 @@ class ControllerItem extends Controller {
             $this->redirect("item", "open", $newItem->getId());
             return;
         }
+        
     }
 
     (new View('add_editItem'))->show([
@@ -255,7 +263,8 @@ class ControllerItem extends Controller {
         "starting"      => $_POST['starting'] ?? '',
         "instant_price" => $_POST['instant_price'] ?? '',
         "sale_price"    => $_POST['sale_price'] ?? '',
-        "place" => "add"
+        "place" => "add",
+        "allCategories"=>$allCategories,
     ]);
 }
 

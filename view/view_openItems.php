@@ -45,6 +45,17 @@ require_once 'model/User.php';
                         </span>
                     </div>
                     <p class="text-muted mb-1"><small><?= htmlspecialchars($item->getDescription()) ?></small></p>
+                    <div class = "categories">
+                        <?php if(!empty($categories)): ?>
+                            <p class="text-muted mb-1"><small><?= "Categories:" ?></small></p>
+                            <ul>
+                                <?php foreach ($categories as $cat) :?>
+                                    <li><p class="text-muted mb-1"><small><?=$cat->getName() ?></small></p></li>
+                                <?php endforeach;?>
+                            </ul>
+                            
+                        <?php endif;?>
+                    </div>
                     <p class="text-muted small mb-0">
                         Start: <?= $item->getCreatedAt() ?><br>
                         Ends: <?= $item->getEndAt() ?>
@@ -77,7 +88,6 @@ require_once 'model/User.php';
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
- 
             <!-- Historique des enchères -->
             <?php if (!empty($bids)) : ?>
                 <div class="bid-panel-dark mt-3 p-3 bg-dark rounded border border-secondary">
