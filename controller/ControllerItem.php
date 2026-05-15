@@ -170,7 +170,7 @@ class ControllerItem extends Controller {
 
             $item->setStartingBid($start_bid);
             $item->setBuyNowPrice($buy_now_price);
-
+            $selectedCategories = array_map('intval', $_POST['categories'] ?? []);
             if ($sale_price !== null && $sale_price > 0)
                 $item->setIsDirectSale(true);
             else
@@ -214,13 +214,14 @@ class ControllerItem extends Controller {
     $defautDuration = Configuration::get('duration_default_value');
     $allCategories = Category::getAllCategories();
     $newItem = null;
+    $selectedCategories = [];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $now = AppTime::get_current_datetime();
 
         $start_bid     = floatval($_POST['starting'] ?? null);
         $sale_price    = floatval($_POST['sale_price'] ?? null);
         $instant_price = floatval($_POST['instant_price'] ?? null);
-
+        $nb_cat = intval(count($_POST['categories'] ?? []));
         $buy_now_price = null;
         if ($start_bid != null && $start_bid > 0)
             $buy_now_price = $instant_price > 0 ? $instant_price : null;
@@ -237,10 +238,11 @@ class ControllerItem extends Controller {
             $start_bid,
             $buy_now_price
         );
-
+         $selectedCategories = array_map('intval', $_POST['categories'] ?? []);
+        $newItem->setNbCategory($nb_cat);
         if ($sale_price > 0)
             $newItem->setIsDirectSale(true);
-        $errors = $newItem->persist();
+        $errors = $newItem->persist($_POST['categories']);
 
         if (empty($errors)) {
             $this->redirect("item", "open", $newItem->getId());
@@ -265,6 +267,7 @@ class ControllerItem extends Controller {
         "sale_price"    => $_POST['sale_price'] ?? '',
         "place" => "add",
         "allCategories"=>$allCategories,
+        "selectedCategories" => $selectedCategories,
     ]);
 }
 
