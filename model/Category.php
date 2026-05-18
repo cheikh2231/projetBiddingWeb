@@ -17,13 +17,13 @@ class Category extends Model {
 
     public function getId(): int { return $this->id; }
     public function getName(): string { return $this->name; }
-    public function getPriority(): string { return $this->$priority; }
+    public function getPriority(): int { return $this->priority; }
 
     private static function mapToCategories(array $data): Category {
         return new Category(
             $data["id"], 
             $data["name"], 
-            $data["priority"]
+            (int) $data["priority"]
         );
     }
 
@@ -36,6 +36,40 @@ class Category extends Model {
             $results[] = self::mapToCategories($row);
         }
         return $results;
+    }
+
+    public function isFirst() : bool {
+        $query = self::execute("SELECT priority FROM categories where id = ?",[$this->id]);
+        $data = $query->fetchColumn();
+        return $data == 1;
+    }
+
+    public function isLast() : bool {
+        $query = self::execute("SELECT MAX(priority) FROM categories",[]);
+        $data = $query->fetchColumn();
+        return $data==$this->priority;
+    }
+
+    public function swapPriority(int $iBefore, int $i): void {
+
+        $sql1 = "UPDATE categories SET priority = -1 WHERE priority = ?";
+        self::execute($sql1, [ $iBefore]);
+
+        if($sql1){
+            $sql2 = "UPDATE categories SET priority = ? where priority = ?";
+            self::execute($sql2, [$iBefore, $i]);
+
+            if($sql2){
+                $sql3 = "UPDATE categories SET priority = ? WHERE priority = ?";
+                self::execute($sql3, [$i, -1]);
+            }
+        }
+    }
+
+    public static function getCatById(int $id) : Category {
+        $query = self::execute("SELECT * FROM categories WHERE id = ?", [$id]);
+        $row = $query->fetch();
+        return $row ? self::mapToCategories($row) : null;
     }
 
 }

@@ -24,7 +24,34 @@
         <div class ="p-2">
             <?php foreach ($allCategories as $cat) :?>
                 <div class="input-group mb-1" style ="width: 1000px;">
-                    <input type="text" class="form-control" placeholder=<?=$cat->getName()?> aria-label=<?=$cat->getName()?>>
+                    <input type="text" class="form-control" placeholder=<?=$cat->getName()?> aria-label=<?=$cat->getName()?> value=<?= $cat->getName() ?>>
+                     <form method = "POST" action = "category/manage/<?= $cat->getId() ?>" class = "mt-1 d-flex justify-content-between">   
+                       
+                        <?php if($cat->isFirst()):?>                        
+                            <button type="submit" name="up" class="btn btn-outline-secondary border-2" disabled>
+                                Up
+                            </button>
+                        <?php else: ?>
+                            <button type="submit" name="up" class="btn btn-outline-secondary border-2">
+                                Up
+                            </button>
+                        <?php endif;?>
+                        <?php if($cat->isLast()):?>
+                            <button type="submit" name="down" class="btn btn-outline-secondary border-2" disabled>
+                                Down
+                            </button>
+                        <?php else: ?>
+                            <button type="submit" name="down" class="btn btn-outline-secondary border-2">
+                                Down
+                            </button>
+                        <?php endif;?>
+                        <button type="submit" name="save" class="btn btn-outline-success border-2"> 
+                            Save
+                        </button>
+                        <button type="submit" name="delete" class="btn btn-outline-danger border-2"> 
+                            Delete
+                        </button>
+                    </form>
                 </div>
             <?php endforeach;?>    
         </div>
