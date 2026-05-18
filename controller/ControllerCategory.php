@@ -28,7 +28,7 @@ class ControllerCategory extends Controller {
                  $errors = [];
                  $priority = $cat->getPriority();
                   if (isset($_POST['up'])) {
-                    if($cat != null){
+                    if($cat != null) {
                         if(!($cat->isFirst())){
                             $cat->swapPriority($priority-1,$priority);
                             $this->redirect('category', 'manage');
@@ -40,6 +40,13 @@ class ControllerCategory extends Controller {
                             $cat->swapPriority($priority,$priority+1);
                             $this->redirect('category', 'manage');
                         }
+                    }
+                  }elseif (isset($_POST['delete'])){
+                    if($cat->isNotUsed()){
+                        if($cat->delete()){
+                            $this->redirect('category', 'manage');
+                        }
+                       
                     }
                   }
                    

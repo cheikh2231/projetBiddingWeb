@@ -48,9 +48,15 @@
                         <button type="submit" name="save" class="btn btn-outline-success border-2"> 
                             Save
                         </button>
-                        <button type="submit" name="delete" class="btn btn-outline-danger border-2"> 
-                            Delete
-                        </button>
+                        <?php if($cat->isNotUsed()):?>
+                            <button type="submit" name="delete" class="btn btn-outline-danger border-2"> 
+                                Delete
+                            </button>
+                        <?php else :?>
+                            <button type="submit" name="delete" class="btn btn-outline-danger border-2" disabled> 
+                                Delete
+                            </button>
+                        <?php endif;?>
                     </form>
                 </div>
             <?php endforeach;?>    

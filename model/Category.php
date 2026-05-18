@@ -72,5 +72,32 @@ class Category extends Model {
         return $row ? self::mapToCategories($row) : null;
     }
 
+
+    public function getNbUse() : int {
+        $query = self::execute("SELECT COUNT(*) from item_categories where category = ? group by category", [$this->id]);
+        return $query != null ? $query->fetchColumn() : 0;
+    }
+
+    public function isNotUsed() : bool {
+        return $this->getNbUse()==0;
+    }
+
+    public function delete() : bool {
+        $res = self::execute("DELETE FROM categories WHERE id = ?", [$this->id]) !== false;
+        if($res){
+            $this->updatePriority();
+        }
+        return $res;
+    }
+
+    public function updatePriority(): void {
+        
+        $sql = "UPDATE categories 
+                SET priority = priority - 1 
+                WHERE priority > ?";
+        
+        self::execute($sql, [$this->priority]);
+    }
+
 }
 
