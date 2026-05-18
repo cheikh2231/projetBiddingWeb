@@ -54,9 +54,9 @@
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-            </div>
+    </div>
 </div>
-<?php include 'view/utilités/footer.php'; ?>
+
 
 <?php include 'view/utilités/footer.php'; ?>
     <script src="js/jquery.min.js"></script>

@@ -182,3 +182,9 @@ body {
 }
 
 
+.card-manage-categories {
+  background-color: #1e2228;
+  border: 1px solid #2d3340;
+  border-radius: 10px;
+  height: calc(var(--nb-categories) * 50px);
+}

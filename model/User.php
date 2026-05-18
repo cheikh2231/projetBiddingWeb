@@ -471,7 +471,7 @@ class User extends Model {
            
                 
     }
-  public function getMyAllItems() : array {
+    public function getMyAllItems() : array {
        $now = AppTime::get_current_datetime();
         $sql = "SELECT * FROM v_items_status 
                 WHERE owner = ?
@@ -480,69 +480,76 @@ class User extends Model {
     }
 
     public function validate_edit(String $email, String $fullname, String $pseudo, String $iban): array{
-    $errors = [];
-    if(empty($email)){
-        $errors['email']= "Email is required.";
-    }else if($email != $this->email){
-        if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-            $errors['email']= "invalid email format.";
-        if(self::getUserByEmail($email))
-            $errors['email'] = "Email already taken.";
+        $errors = [];
+        if(empty($email)){
+            $errors['email']= "Email is required.";
+        }else if($email != $this->email){
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+                $errors['email']= "invalid email format.";
+            if(self::getUserByEmail($email))
+                $errors['email'] = "Email already taken.";
+        }
+        if(empty($fullname))
+            $errors['fullName'] = "Full name is required";
+        else if($fullname != $this->name){
+            if(self::getUserByFullname($fullname))
+                $errors['fullname'] = "Fullname already taken.";
+            else if((strlen($fullname) < Configuration::get('full_name_min') || strlen($fullname) > Configuration::get('pseudo_max')))
+                $errors['fullname'] = "Lenght of the pseudo invalid";
+        }
+        if(empty($pseudo))
+            $errors['pseudo'] = "Pseudo is required.";
+        else if($pseudo != $this->pseudo){
+            if(self::getUserByPseudo($pseudo))
+                $errors['pseudo'] = "Pseudo already taken.";
+            else if((strlen($pseudo) < Configuration::get('full_name_min') || strlen($pseudo) > Configuration::get('pseudo_max')))
+                $errors['pseudo'] = "Lenght of the pseudo invalid";
+        }
+        if(!empty($iban)){
+            if (!preg_match(Configuration::get('iban_pattern'), str_replace(' ', '', $iban)))
+                $errors['iban'] = "Invalid iban format";
+        }
+        return $errors;
     }
-    if(empty($fullname))
-        $errors['fullName'] = "Full name is required";
-    else if($fullname != $this->name){
-        if(self::getUserByFullname($fullname))
-            $errors['fullname'] = "Fullname already taken.";
-        else if((strlen($fullname) < Configuration::get('full_name_min') || strlen($fullname) > Configuration::get('pseudo_max')))
-            $errors['fullname'] = "Lenght of the pseudo invalid";
-    }
-    if(empty($pseudo))
-        $errors['pseudo'] = "Pseudo is required.";
-    else if($pseudo != $this->pseudo){
-        if(self::getUserByPseudo($pseudo))
-            $errors['pseudo'] = "Pseudo already taken.";
-        else if((strlen($pseudo) < Configuration::get('full_name_min') || strlen($pseudo) > Configuration::get('pseudo_max')))
-            $errors['pseudo'] = "Lenght of the pseudo invalid";
-    }
-    if(!empty($iban)){
-        if (!preg_match(Configuration::get('iban_pattern'), str_replace(' ', '', $iban)))
-            $errors['iban'] = "Invalid iban format";
-    }
-    return $errors;
-}
 
-public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
-    $errors = [];
-    if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
-        $errors['champs'] = "All fields are required.";
-    }else{
-        if (!password_verify($currentPassword, $this->getPassword()))
-            $errors['currentPassword'] = "Current password doesn't match";
-        if(!preg_match(Configuration::get('mdp_pattern'), $newPassword))
-            $errors['newPassword'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
-        if($confirmNewPassword !== $newPassword)
-            $errors['confirmNewPassword'] = "Confirm password doesn't match.";
+    public function validate_password(String $currentPassword, String $newPassword, String $confirmNewPassword): array{
+        $errors = [];
+        if(empty($currentPassword)||empty($newPassword)||empty($confirmNewPassword)){
+            $errors['champs'] = "All fields are required.";
+        }else{
+            if (!password_verify($currentPassword, $this->getPassword()))
+                $errors['currentPassword'] = "Current password doesn't match";
+            if(!preg_match(Configuration::get('mdp_pattern'), $newPassword))
+                $errors['newPassword'] = "The password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            if($confirmNewPassword !== $newPassword)
+                $errors['confirmNewPassword'] = "Confirm password doesn't match.";
+        }
+        return $errors;
     }
-    return $errors;
-}
 
-public function validate_photoDeProfil(array $file) : array{
-    $errors = [];
-    if(isset($_FILES['image'])){
-        if($file['error'] != 0)
-            $errors['picture'] = "Error while uploading picture.";
-        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $validFormat = ["png", "gif", "jpeg", "webp", "jpg"];
-        if (!in_array($extension, $validFormat)) 
-            $errors['picture'] = "Invalid format";
-        if($file['size'] > Configuration::get('taille_image'))
-            $errors['picture'] = "invalid size.";
-    }else{    
-        $errors['picture'] = "no image";
+    public function validate_photoDeProfil(array $file) : array{
+        $errors = [];
+        if(isset($_FILES['image'])){
+            if($file['error'] != 0)
+                $errors['picture'] = "Error while uploading picture.";
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $validFormat = ["png", "gif", "jpeg", "webp", "jpg"];
+            if (!in_array($extension, $validFormat)) 
+                $errors['picture'] = "Invalid format";
+            if($file['size'] > Configuration::get('taille_image'))
+                $errors['picture'] = "invalid size.";
+        }else{    
+            $errors['picture'] = "no image";
+        }
+        return $errors;
     }
-    return $errors;
-}
-   
+
+    public function isAdmin() : bool {
+        $sql = 'SELECT role FROM `users` WHERE id = ?';
+        $res = self::execute($sql, [$this->id]);
+        $isAdmin = $res->fetchColumn() == "admin"; 
+        return $isAdmin;
+    }
+    
 
 }
