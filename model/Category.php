@@ -18,7 +18,7 @@ class Category extends Model {
     public function getId(): int { return $this->id; }
     public function getName(): string { return $this->name; }
     public function getPriority(): int { return $this->priority; }
-
+    public function setName(string $name): void { $this->name = $name; }
     private static function mapToCategories(array $data): Category {
         return new Category(
             $data["id"], 
@@ -50,6 +50,14 @@ class Category extends Model {
         return $data==$this->priority;
     }
 
+    public function createNewPriority() : int {
+        $query = self::execute("SELECT MAX(priority) FROM categories",[]);
+        $data = $query->fetchColumn();
+        return $data != null ? $data+1 : 0 ;
+    }
+
+
+
     public function swapPriority(int $iBefore, int $i): void {
 
         $sql1 = "UPDATE categories SET priority = -1 WHERE priority = ?";
@@ -66,7 +74,7 @@ class Category extends Model {
         }
     }
 
-    public static function getCatById(int $id) : Category {
+    public static function getCatById(int $id) : ?Category {
         $query = self::execute("SELECT * FROM categories WHERE id = ?", [$id]);
         $row = $query->fetch();
         return $row ? self::mapToCategories($row) : null;
@@ -97,6 +105,53 @@ class Category extends Model {
                 WHERE priority > ?";
         
         self::execute($sql, [$this->priority]);
+    }
+
+     public function persist(): array {
+        $errors = $this->validate();
+        
+        if (empty($errors)) {
+            if ($this->id === -1) {
+                
+                $sql = "INSERT INTO categories (name, priority) 
+                        VALUES (?, ?)";
+                self::execute($sql, [
+                   $this->name,($this->createNewPriority())
+                ]);
+            
+            } else {
+                $this->update();
+            }
+        }
+        
+        return $errors;
+    }
+
+    public function validate(): array {
+        $errors = [];
+        $minChar = Configuration::get('min_char_category');
+        $maxChar = Configuration::get('max_char_category');
+        
+        if(strlen($this->name)<$minChar || strlen($this->name) >$maxChar){
+            $errors['nbChar'] = "name must be in ".$minChar." and ".$maxChar." characters.";
+        }
+        if($this->categoryNameExists()){
+            $errors['nameExists'] = "the name ".$this->name." already exists. Please choose another name";
+        }
+        return array_filter($errors, fn($e) => !empty($e));
+    }
+
+     public function update(): bool {
+        $sql = "UPDATE categories SET name = ? WHERE id = ?"; 
+        return self::execute($sql, [
+            $this->name, $this->id
+        ]) !== false;
+    }
+
+    private function categoryNameExists(): bool {
+        $sql = "SELECT COUNT(*) FROM categories WHERE name = ? AND id != ?";
+        $query = self::execute($sql, [$this->name , $this->id ?? -1] ); 
+        return $query->fetchColumn() > 0;
     }
 
 }

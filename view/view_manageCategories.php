@@ -13,60 +13,69 @@
 
 <body>
 <header class="bg-dark border-bottom border-secondary sticky-top">
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container d-flex justify-content-center align-items-center py-2">
         <h5 class="m-0 me-1 text-primary">Categories</h5>
         <i class="bi bi-cart4 fs-4 text-white"></i>
     </div>
 </header>
 
-<div class="container py-5 px-2">
-    <div class="card-manage-categories" style="--nb-categories: <?=count($allCategories)?>;">
-        <div class ="p-2">
-            <?php foreach ($allCategories as $cat) :?>
-                <div class="input-group mb-1" style ="width: 1000px;">
-                    <input type="text" class="form-control" placeholder=<?=$cat->getName()?> aria-label=<?=$cat->getName()?> value=<?= $cat->getName() ?>>
-                     <form method = "POST" action = "category/manage/<?= $cat->getId() ?>" class = "mt-1 d-flex justify-content-between">   
-                       
-                        <?php if($cat->isFirst()):?>                        
-                            <button type="submit" name="up" class="btn btn-outline-secondary border-2" disabled>
-                                Up
-                            </button>
-                        <?php else: ?>
-                            <button type="submit" name="up" class="btn btn-outline-secondary border-2">
-                                Up
-                            </button>
-                        <?php endif;?>
-                        <?php if($cat->isLast()):?>
-                            <button type="submit" name="down" class="btn btn-outline-secondary border-2" disabled>
-                                Down
-                            </button>
-                        <?php else: ?>
-                            <button type="submit" name="down" class="btn btn-outline-secondary border-2">
-                                Down
-                            </button>
-                        <?php endif;?>
-                        <button type="submit" name="save" class="btn btn-outline-success border-2"> 
-                            Save
-                        </button>
-                        <?php if($cat->isNotUsed()):?>
-                            <button type="submit" name="delete" class="btn btn-outline-danger border-2"> 
-                                Delete
-                            </button>
-                        <?php else :?>
-                            <button type="submit" name="delete" class="btn btn-outline-danger border-2" disabled> 
-                                Delete
-                            </button>
-                        <?php endif;?>
-                    </form>
-                </div>
-            <?php endforeach;?>    
-        </div>
+<div class="container py-4">
+    <div style="max-width: 800px; margin: auto;">
+
+        <?php foreach ($allCategories as $cat) :?>
+            <div class="mb-3"> <form method="POST" action="category/manage/<?= $cat->getId() ?>" 
+                      class="category-row d-flex align-items-center p-2 border border-secondary rounded bg-dark">
+                    
+                    <input type="text" name="catName"
+                        class="form-control border-0 bg-transparent text-white flex-grow-1"
+                        value="<?= htmlspecialchars($values[$cat->getId()] ?? $cat->getName()) ?>">
+
+                    <div class="btn-group-custom d-flex flex-shrink-0 ms-2">
+                        <button type="submit" name="up" class="btn btn-outline-secondary btn-sm me-1" <?= $cat->isFirst() ? 'disabled' : '' ?>>Up</button>
+                        
+                        <button type="submit" name="down" class="btn btn-outline-secondary btn-sm me-1" <?= $cat->isLast() ? 'disabled' : '' ?>>Down</button>
+
+                        <button type="submit" name="save" class="btn btn-outline-success btn-sm me-1">Save</button>
+
+                        <a href="category/delete/<?= $cat->getId() ?>" 
+                           class="btn btn-outline-danger btn-sm <?= $cat->isNotUsed() ? '' : 'disabled' ?>">Delete</a>
+                    </div>
+                </form>
+
+                <?php if (!empty($errors[$cat->getId()])): ?>
+                    <div class="ms-2 mt-1">
+                        <?php foreach ($errors[$cat->getId()] as $e): ?>
+                            <small class="text-danger d-block"><?= $e ?></small>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endforeach;?>
+
+        <hr class="border-secondary my-4" style="border-style: dashed;">
+
+        <form method="POST" action="category/manage" 
+            class="category-row d-flex align-items-center p-2 border border-secondary rounded bg-dark">
+            <input type="text" name="catName"
+                class="form-control border-0 bg-transparent text-white flex-grow-1"
+                placeholder="Category name" 
+                value="<?= htmlspecialchars($values['new'] ?? 'Category name') ?>"> <button type="submit" name="add" class="btn btn-primary ms-2">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+        </form>
+
+        <?php if (!empty($errors['new'])): ?>
+            <div class="ms-2 mt-1">
+                <?php foreach ($errors['new'] as $e): ?>
+                    <small class="text-danger d-block"><?= $e ?></small>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
     </div>
 </div>
-
-
 <?php include 'view/utilités/footer.php'; ?>
-    <script src="js/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

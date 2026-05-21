@@ -242,7 +242,7 @@ class ControllerItem extends Controller {
         $newItem->setNbCategory($nb_cat);
         if ($sale_price > 0)
             $newItem->setIsDirectSale(true);
-        $errors = $newItem->persist($_POST['categories']);
+        $errors = $newItem->persist($_POST['categories']??[]);
 
         if (empty($errors)) {
             $this->redirect("item", "open", $newItem->getId());
