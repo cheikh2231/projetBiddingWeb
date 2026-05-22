@@ -22,7 +22,7 @@
 </header>
 
 <div class="container py-5 px-2">
-    <div id="wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
+    <div id="wrapper" data-place="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-categories="<?= $catOptionsHtml ?>" data-webroot="<?= $web_root ?>" data-idCat="<?= $searchIdCat ?>">
     <?php if (!empty($itemsUser)) : ?>
         <h4 class="text-primary" id="title-active">Active Items</h4>
         <div class="row g-4 mb-5" id="items-active">

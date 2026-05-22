@@ -495,7 +495,19 @@ class Item extends Model {
     }
 
 
-    public static function search(string $query, ?User $user): array {
+    public static function search(string $query, ?User $user,String $idCat): array {
+       if($idCat == -1 && $query != ''){
+            return Item :: searchByQuerry($query,$user);
+       }elseif($idCat != -1 && $query==''){
+            return Item :: searchByIdCat($idCat,$user);
+       }else{
+            return array_uintersect(Item :: searchByQuerry($query,$user),Item::searchByIdCat($idCat,$user), function($a, $b) {
+                return $a->getId() <=> $b->getId();
+            }); //fusion des 2 tabs et prend les elems en communs
+       }
+    }
+
+    private static function searchByQuerry(string $query, ?User $user) : array {
         $now = AppTime::get_current_datetime();
         $pattern = '%' . $query . '%';
         $pattern_conditions = "(v.title LIKE :p OR v.description LIKE :p OR u.pseudo LIKE :p)";
@@ -515,6 +527,34 @@ class Item extends Model {
                     AND $pattern_conditions
                     ORDER BY v.end_at ASC";
             $params = ['user_id' => $user->getId(), 'p' => $pattern];
+        }
+
+        $items = [];
+        foreach (self::execute($sql, $params)->fetchAll() as $row) {
+            $items[] = self::makeItemFromRow($row);
+        }
+        return $items;
+    }
+
+     private static function searchByIdCat(string $idCat, ?User $user) : array {
+        $now = AppTime::get_current_datetime();
+    
+        if ($user === null) {
+            $sql = "SELECT v.* FROM v_items_status v
+                    Join item_categories ic on ic.item = v.id
+                    WHERE v.end_at > :now
+                    AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                    AND ic.category = :idCat
+                    ORDER BY v.end_at ASC";
+            $params = ['now' => $now,'idCat' => $idCat ];
+        } else {
+            $sql = "SELECT v.* FROM v_items_status v
+                    Join item_categories ic on ic.item = v.id
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.owner = :user_id
+                    AND ic.category = :idCat 
+                    ORDER BY v.end_at ASC";
+            $params = ['user_id' => $user->getId(),'idCat' => $idCat ];
         }
 
         $items = [];

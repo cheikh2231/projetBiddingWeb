@@ -12,6 +12,12 @@ class ControllerItem extends Controller {
         $currentUser = $this->get_user_or_false();
         $itemsUserBidded = [];
         $searchName = "";
+        $allCategories = Category::getAllCategories();
+        $catOptionsHtml = ""; 
+
+        foreach ($allCategories as $cat) {
+            $catOptionsHtml .= "<option value='" . $cat->getId() . "'>" . $cat->getName() . "</option>";
+        }
         if ($currentUser) {
            
             $itemsUserBidded = $currentUser->getBiddedItems();
@@ -26,13 +32,14 @@ class ControllerItem extends Controller {
             $items = Item::getAllActivesItems();
         }
         $searchName = $this->decodeAndGetName('param1');
-     
+        $searchIdCat = $this->decodeAndGetIdCat('param1');
         (new View("item"))->show([
             "itemsUser" => $itemsUserBidded, 
             "items" => $items,
             "currentUser" => $currentUser,
-            
+            "catOptionsHtml" => $catOptionsHtml,
             "searchName" => $searchName,
+            "searchIdCat" => $searchIdCat,
         ]);
     }
 
@@ -454,20 +461,18 @@ class ControllerItem extends Controller {
             $user = $this->get_user_or_false();
             $query = $_GET['res'] ?? '';
             $place = $_GET['place'] ?? '';
-
-            if ($query === '') {
+            $idCat =  $_GET['idCat'] ?? "-1";
+            if ($query === '' &&  $idCat == "-1") {
                 if($place == "browse"){
                     $items = Item::getAllActivesItems();
                 }else{
                     $items = $user->getMyAllItems();
                 }       
-
             } else {
-                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null) ));
-                $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query]);
+                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null)),$idCat);
+                $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query,'category'=>$idCat]);
             }
             
-    
             $result = [];
             
             foreach ($items as $item) {
@@ -524,11 +529,21 @@ class ControllerItem extends Controller {
         }
         return "";
     }
+    private function decodeAndGetIdCat(String $param) : ?string {
+        $encoded = $_GET[$param] ?? "";
+        if ($encoded) {
+            $decoded = UrlSafeEncoder::url_safe_decode($encoded);
+            $searchIdCat = is_array($decoded) ? ($decoded['category'] ?? '') : '';
+            return $searchIdCat ?? "-1";
+        }
+        return "-1";
+    }
 
      public function list(): void {
         $user = $this->get_user_or_false();
         $itemsUser = [];
         $unsold = [];
+        $allCategories = Category::getAllCategories();
         $sold = [];
         $searchName = "";
         if($user){
@@ -536,14 +551,22 @@ class ControllerItem extends Controller {
             $unsold = $user->getUnsoldItems();
             $sold = $user->getsoldItems();
         }
+        $catOptionsHtml = ""; 
+
+        foreach ($allCategories as $cat) {
+            $catOptionsHtml .= "<option value='" . $cat->getId() . "'>" . $cat->getName() . "</option>";
+        }
 
         $searchName = $this->decodeAndGetName('param1');
+         $searchIdCat = $this->decodeAndGetIdCat('param1');
         (new View("myItems"))->show([
             "itemsUser" => $itemsUser,
             "unsold" => $unsold,
             "sold" => $sold,
             "currentUser"=>$user,
             "searchName" => $searchName,
+            "searchIdCat" => $searchIdCat,
+            "catOptionsHtml" => $catOptionsHtml,
         ]);
     }
 
