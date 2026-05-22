@@ -607,7 +607,8 @@ class ControllerItem extends Controller {
             echo json_encode(['auth' => ['User must be logged in.']]);
             return;
         }
-
+        $categories = $_POST['categories'] ?? [];
+        $nbCat = intval(count($categories));
         $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
         if($id === "")
             $id = null;
@@ -634,6 +635,8 @@ class ControllerItem extends Controller {
             $starting,
             $buy_now_price
         );
+
+        $tempItem->setNbCategory($nbCat);
 
         $tempItem->setIsDirectSale($sale_price > 0);
         $errors = $tempItem->validate();

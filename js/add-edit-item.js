@@ -30,6 +30,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 formEstModifie = false; 
         });
 
+        // --- CATÉGORIES (change) ---
+        formulaire.querySelectorAll('input[name="categories[]"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                formEstModifie = true;
+                champsTouches.add('categoriesGroup');
+
+                clearTimeout(timeoutValidation);
+                timeoutValidation = setTimeout(valider, 300);
+            });
+        });
+
         // --- VALIDATION AJAX ---
         function valider() {
             var formData = new FormData(formulaire);
@@ -86,6 +97,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         inputVente.classList.remove('is-valid');
                         inputVente.classList.add('is-invalid');
                         erreurVente.innerHTML = message;
+                    }
+                }
+                // --- CATEGORIES ---
+              var erreurCat = document.getElementById('catError');
+                if (erreurCat && champsTouches.has('categoriesGroup')) {
+                    erreurCat.innerHTML = '';
+                    erreurCat.classList.remove('d-block'); 
+                    if (erreurs['categories']) {
+                        erreurCat.innerHTML = '<ul><li>' + erreurs['categories'].join('</li><li>') + '</li></ul>';
+                        erreurCat.classList.add('d-block');  
                     }
                 }
                 var boutonSave = document.querySelector('[form="editItemForm"][type="submit"]');
