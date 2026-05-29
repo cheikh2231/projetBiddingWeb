@@ -14,7 +14,7 @@ $(document).ready(function () {
                            placeholder="Search items...">
                     
                     <select id="category-select" class="form-select bg-dark text-white border-secondary shadow-none" style="max-width: 200px;">
-                        <option value="-1">✓ All categories</option>
+                        <option value="-1">All categories</option>
                        ${$('#wrapper').data('categories')}
                     </select>
                 </div>

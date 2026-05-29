@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () =>{
     const addInput=document.getElementById('new-cat-name');
     const addCancel=document.getElementById('btn-cancel-add');
     const addError=document.getElementById('add-error');
-
     const MIN_CHAR = parseInt(wrapper.dataset.min) || 3;
     const MAX_CHAR = parseInt(wrapper.dataset.max) || 25;
 
@@ -133,12 +132,23 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
     });
 
+
+
     addInitBtn.addEventListener('click', () => {
-        addInitBtn.closest('.add-container').classList.add('d-none');
+        addInitBtn.closest('.add-container').style.display = 'none';
         addInputContainer.classList.remove('d-none');
+        addInputContainer.style.display = 'block';
         addInput.focus();
     });
 
+    $('#btn-cancel-add').on('click', function () {
+        $('#add-input-container').addClass('d-none');
+        $('.add-container').show();
+        $('#new-cat-name').val('');
+        $('#add-error').text('');
+    });
+
+    
     let cancelAddClicked = false;
     addCancel.addEventListener('mousedown', () => { cancelAddClicked = true; });
 

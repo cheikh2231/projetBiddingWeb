@@ -18,6 +18,7 @@
         .cursor-grab:active { cursor: grabbing; }
         .drag-over-top { border-top: solid 2px #0d6efd !important; }
         .drag-over-bottom { border-bottom: solid 2px #0d6efd !important; }
+        #add-input-container { display: none; }
     </style>
 </head>
 
@@ -98,16 +99,17 @@
                 </div>
             <?php endif; ?>
         </div>
-
-        <div class="js-only add-container text-center mb-4 mt-4">
-            <button id="btn-add-init" class="btn btn-primary rounded-circle shadow" style="width: 50px; height: 50px;"><i class="bi bi-plus-lg fs-4"></i></button>
-        </div>
-        <div id="add-input-container" class="js-only d-none mb-3 p-3 border border-primary rounded bg-dark" style="display: block !important;">
+        
+        <div id="add-input-container" class="d-none mb-3 p-3 border border-primary rounded bg-dark">
             <input type="text" id="new-cat-name" class="form-control bg-dark text-white border-secondary" placeholder="Nom de la nouvelle catégorie">
             <small id="add-error" class="text-danger d-block mt-1"></small>
             <div class="mt-3 text-end">
                 <button id="btn-cancel-add" class="btn btn-sm btn-secondary">Cancel</button>
             </div>
+        </div>
+
+        <div class="js-only add-container text-center mb-4 mt-4">
+            <button id="btn-add-init" class="btn btn-primary rounded-circle shadow" style="width: 50px; height: 50px;"><i class="bi bi-plus-lg fs-4"></i></button>
         </div>
 
     </div>
