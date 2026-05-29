@@ -16,7 +16,7 @@ $(document).ready(function(){
             const itemId=sortContainer.attr('itemId');
 
             $.ajax({
-                url:'item/update_image_order_async',
+                url:'item/update_image_order_async_service',
                 method:'POST',
                 dataType:'json',
                 data:{

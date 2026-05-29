@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
     if (!card || !imageArea) return;
  
-    fetch(`item/images_async/${card.dataset.itemId}`)
+    fetch(`item/images_async_service/${card.dataset.itemId}`)
         .then(r => r.ok ? r.json() : Promise.reject(r.status))
         .then(({ images }) => {
             if (!images || images.length <= 1) {
