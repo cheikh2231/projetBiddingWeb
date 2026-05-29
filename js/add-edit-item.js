@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function valider() {
             var formData = new FormData(formulaire);
 
-            fetch('item/validate_async', { method: 'POST', body: formData })
+            fetch('item/validate_async_service', { method: 'POST', body: formData })
             .then(function(response) { return response.json(); })
             .then(function(erreurs) {
 

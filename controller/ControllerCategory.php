@@ -1,5 +1,3 @@
-
-
 <?php
 require_once "framework/Controller.php";
 require_once 'model/Item.php';
@@ -115,7 +113,7 @@ public function manage(): void {
     // NOUVELLES METHODES POUR LE JAVASCRIPT AJAX
     // ====================================================
 
-    public function addAjax(): void {
+    public function addAjaxService(): void {
         $user = $this->get_user_or_redirect();
         if(!$user->isAdmin()) { echo json_encode(['success' => false, 'errors' => ['general' => 'Accès refusé']]); exit; }
 
@@ -136,7 +134,7 @@ public function manage(): void {
         exit;
     }
 
-    public function editAjax(): void {
+    public function editAjaxService(): void {
         $user = $this->get_user_or_redirect();
         if(!$user->isAdmin()) { echo json_encode(['success' => false, 'errors' => ['general' => 'Accès refusé']]); exit; }
 
@@ -159,7 +157,7 @@ public function manage(): void {
         exit;
     }
 
-    public function deleteAjax(): void {
+    public function deleteAjaxService(): void {
         $user = $this->get_user_or_redirect();
         if(!$user->isAdmin()) { echo json_encode(['success' => false]); exit; }
 
@@ -175,7 +173,7 @@ public function manage(): void {
         exit;
     }
 
-    public function reorderAjax(): void {
+    public function reorderAjaxService(): void {
         $user = $this->get_user_or_redirect();
         if(!$user->isAdmin()) { echo json_encode(['success' => false]); exit; }
 

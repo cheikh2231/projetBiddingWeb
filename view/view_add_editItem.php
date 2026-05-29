@@ -180,6 +180,7 @@
                             <?= in_array($cat->getId(), $selectedCategories??[]) ? 'checked' : '' ?>>
                         <?= htmlspecialchars($cat->getName()) ?>
                     </label>
+                    <br>
                 <?php endforeach; ?>
                 <div id="catError" class="invalid-feedback fw-bold"></div>
                             <?php if (isset($errors['categories'])): ?>

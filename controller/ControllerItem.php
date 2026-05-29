@@ -455,7 +455,7 @@ class ControllerItem extends Controller {
     }
 
 
-    public function search(): void {
+    public function searchService(): void {
         $encoded = "";
         try {
             $user = $this->get_user_or_false();
@@ -571,7 +571,7 @@ class ControllerItem extends Controller {
     }
 
         //  ASYNCHRONE
-    public function update_image_order_async(): void{
+    public function update_image_order_async_service(): void{
         header('Content-Type: application/json');
         $user = $this->get_user_or_false(); // get user
         if(!$user){
@@ -600,7 +600,7 @@ class ControllerItem extends Controller {
 ///////////////////////////////////////////////////
     ///     Validation asynchrone add and edit      ///
     ///////////////////////////////////////////////////
-    public function validate_async(): void{
+    public function validate_async_service(): void{
         $user= $this->get_user_or_false(); //recuperer l'utilisateur
         if(!$user){
             header('Content-Type: application/json');
@@ -645,7 +645,7 @@ class ControllerItem extends Controller {
         echo json_encode($errors);
     }
 
-    public function images_async(): void {
+    public function images_async_service(): void {
         header('Content-Type: application/json');
         
         $id = $_GET['param1'] ?? null;

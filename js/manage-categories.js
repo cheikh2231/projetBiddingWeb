@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     async function updateOrderOnServer() {
         const ids = Array.from(document.querySelectorAll('.category-item.js-only')).map(el => el.dataset.id);
         try {
-            await fetch('category/reorderAjax', {
+            await fetch('category/reorderAjaxService', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order: ids })
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () =>{
                 formData.append('id', item.dataset.id);
                 formData.append('name', newName);
 
-                const response = await fetch('category/editAjax', { method: 'POST', body: formData });
+                const response = await fetch('category/editAjaxService', { method: 'POST', body: formData });
                 const result = await response.json();
 
                 if (result.success) {
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () =>{
             const formData = new URLSearchParams();
             formData.append('name', name);
 
-            const response = await fetch('category/addAjax', { method: 'POST', body: formData });
+            const response = await fetch('category/addAjaxService', { method: 'POST', body: formData });
             const result = await response.json();
 
             if (result.success) {
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () =>{
                 const formData = new URLSearchParams();
                 formData.append('id', deleteId);
                 
-                const response = await fetch('category/deleteAjax', { method: 'POST', body: formData });
+                const response = await fetch('category/deleteAjaxService', { method: 'POST', body: formData });
                 const result = await response.json();
                 
                 if (result.success) {

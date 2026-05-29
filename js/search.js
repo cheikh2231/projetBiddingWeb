@@ -33,7 +33,7 @@ $(document).ready(function () {
              
     function doSearch(res,place,idCat) {
         $.ajax({
-            url: 'index.php?controller=item&action=search',   
+            url: 'index.php?controller=item&action=searchService',   
             method: 'GET',
             data: { res: res , place: place , idCat: idCat},      
             dataType: 'json',
