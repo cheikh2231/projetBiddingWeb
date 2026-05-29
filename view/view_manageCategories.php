@@ -5,20 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Categories</title>
     <base href="<?= $web_root ?>" >
-    <link href="css/browse-item.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        .js-only { display: none !important; }
-        .js-active .js-only { display: flex !important; }
-        .js-active div.js-only.add-container { display: block !important; }
-        .js-active .no-js { display: none !important; }
-        .cursor-grab { cursor: grab; }
-        .cursor-grab:active { cursor: grabbing; }
-        .drag-over-top { border-top: solid 2px #0d6efd !important; }
-        .drag-over-bottom { border-bottom: solid 2px #0d6efd !important; }
-    </style>
+    <link href="css/browse-item.css" rel="stylesheet">
 </head>
 
 <body>
@@ -37,14 +27,11 @@
     <div style="max-width: 800px; margin: auto;" id="categories-wrapper" data-min="<?= $minChar ?>" data-max="<?= $maxChar ?>">
 
         <div id="categories-container">
-            <?php foreach ($allCategories as $cat) :?>
-                
+            <?php foreach($allCategories as $cat):?>
+                <!-- SANS JAVASCRIPT-->
                 <div class="mb-3 no-js"> 
-                    <form method="POST" action="category/manage/<?= $cat->getId() ?>" 
-                          class="category-row d-flex align-items-center p-2 border border-secondary rounded bg-dark">
-                        <input type="text" name="catName"
-                            class="form-control border-0 bg-transparent text-white flex-grow-1"
-                            value="<?= htmlspecialchars($values[$cat->getId()] ?? $cat->getName()) ?>">
+                    <form method="POST" action="category/manage/<?= $cat->getId() ?>" class="category-row d-flex align-items-center p-2 border border-secondary rounded bg-dark">
+                        <input type="text" name="catName" class="form-control border-0 bg-transparent text-white flex-grow-1" value="<?= htmlspecialchars($values[$cat->getId()] ?? $cat->getName()) ?>">
                         <div class="btn-group-custom d-flex flex-shrink-0 ms-2">
                             <button type="submit" name="up" class="btn btn-outline-secondary btn-sm me-1" <?= $cat->isFirst() ? 'disabled' : '' ?>>Up</button>
                             <button type="submit" name="down" class="btn btn-outline-secondary btn-sm me-1" <?= $cat->isLast() ? 'disabled' : '' ?>>Down</button>
@@ -53,25 +40,24 @@
                                class="btn btn-outline-danger btn-sm <?= $cat->isNotUsed() ? '' : 'disabled' ?>">Delete</a>
                         </div>
                     </form>
-                    <?php if (!empty($errors[$cat->getId()])): ?>
+                    <?php if(!empty($errors[$cat->getId()])):?>
                         <div class="ms-2 mt-1">
-                            <?php foreach ($errors[$cat->getId()] as $e): ?>
+                            <?php foreach($errors[$cat->getId()] as $e):?>
                                 <small class="text-danger d-block"><?= $e ?></small>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
                 </div>
-
-                <div class="category-item js-only d-flex align-items-center p-2 border border-secondary rounded bg-dark mb-3" 
-                     data-id="<?= $cat->getId() ?>" draggable="true">
-                    <div class="drag-handle text-secondary me-3 cursor-grab" aria-label="Drag to reorder"><i class="bi bi-list fs-4"></i></div>
+                <!-- AVEC JAVASCRIPT-->
+                <div class="category-item js-only d-flex align-items-center p-2 border border-secondary rounded bg-dark mb-3" data-id="<?= $cat->getId() ?>" draggable="true">
+                    <div class="drag-handle text-secondary me-3 cursor-grab"><i class="bi bi-list fs-4"></i></div>
                     <div class="cat-name flex-grow-1 text-white">
-                        <span class="name-display"><?= htmlspecialchars($cat->getName()) ?></span>
-                        <input type="text" class="form-control name-input bg-dark text-white border-secondary d-none" value="<?= htmlspecialchars($cat->getName()) ?>">
+                        <span class="name-display"><?= htmlspecialchars($cat->getName()) ?></span> <!-- affichage -->
+                        <input type="text" class="form-control name-input bg-dark text-white border-secondary d-none" value="<?= htmlspecialchars($cat->getName()) ?>"> <!-- input -->
                         <small class="text-danger error-msg d-block"></small>
                     </div>
-                    <div class="cat-usage text-secondary ms-2 me-3" style="font-size: 0.9em;">
-                        <?= $cat->getNbUse() ?> utilisation(s)
+                    <div class="cat-usage text-white">
+                        (<?= $cat->getNbUse() ?>)
                     </div>
                     <div class="cat-actions ms-2 flex-shrink-0">
                         <button type="button" class="btn btn-outline-primary btn-sm btn-edit"><i class="bi bi-pencil"></i></button>
