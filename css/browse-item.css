@@ -201,3 +201,11 @@ body {
     font-size: 0.9rem;
 }
 
+.js-only { display: none !important; }
+.js-active .js-only { display: flex !important; }
+.js-active div.js-only.add-container { display: block !important; }
+.js-active .no-js { display: none !important; }
+.cursor-grab { cursor: grab; }
+.cursor-grab:active { cursor: grabbing; }
+.drag-over-top { border-top: solid 2px #0d6efd !important; }
+.drag-over-bottom { border-bottom: solid 2px #0d6efd !important; }
