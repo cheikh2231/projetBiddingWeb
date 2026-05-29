@@ -111,6 +111,83 @@ public function manage(): void {
         }
        
     }
+    // ====================================================
+    // NOUVELLES METHODES POUR LE JAVASCRIPT AJAX
+    // ====================================================
+
+    public function addAjax(): void {
+        $user = $this->get_user_or_redirect();
+        if(!$user->isAdmin()) { echo json_encode(['success' => false, 'errors' => ['general' => 'Accès refusé']]); exit; }
+
+        $name = trim($_POST['name'] ?? '');
+        $cat = new Category(-1, $name, -1);
+        $errors = $cat->persist();
+
+        if (empty($errors)) {
+            $newCat = Category::getCatByName($name); 
+            echo json_encode([
+                'success' => true,
+                'id' => $newCat->getId(),
+                'name' => $newCat->getName()
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'errors' => $errors]);
+        }
+        exit;
+    }
+
+    public function editAjax(): void {
+        $user = $this->get_user_or_redirect();
+        if(!$user->isAdmin()) { echo json_encode(['success' => false, 'errors' => ['general' => 'Accès refusé']]); exit; }
+
+        $id = $_POST['id'] ?? null;
+        $name = trim($_POST['name'] ?? '');
+        
+        $cat = Category::getCatById((int)$id);
+        if ($cat) {
+            $cat->setName($name);
+            $errors = $cat->persist();
+            
+            if (empty($errors)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'errors' => $errors]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'errors' => ['general' => 'Catégorie introuvable']]);
+        }
+        exit;
+    }
+
+    public function deleteAjax(): void {
+        $user = $this->get_user_or_redirect();
+        if(!$user->isAdmin()) { echo json_encode(['success' => false]); exit; }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $cat = Category::getCatById((int)$id);
+            if ($cat && $cat->isNotUsed() && $cat->delete()) {
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function reorderAjax(): void {
+        $user = $this->get_user_or_redirect();
+        if(!$user->isAdmin()) { echo json_encode(['success' => false]); exit; }
+
+        $inputData = json_decode(file_get_contents('php://input'), true);
+        if (isset($inputData['order']) && is_array($inputData['order'])) {
+            Category::updateAllPriorities($inputData['order']);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false]);
+        }
+        exit;
+    }
 
 
 }
