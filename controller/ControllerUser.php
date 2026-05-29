@@ -77,7 +77,8 @@ class ControllerUser extends Controller {
     //fonction profile
     public function profile() : void {
         $userConnected = $this->get_user_or_redirect();
-        (new View("profile"))->show(["user"=>$userConnected]);
+        $place = "profile";
+        (new View("profile"))->show(["currentUser"=>$userConnected,  "userPic" => $userConnected->getPicturePath() , "place"=>$place]);
 
 
     }
@@ -99,11 +100,11 @@ class ControllerUser extends Controller {
                 $userConnected->persist();
                 $this->redirect("user", "profile");
             }else{
-                (new View("editProfile"))->show(["user"=>$userConnected,"errors"=>$errors]);
+                (new View("editProfile"))->show(["currentUser"=>$userConnected,"errors"=>$errors]);
             }
 
          }else{
-            (new View("editProfile"))->show(["user"=>$userConnected,"errors"=>[]]);
+            (new View("editProfile"))->show(["currentUser"=>$userConnected,"errors"=>[]]);
          }
 
 
@@ -122,10 +123,10 @@ class ControllerUser extends Controller {
                 $this->redirect("user", "profile");
 
             }else{
-                (new View("editPassword"))->show(["errors"=>$errors]);
+                (new View("editPassword"))->show(["errors"=>$errors,"currentUser"=>$userConnected]);
             }
          }else{
-            (new View("editPassword"))->show(["errors"=>[]]);
+            (new View("editPassword"))->show(["errors"=>[],"currentUser"=>$userConnected]);
          }
     }
     //fonction edit profile picture
@@ -140,11 +141,11 @@ class ControllerUser extends Controller {
 
             }else{
                 
-                (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>$errors]);
+                (new View("editProfilePicture"))->show(["currentUser"=>$userConnected,"errors"=>$errors ,  "userPic" => $userConnected->getPicturePath()]);
             }
 
         }else{
-            (new View("editProfilePicture"))->show(["user"=>$userConnected,"errors"=>[]]);
+            (new View("editProfilePicture"))->show(["currentUser"=>$userConnected,"errors"=>[], "userPic" => $userConnected->getPicturePath()]);
         }
 
     }
@@ -154,6 +155,7 @@ class ControllerUser extends Controller {
         $userConnected->delete_profile_picture();
         $this->redirect("user", "profile");
 
-
     }
+
+    
 }

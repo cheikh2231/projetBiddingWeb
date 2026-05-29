@@ -1,9 +1,3 @@
-<?php
-
- $userPic = $user->getPicturePath();
- $place = "profile";
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,9 +37,9 @@
     <div class="section-box header-card text-center">
         <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" style="width:3rem;height:3rem;object-fit:cover;" alt = "profile">' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         <div class="profile-info">
-            <h3><?= $user->getName()?></h3>
-            <div class="sub">@<?= $user->getPseudo()?></div>
-            <div class="sub"><?= $user->getEmail()?></div>
+            <h3><?= $currentUser->getName()?></h3>
+            <div class="sub">@<?= $currentUser->getPseudo()?></div>
+            <div class="sub"><?= $currentUser->getEmail()?></div>
         </div>
     </div>
 

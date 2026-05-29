@@ -1,6 +1,4 @@
-<?php
- $userPic = $user->getPicturePath();
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -41,13 +39,13 @@
             <?= $userPic ? '<img src="'.$userPic.'" class="rounded-circle me-3" alt = "userProfile" style="width:3rem;height:3rem;object-fit:cover;"> ' : '<i class="bi bi-person-circle fs-1 me-3 text-secondary"></i>' ?>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
-            <h2><?=  $user->getName() ?></h2>
+            <h2><?=  $currentUser->getName() ?></h2>
         </div>
         <div class=" d-flex justify-content-center align-items-center">
-            <small class = "text-white-50">@<?=  $user->getPseudo() ?></small>
+            <small class = "text-white-50">@<?=  $currentUser->getPseudo() ?></small>
         </div>
         <div class="mb-5 d-flex justify-content-center align-items-center">
-            <small class = "text-white-50"><?=  $user->getEmail() ?></small>
+            <small class = "text-white-50"><?=  $currentUser->getEmail() ?></small>
         </div>    
     </div> 
     <!--2e rectangle-->

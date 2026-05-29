@@ -12,6 +12,12 @@ class ControllerItem extends Controller {
         $currentUser = $this->get_user_or_false();
         $itemsUserBidded = [];
         $searchName = "";
+        $allCategories = Category::getAllCategories();
+        $catOptionsHtml = ""; 
+
+        foreach ($allCategories as $cat) {
+            $catOptionsHtml .= "<option value='" . $cat->getId() . "'>" . $cat->getName() . "</option>";
+        }
         if ($currentUser) {
            
             $itemsUserBidded = $currentUser->getBiddedItems();
@@ -26,13 +32,14 @@ class ControllerItem extends Controller {
             $items = Item::getAllActivesItems();
         }
         $searchName = $this->decodeAndGetName('param1');
-     
+        $searchIdCat = $this->decodeAndGetIdCat('param1');
         (new View("item"))->show([
             "itemsUser" => $itemsUserBidded, 
             "items" => $items,
             "currentUser" => $currentUser,
-            
+            "catOptionsHtml" => $catOptionsHtml,
             "searchName" => $searchName,
+            "searchIdCat" => $searchIdCat,
         ]);
     }
 
@@ -69,6 +76,8 @@ class ControllerItem extends Controller {
     if (!$item) {
         throw new Exception("Item not found");
     }
+
+    $categories = $item->getCategories();
 
     $currentUser = $this->get_user_or_false();
 
@@ -133,7 +142,8 @@ class ControllerItem extends Controller {
         "minBid"        => $minBid,
         "startingValue" => $startingValue,
         "encodedClean"       => $encodedClean,  
-        "encodedFull"   => $encoded,       
+        "encodedFull"   => $encoded,    
+        "categories" => $categories,    
     ]);
 }
    public function edit(): void {
@@ -145,7 +155,8 @@ class ControllerItem extends Controller {
             $this->redirect("item", "list");
             return;
         }
-
+        $allCategories = Category::getAllCategories();
+        $selectedCategories = $item->getId() ? array_map(fn($c) => $c->getId(), $item->getCategories()) : [];
         $config = parse_ini_file('config/dev.ini');
         $errors = [];
 
@@ -166,14 +177,15 @@ class ControllerItem extends Controller {
 
             $item->setStartingBid($start_bid);
             $item->setBuyNowPrice($buy_now_price);
-
+            $selectedCategories = array_map('intval', $_POST['categories'] ?? []);
             if ($sale_price !== null && $sale_price > 0)
                 $item->setIsDirectSale(true);
             else
                 $item->setIsDirectSale(false);
 
-            $errors = $item->persist();
-
+            $item->setNbCategory(count($_POST['categories'] ?? []));
+            $errors = $item->persist($_POST['categories'] ?? []);
+           
             if (empty($errors)) {
                 $this->redirect("item", "open", $item->getId(), "from-items", $encoded);
                 return;
@@ -195,7 +207,9 @@ class ControllerItem extends Controller {
             "starting"      => $_POST['starting'] ?? ($item->getIsAuction() ? $item->getStartingBid() : ''),
             "instant_price" => $_POST['instant_price'] ?? ($item->getIsAuction() && $item->getHasBuyNow() ? $item->getBuyNowPrice() : ''),
             "sale_price"    => $_POST['sale_price'] ?? ($item->getIsDirectSale() ? $item->getBuyNowPrice() : ''),
-            "place" => "edit"
+            "place" => "edit",
+            "allCategories" => $allCategories,
+            "selectedCategories" => $selectedCategories,
             ]);
     }
     //////////////////////////////////
@@ -205,15 +219,16 @@ class ControllerItem extends Controller {
     $user = $this->get_user_or_redirect();
     $errors = [];
     $defautDuration = Configuration::get('duration_default_value');
-
+    $allCategories = Category::getAllCategories();
     $newItem = null;
+    $selectedCategories = [];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $now = AppTime::get_current_datetime();
 
         $start_bid     = floatval($_POST['starting'] ?? null);
         $sale_price    = floatval($_POST['sale_price'] ?? null);
         $instant_price = floatval($_POST['instant_price'] ?? null);
-
+        $nb_cat = intval(count($_POST['categories'] ?? []));
         $buy_now_price = null;
         if ($start_bid != null && $start_bid > 0)
             $buy_now_price = $instant_price > 0 ? $instant_price : null;
@@ -230,15 +245,17 @@ class ControllerItem extends Controller {
             $start_bid,
             $buy_now_price
         );
-
+         $selectedCategories = array_map('intval', $_POST['categories'] ?? []);
+        $newItem->setNbCategory($nb_cat);
         if ($sale_price > 0)
             $newItem->setIsDirectSale(true);
-        $errors = $newItem->persist();
+        $errors = $newItem->persist($_POST['categories']??[]);
 
         if (empty($errors)) {
             $this->redirect("item", "open", $newItem->getId());
             return;
         }
+        
     }
 
     (new View('add_editItem'))->show([
@@ -255,7 +272,9 @@ class ControllerItem extends Controller {
         "starting"      => $_POST['starting'] ?? '',
         "instant_price" => $_POST['instant_price'] ?? '',
         "sale_price"    => $_POST['sale_price'] ?? '',
-        "place" => "add"
+        "place" => "add",
+        "allCategories"=>$allCategories,
+        "selectedCategories" => $selectedCategories,
     ]);
 }
 
@@ -442,20 +461,18 @@ class ControllerItem extends Controller {
             $user = $this->get_user_or_false();
             $query = $_GET['res'] ?? '';
             $place = $_GET['place'] ?? '';
-
-            if ($query === '') {
+            $idCat =  $_GET['idCat'] ?? "-1";
+            if ($query === '' &&  $idCat == "-1") {
                 if($place == "browse"){
                     $items = Item::getAllActivesItems();
                 }else{
                     $items = $user->getMyAllItems();
                 }       
-
             } else {
-                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null) ));
-                $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query]);
+                $items = Item::search($query,($place=="browse"?null:($user !== false ? $user :null)),$idCat);
+                $encoded = UrlSafeEncoder::url_safe_encode(['search' => $query,'category'=>$idCat]);
             }
             
-    
             $result = [];
             
             foreach ($items as $item) {
@@ -512,11 +529,21 @@ class ControllerItem extends Controller {
         }
         return "";
     }
+    private function decodeAndGetIdCat(String $param) : ?string {
+        $encoded = $_GET[$param] ?? "";
+        if ($encoded) {
+            $decoded = UrlSafeEncoder::url_safe_decode($encoded);
+            $searchIdCat = is_array($decoded) ? ($decoded['category'] ?? '') : '';
+            return $searchIdCat ?? "-1";
+        }
+        return "-1";
+    }
 
      public function list(): void {
         $user = $this->get_user_or_false();
         $itemsUser = [];
         $unsold = [];
+        $allCategories = Category::getAllCategories();
         $sold = [];
         $searchName = "";
         if($user){
@@ -524,14 +551,22 @@ class ControllerItem extends Controller {
             $unsold = $user->getUnsoldItems();
             $sold = $user->getsoldItems();
         }
+        $catOptionsHtml = ""; 
+
+        foreach ($allCategories as $cat) {
+            $catOptionsHtml .= "<option value='" . $cat->getId() . "'>" . $cat->getName() . "</option>";
+        }
 
         $searchName = $this->decodeAndGetName('param1');
+         $searchIdCat = $this->decodeAndGetIdCat('param1');
         (new View("myItems"))->show([
             "itemsUser" => $itemsUser,
             "unsold" => $unsold,
             "sold" => $sold,
             "currentUser"=>$user,
             "searchName" => $searchName,
+            "searchIdCat" => $searchIdCat,
+            "catOptionsHtml" => $catOptionsHtml,
         ]);
     }
 
@@ -572,7 +607,8 @@ class ControllerItem extends Controller {
             echo json_encode(['auth' => ['User must be logged in.']]);
             return;
         }
-
+        $categories = $_POST['categories'] ?? [];
+        $nbCat = intval(count($categories));
         $id = $_POST['item_id'] ?? null; //recuperer id de l'item à modifier
         if($id === "")
             $id = null;
@@ -599,6 +635,8 @@ class ControllerItem extends Controller {
             $starting,
             $buy_now_price
         );
+
+        $tempItem->setNbCategory($nbCat);
 
         $tempItem->setIsDirectSale($sale_price > 0);
         $errors = $tempItem->validate();

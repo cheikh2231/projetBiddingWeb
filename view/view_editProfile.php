@@ -39,7 +39,7 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Full Name *</label><br>
-                    <input name="fullname" type="text" value="<?=  $user->getName() ?>" placeholder="Your name" class="form-control custom-input"><br>
+                    <input name="fullname" type="text" value="<?=  $currentUser->getName() ?>" placeholder="Your name" class="form-control custom-input"><br>
                     <small class = "text-white-50">Your complete name as it should appear on your profile.</small>
                 </div>
                  <?php if(isset($errors['fullName']))  :?>
@@ -47,7 +47,7 @@
                 <?php endif?>   
                 <div class="mb-3">
                     <label class="form-label">Username *</label><br>
-                    <input name="pseudo" type="text" value="<?=  $user->getPseudo() ?>" placeholder="Pseudo" class="form-control custom-input"><br>
+                    <input name="pseudo" type="text" value="<?=  $currentUser->getPseudo() ?>" placeholder="Pseudo" class="form-control custom-input"><br>
                     <small class = "text-white-50">This will be your public display on the platform.</small>
                 </div>
                  <?php if(isset($errors['pseudo']))  :?>
@@ -61,7 +61,7 @@
             <div class="card-body p-4">
                 <div class="mb-3">
                     <label class="form-label">Email Address *</label><br>
-                    <input name="email" type="text" value="<?=  $user->getEmail() ?> " placeholder="Email" class="form-control custom-input"><br>
+                    <input name="email" type="text" value="<?=  $currentUser->getEmail() ?> " placeholder="Email" class="form-control custom-input"><br>
                     <small class = "text-white-50">We will use this email to send you notifications about your sales and purchases.</small>
                 </div>
                  <?php if(isset($errors['email']))  :?>
@@ -69,7 +69,7 @@
                 <?php endif?>   
                 <div class="mb-3">
                     <label class="form-label">IBAN&nbsp;</label><label class="form-label text-secondary">(Optional)</label><br>
-                    <input name="iban" type="text" value="<?=  $user->getIban() ?>" class="form-control custom-input" placeholder="BE99 9999 9999 9999"><br>
+                    <input name="iban" type="text" value="<?=  $currentUser->getIban() ?>" class="form-control custom-input" placeholder="BE99 9999 9999 9999"><br>
                     <small class = "text-white-50">For receiving payments from sales. Leave empty if you don't want to receive payment directly.</small>
                 </div>
                  <?php if(isset($errors['iban']))  :?>

@@ -1,8 +1,10 @@
 <?php 
 
 require_once "framework/Model.php";
+require_once "model/Category.php";
 require_once "utils/AppTime.php";
 require_once "framework/Configuration.php";
+
 class Item extends Model {
     public function __construct(
        
@@ -12,9 +14,10 @@ class Item extends Model {
         private int $owner,
         private string $created_at,
         private ?int $duration_days,
+      
         private ?float $starting_bid = null,
         private ?float $buy_now_price = null,
-
+       
         
         private ?string $end_at = null,
         private ?float $max_bid = null,
@@ -23,7 +26,8 @@ class Item extends Model {
         private bool $is_auction = false,
         private bool $is_direct_sale = false,
         private bool $not_purchased_direct_sale = false,
-        private bool $has_buy_now = false
+        private bool $has_buy_now = false,
+        private ?int $nbCategory = 0,
     ) {}
 
     
@@ -35,7 +39,7 @@ class Item extends Model {
     public function getDurationDays(): ?int { return $this->duration_days; }
     public function getStartingBid(): ?float { return $this->starting_bid; }
     public function getBuyNowPrice(): ?float { return $this->buy_now_price; }
-
+    public function getNbCategory(): ?int { return $this->nbCategory; }
     
     public function getEndAt(): string { return $this->end_at ?? ""; }
     public function getMaxBid(): ?float { return $this->max_bid; }
@@ -47,7 +51,7 @@ class Item extends Model {
     public function getNotPurchasedDirectSale(): bool { return $this->not_purchased_direct_sale; }
 
     public function setIsDirectSale(bool $bool): void { $this->is_direct_sale = $bool; }
-
+    public function setNbCategory(int $cat) { return $this->nbCategory = $cat; }
 
     public function setTitle(string $title): void {
         $this->title = trim($title);
@@ -78,8 +82,8 @@ class Item extends Model {
         $maxTitle    = Configuration::get('title_max_length');
         $minDuration =Configuration::get('duration_min_value');
         $maxDuration = Configuration::get('duration_max_value');
-
         $minDescription = Configuration::get('min_description_if_not_empty');
+        $maxCategories = Configuration::get('max_categories_for_item');
         $titleLen = strlen($this->title);
         if ($titleLen < $minTitle) {
             $errors['title'][] = "Title must be at least $minTitle characters.";
@@ -95,9 +99,12 @@ class Item extends Model {
             $errors['title'][] = "You already have an item with this title.";
         }
 
+        if($this->nbCategory>$maxCategories){
+             $errors['categories'][] = "you must have max $maxCategories categories";
+        }
        
         if (!empty($this->description) && strlen($this->description) < $minDescription) {
-            $errors['description'][] = "Description must be at least 3 characters.";
+            $errors['description'][] = "Description must be at least $minDescription characters.";
         }
 
         
@@ -127,7 +134,7 @@ class Item extends Model {
     }
 
     
-    public function persist(): array {
+    public function persist(array $categoryIds = []): array {
         $errors = $this->validate();
         
         if (empty($errors)) {
@@ -156,6 +163,7 @@ class Item extends Model {
             } else {
                 $this->update();
             }
+             $this->syncCategories($categoryIds); 
         }
         
         return $errors;
@@ -228,6 +236,11 @@ class Item extends Model {
         $row = $query->fetch();
         return $row ? self::makeItemFromRow($row) : null;
     }
+     private static function nbCatForItem(int $id) : int {
+        $sql = "SELECT COUNT(DISTINCT ic.category) from item_categories ic where ic.item = :id";
+        $query = self::execute($sql, ["id" => $id]);
+         return (int)$query->fetchColumn();
+    }
 
     public static function makeItemFromRow(array $i): Item {
         return new Item(
@@ -246,9 +259,12 @@ class Item extends Model {
             (bool)($i["is_auction"] ?? false),
             (bool)($i["is_direct_sale"] ?? false),
             (bool)($i["not_purchased_direct_sale"] ?? false),
-            (bool)($i["has_buy_now"] ?? false)
+            (bool)($i["has_buy_now"] ?? false),
+            Item::nbCatForItem((int)$i["id"]),
         );
     }
+
+   
 
     public static function getAllActivesItems(): array {
         $now = AppTime::get_current_datetime();
@@ -479,7 +495,19 @@ class Item extends Model {
     }
 
 
-    public static function search(string $query, ?User $user): array {
+    public static function search(string $query, ?User $user,String $idCat): array {
+       if($idCat == -1 && $query != ''){
+            return Item :: searchByQuerry($query,$user);
+       }elseif($idCat != -1 && $query==''){
+            return Item :: searchByIdCat($idCat,$user);
+       }else{
+            return array_uintersect(Item :: searchByQuerry($query,$user),Item::searchByIdCat($idCat,$user), function($a, $b) {
+                return $a->getId() <=> $b->getId();
+            }); //fusion des 2 tabs et prend les elems en communs
+       }
+    }
+
+    private static function searchByQuerry(string $query, ?User $user) : array {
         $now = AppTime::get_current_datetime();
         $pattern = '%' . $query . '%';
         $pattern_conditions = "(v.title LIKE :p OR v.description LIKE :p OR u.pseudo LIKE :p)";
@@ -507,6 +535,35 @@ class Item extends Model {
         }
         return $items;
     }
+
+     private static function searchByIdCat(string $idCat, ?User $user) : array {
+        $now = AppTime::get_current_datetime();
+    
+        if ($user === null) {
+            $sql = "SELECT v.* FROM v_items_status v
+                    Join item_categories ic on ic.item = v.id
+                    WHERE v.end_at > :now
+                    AND (v.not_purchased_direct_sale OR (v.is_auction AND (NOT v.has_buy_now OR NOT v.buy_now_reached)))
+                    AND ic.category = :idCat
+                    ORDER BY v.end_at ASC";
+            $params = ['now' => $now,'idCat' => $idCat ];
+        } else {
+            $sql = "SELECT v.* FROM v_items_status v
+                    Join item_categories ic on ic.item = v.id
+                    JOIN users u ON v.owner = u.id
+                    WHERE v.owner = :user_id
+                    AND ic.category = :idCat 
+                    ORDER BY v.end_at ASC";
+            $params = ['user_id' => $user->getId(),'idCat' => $idCat ];
+        }
+
+        $items = [];
+        foreach (self::execute($sql, $params)->fetchAll() as $row) {
+            $items[] = self::makeItemFromRow($row);
+        }
+        return $items;
+    }
+
     public function swapPicAsync(array $orderTab): void{
         foreach($orderTab as $oldPosition){ //boucle pour liberer les slots (on les met en (leur position)*-1)
             self::execute(
@@ -524,4 +581,23 @@ class Item extends Model {
         }
 
     }
+
+
+    public function getCategories() : array {
+        $sql = "SELECT c.id,c.name,c.priority from categories c JOIN item_categories ic on c.id = ic.category where ic.item = ?";
+        $res = self::execute($sql, [$this->id]);
+        $cats = [];
+        foreach ($res->fetchAll() as $row) {
+            $cats[] = new Category($row['id'], $row['name'], $row['priority']);
+        }
+        return $cats;
+    }
+
+    private function syncCategories(array $categoryIds): void {
+        self::execute("DELETE FROM item_categories WHERE item = ?", [$this->id]);
+        foreach ($categoryIds as $catId) {
+            self::execute("INSERT INTO item_categories (item, category) VALUES (?, ?)", [$this->id, $catId]);
+        }
+    }
+
 }

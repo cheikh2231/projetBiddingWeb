@@ -45,8 +45,8 @@
         <?php endif; ?>
         
         <div class="item-body">
-            <div class="item-title"><?= htmlspecialchars($item->getTitle()) ?></div>
-            <div class="item-author">by <?= htmlspecialchars($item->getOwner()->getPseudo()) ?></div>
+            <div class="item-title"><?= htmlspecialchars($item->getTitle())?></div>
+            <div class="item-author">by <?= htmlspecialchars($item->getOwner()->getPseudo())?></div>
 
             <div class="d-flex justify-content-between align-items-end mt-2">
                 <?php if($item->getHasBuyNow()) :?>

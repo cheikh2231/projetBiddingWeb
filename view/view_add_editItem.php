@@ -168,6 +168,32 @@
 
             </div>
         </div>
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">Categories</div>
+            <div class="card-body p-4">
+                <p class = "text-muted"> you can select up to 3 categories<p>
+               <?php foreach ($allCategories as $cat): ?>
+                    <label>
+                        <input type="checkbox" 
+                            name="categories[]" 
+                            value="<?= $cat->getId() ?>"
+                            <?= in_array($cat->getId(), $selectedCategories??[]) ? 'checked' : '' ?>>
+                        <?= htmlspecialchars($cat->getName()) ?>
+                    </label>
+                <?php endforeach; ?>
+                <div id="catError" class="invalid-feedback fw-bold"></div>
+                            <?php if (isset($errors['categories'])): ?>
+                                <div class="text-danger small mt-1 php-error">
+                                    <ul>
+                                        <?php foreach ($errors['categories'] as $i): ?> 
+                                            <li><span class="text-danger"><?= $i ?></span></li>
+                                        <?php endforeach;?>
+                                    </ul> 
+                                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        
     </form>
 </div>
 

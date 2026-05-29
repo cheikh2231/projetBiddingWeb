@@ -27,8 +27,7 @@
 </header>
 
 <div class="container py-5 px-2">
-
-    <div id="wrapper" data-place ="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>">
+    <div id="wrapper" data-place ="<?= htmlspecialchars($place) ?>" data-search= "<?= $searchName ?>" data-webroot="<?= $web_root ?>" data-categories="<?= $catOptionsHtml ?>" data-idCat="<?=$searchIdCat?>">
         
         <?php if (!empty($itemsUser)) : ?>
             <h4 class="text-primary" id="title-participating">Items I'm Participating In</h4>

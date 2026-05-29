@@ -2,27 +2,40 @@
 $(document).ready(function () {  
 
         if ($('#wrapper').length) {
-
+            const initialCat = $('#wrapper').data('idcat');
             $('#wrapper').before(`
-                <div class="mb-4 container" id="search-wrapper">
+             <div class="mb-4 container" id="search-wrapper">
+                <div class="input-group">
+                    <span class="input-group-text border-secondary text-secondary">
+                        <i class="bi bi-search"></i>
+                    </span>
                     <input type="text" id="search-input" 
-                        class="form-control" 
-                        placeholder="Search items...">
+                           class="form-control text-dark border-secondary shadow-none" 
+                           placeholder="Search items...">
+                    
+                    <select id="category-select" class="form-select bg-dark text-white border-secondary shadow-none" style="max-width: 200px;">
+                        <option value="-1">All categories</option>
+                       ${$('#wrapper').data('categories')}
+                    </select>
                 </div>
             `);
-            $('#search-input').on('input', function () {
-                const res = $(this).val().trim();
+            $('#category-select').val(initialCat);
+            $('#search-input,#category-select').on('input change', function () {
+                const res = $('#search-input').val().trim();
+                const idCat = $('#category-select').val();
+                console.log(idCat);
                 const place =  $('#wrapper').data('place');
-                doSearch(res,place);
+                doSearch(res,place,idCat);
             });
         }
             $('#search-input').val( $('#wrapper').data('search')).trigger('input');
-
-    function doSearch(res,place) {
+           
+             
+    function doSearch(res,place,idCat) {
         $.ajax({
             url: 'index.php?controller=item&action=search',   
             method: 'GET',
-            data: { res: res , place: place},      
+            data: { res: res , place: place , idCat: idCat},      
             dataType: 'json',
             success: function (response) {
                 getItems(response.items, place, response.encoded);
@@ -48,12 +61,14 @@ $(document).ready(function () {
         }
       
 
+       
         if (items.length === 0) {
             $('#wrapper').prepend(
                 '<p id="no-result-msg" class="text-center text-secondary mt-4">No item found.</p>'
             );
             return;
         }
+        
 
          if(place == "browse"){
             const hasParticipating = items.some(i => i.isParticipating);

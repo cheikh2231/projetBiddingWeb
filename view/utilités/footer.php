@@ -16,18 +16,28 @@
                 </a>
             </div>
             <div class="col">
-                <a href="item/add" class="text-decoration-none <?= ($place === 'Add') ? 'text-primary' : 'text-white' ?>">
+                <a href="item/add" class="text-decoration-none <?= ($place === 'add') ? 'text-primary' : 'text-white' ?>">
                     <i class="bi bi-plus-lg fs-4 d-block"></i>
                     <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Add Offer</span>
                 </a>
             </div>
+             <?php if ($currentUser->isAdmin()) :?>
+             <div class="col">
+                <a href="category/manage" class="text-decoration-none  <?= ($place === 'category') ? 'text-primary' : 'text-white' ?>">
+                   <i class="bi bi-bounding-box fs-4 d-block"></i>
+                    <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">CATEGORIES</span>
+                </a>
+            </div>
+            <?php endif;?>
+
             <div class="col">
                 <a href="user/profile" class="text-decoration-none  <?= ($place === 'profile') ? 'text-primary' : 'text-white' ?>">
                     <i class="bi bi-gear fs-4 d-block"></i>
                     <span style="font-size: 0.65rem;" class="text-uppercase fw-bold">Profile</span>
                 </a>
             </div>
-
+           
+            
             <?php else:?>
                 <div class="col">
                     <a href="user/signup" class="text-decoration-none text-white">
