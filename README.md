@@ -47,9 +47,10 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 
 *Édition d'un item.*
 
-| Suppression | Ajout d'images |
-| :---: | :---: |
-| <img width="250" alt="suppression" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" /> | <img width="250" alt="ajout images" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" /> |
+Page d'édition| Suppression | Ajout d'images |
+| :---: | :---: | :---: |
+| <img width="250"  alt="page d'edition" src="https://github.com/user-attachments/assets/835d9077-3dc2-4852-92f6-02b2e3ec4232" />
+| <img width="250" alt="suppression" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" /> | <img width="250" alt="ajout images" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" /> | 
  
 ### Profil Utilisateur
 <img width="250" alt="profil" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
