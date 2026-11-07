@@ -20,27 +20,46 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 - **Base de données :** MySQL
 
 ## 📸 Aperçu
+### Connexion , Inscription
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/1d89a893-49d8-4f51-a7a0-0206e2a9e466" />
 
 ### Navigation et Catalogue
 
 *Page d'accueil présentant les articles en cours d'enchère.*
 | Accueil & Catalogue | Filtrage / Recherche d'articles |
 | :---: | :---: |
-| <img width="400" alt="Page d'accueil" src="LIEN_IMAGE_1_ICI" /> | <img width="400" alt="Filtres" src="LIEN_IMAGE_2_ICI" /> |
+| <img width="500" alt="accueil" src="https://github.com/user-attachments/assets/dec71e2e-fbea-41a3-8325-af2c64182fe3" />
+
+ |<img width="500" alt="filtre" src="https://github.com/user-attachments/assets/ba3c3f95-df2f-464f-aaea-dd8b746b0bdb" />
+ |
 
 ### Système d'Enchères (Le cœur du projet)
 
-*Détails d'un article, compte à rebours dynamique JS et formulaire pour placer une offre.*
-| Détails de l'article (Compte à rebours) | Placement d'une offre validée |
-| :---: | :---: |
-| <img width="400" alt="Détails avec compte à rebours" src="LIEN_IMAGE_3_ICI" /> | <img width="400" alt="Nouvelle offre" src="LIEN_IMAGE_4_ICI" /> |
+*Détails d'un article, et formulaire pour placer une offre.*
+| Détails de l'article  | Placement d'une offre validée | Mise à jour page accueil |
+| :---: | :---: | :---: |
+| <img width="500" alt="details" src="https://github.com/user-attachments/assets/39e22324-03ed-4d47-81da-3959c76e325e" />
+ | <img width="500" alt="nouvelle offre" src="https://github.com/user-attachments/assets/ea783709-8e91-4cc6-8985-d8d1af394ca1" />
+ | <img width="500" alt="maj" src="https://github.com/user-attachments/assets/3039313c-1eed-4057-b283-711bcc287390" /> |
+
 
 ### Espace Gestion
-
-*Interface d'administration pour mettre un nouvel article aux enchères.*
-| Formulaire d'ajout d'article | Suivi des ventes / Tableau de bord |
+*Ajout nouvelle articles et verifications de ses items.*
+| Formulaire d'ajout d'article erreur de formulaire| Suivi des ventes / My items |
 | :---: | :---: |
-| <img width="400" alt="Formulaire d'ajout" src="LIEN_IMAGE_5_ICI" /> | <img width="400" alt="Tableau de bord admin" src="LIEN_IMAGE_6_ICI" /> |
+|<img width="500" alt="image" src="https://github.com/user-attachments/assets/cbb18e49-bcfb-426a-9be3-ea09b7f6932b" />
+ |<img width="1376" alt="apres ajout" src="https://github.com/user-attachments/assets/22d4fcfb-48a7-4a86-aae2-f38c7e4c4141" />
+ |
+
+*Edition d'un item.*
+| Supression | Ajout d'images |
+| :---: | :---: |
+ |<img width="1552" height="522" alt="image" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" />$
+ |<img width="657" height="547" alt="image" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" />
+ |
+*profil utilisateur.*
+<img width="1427" height="857" alt="image" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
+
 
 ## ⚙️ Installation locale
 
