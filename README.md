@@ -64,7 +64,7 @@ git clone https://github.com/cheikh2231/projetBiddingWeb.git
 
 Initialiser la base de données de manière automatisée (2 options) :
 
-Option 1 (Script) : Accéder directement à http://localhost/prwb_2526_a07/setup/install depuis votre navigateur.
+Option 1 (Script) : Accéder directement à http://localhost/projetBiddingWeb/setup/install depuis votre navigateur.
 
 Option 2 (Interface) : Aller sur la page de connexion de l'application et cliquer sur le lien de restauration ("restore") pour générer et peupler la base de données.
 
