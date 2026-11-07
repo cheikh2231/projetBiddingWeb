@@ -29,8 +29,7 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 | Accueil & Catalogue | Filtrage / Recherche d'articles |
 | :---: | :---: |
 | <img width="500" alt="accueil" src="https://github.com/user-attachments/assets/dec71e2e-fbea-41a3-8325-af2c64182fe3" />
-
- |<img width="500" alt="filtre" src="https://github.com/user-attachments/assets/ba3c3f95-df2f-464f-aaea-dd8b746b0bdb" />
+ | <img width="500" alt="filtre" src="https://github.com/user-attachments/assets/ba3c3f95-df2f-464f-aaea-dd8b746b0bdb" />
  |
 
 ### Système d'Enchères (Le cœur du projet)
@@ -38,27 +37,27 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 *Détails d'un article, et formulaire pour placer une offre.*
 | Détails de l'article  | Placement d'une offre validée | Mise à jour page accueil |
 | :---: | :---: | :---: |
-| <img width="500" alt="details" src="https://github.com/user-attachments/assets/39e22324-03ed-4d47-81da-3959c76e325e" />
- | <img width="500" alt="nouvelle offre" src="https://github.com/user-attachments/assets/ea783709-8e91-4cc6-8985-d8d1af394ca1" />
- | <img width="500" alt="maj" src="https://github.com/user-attachments/assets/3039313c-1eed-4057-b283-711bcc287390" /> |
+| <img width="350" alt="details" src="https://github.com/user-attachments/assets/39e22324-03ed-4d47-81da-3959c76e325e" />
+ | <img width="350" alt="nouvelle offre" src="https://github.com/user-attachments/assets/ea783709-8e91-4cc6-8985-d8d1af394ca1" />
+ | <img width="350" alt="maj" src="https://github.com/user-attachments/assets/3039313c-1eed-4057-b283-711bcc287390" /> |
 
 
 ### Espace Gestion
 *Ajout nouvelle articles et verifications de ses items.*
 | Formulaire d'ajout d'article erreur de formulaire| Suivi des ventes / My items |
 | :---: | :---: |
-|<img width="500" alt="image" src="https://github.com/user-attachments/assets/cbb18e49-bcfb-426a-9be3-ea09b7f6932b" />
- |<img width="1376" alt="apres ajout" src="https://github.com/user-attachments/assets/22d4fcfb-48a7-4a86-aae2-f38c7e4c4141" />
+|<img width="400" alt="image" src="https://github.com/user-attachments/assets/cbb18e49-bcfb-426a-9be3-ea09b7f6932b" />
+ |<img width="400" alt="apres ajout" src="https://github.com/user-attachments/assets/22d4fcfb-48a7-4a86-aae2-f38c7e4c4141" />
  |
 
 *Edition d'un item.*
 | Supression | Ajout d'images |
 | :---: | :---: |
- |<img width="1552" height="522" alt="image" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" />$
- |<img width="657" height="547" alt="image" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" />
+ | <img width="500" alt="image" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" />
+ | <img width="500" alt="image" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" />
  |
 *profil utilisateur.*
-<img width="1427" height="857" alt="image" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
 
 
 ## ⚙️ Installation locale
