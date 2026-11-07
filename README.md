@@ -21,7 +21,7 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 
 ## 📸 Aperçu
 ### Connexion , Inscription
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/1d89a893-49d8-4f51-a7a0-0206e2a9e466" />
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/1d89a893-49d8-4f51-a7a0-0206e2a9e466" />
 
 ### Navigation et Catalogue
 
@@ -46,18 +46,17 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 *Ajout nouvelle articles et verifications de ses items.*
 | Formulaire d'ajout d'article erreur de formulaire| Suivi des ventes / My items |
 | :---: | :---: |
-|<img width="400" alt="image" src="https://github.com/user-attachments/assets/cbb18e49-bcfb-426a-9be3-ea09b7f6932b" />
- |<img width="400" alt="apres ajout" src="https://github.com/user-attachments/assets/22d4fcfb-48a7-4a86-aae2-f38c7e4c4141" />
- |
+| <img width="400" alt="image" src="https://github.com/user-attachments/assets/cbb18e49-bcfb-426a-9be3-ea09b7f6932b" />
+ | <img width="400" alt="apres ajout" src="https://github.com/user-attachments/assets/22d4fcfb-48a7-4a86-aae2-f38c7e4c4141" /> |
 
 *Edition d'un item.*
 | Supression | Ajout d'images |
 | :---: | :---: |
- | <img width="500" alt="image" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" />
- | <img width="500" alt="image" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" />
- |
+ | <img width="400" alt="image" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" />
+ | <img width="400" alt="image" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" /> |
+ 
 *profil utilisateur.*
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/d67f2bdc-a884-47f9-963a-a8b601bc5adf" />
 
 
 ## ⚙️ Installation locale
