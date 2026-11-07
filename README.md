@@ -47,7 +47,7 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 
 *Édition d'un item.*
 
-| Page d'édition | Suppression | Ajout d'images |
+| Page d'édition | Ajout d'images | Suppression |
 | :---: | :---: | :---: |
 | <img width="250"  alt="page d'edition" src="https://github.com/user-attachments/assets/835d9077-3dc2-4852-92f6-02b2e3ec4232" /> | <img width="250" alt="suppression" src="https://github.com/user-attachments/assets/f9a54c1a-ff7c-4860-87e0-9967b4a15420" /> | <img width="250" alt="ajout images" src="https://github.com/user-attachments/assets/2e509c05-7f9c-4f3c-a731-952e263f7091" /> | 
  
@@ -56,6 +56,16 @@ Une application web interactive permettant aux utilisateurs de consulter des art
 
 ## ⚙️ Installation locale
 
-1. Cloner le dépôt dans le dossier `htdocs` (si vous utilisez XAMPP) ou `www` (WAMP) : 
+1. Cloner le dépôt : 
 ```bash
-git clone [https://github.com/cheikh2231/projetBiddingWeb.git](https://github.com/cheikh2231/projetBiddingWeb.git)
+git clone https://github.com/cheikh2231/projetBiddingWeb.git
+
+2. Démarrer votre serveur local (Apache et MySQL via XAMPP/WAMP).
+
+Initialiser la base de données de manière automatisée (2 options) :
+
+Option 1 (Script) : Accéder directement à http://localhost/prwb_2526_a07/setup/install depuis votre navigateur.
+
+Option 2 (Interface) : Aller sur la page de connexion de l'application et cliquer sur le lien de restauration ("restore") pour générer et peupler la base de données.
+
+L'application est prête à être utilisée !
